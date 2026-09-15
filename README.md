@@ -10,7 +10,24 @@ DAW ──MIDI USB──► [Cabeça ESP32] ── P4 (24V) + RJ45 (dados) ─�
 
 Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
 
-## Documentação
+## Começar agora — protótipo com o que você tem
+
+**Pro Micro + 4× WS2812B** (1 LED por módulo), MIDI USB:
+
+| | |
+|---|---|
+| Firmware | [firmware/promicro-4mod/promicro-4mod.ino](firmware/promicro-4mod/promicro-4mod.ino) |
+| Ligação | [firmware/promicro-4mod/README.md](firmware/promicro-4mod/README.md) |
+| Doc | [docs/13-PROTOTIPO-PROMICRO.md](docs/13-PROTOTIPO-PROMICRO.md) |
+
+```
+DAW ──MIDI USB──► [Pro Micro] ──D6──► Mod1 ──► Mod2 ──► Mod3 ──► Mod4
+                      └── Fonte 5V (≥1A) ── VCC/GND em cadeia
+```
+
+Notas **C3–F3** = módulos 1–4. Upload com Arduino IDE (placa Leonardo / Pro Micro).
+
+## Documentação (rig final 24V)
 
 | Documento | Conteúdo |
 |-----------|----------|
@@ -28,6 +45,7 @@ Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
 | [**Config módulos**](docs/11-CONFIGURACAO-MODULOS.md) | **WW+R, WW×2, R+amber, …** |
 | [**Lente 20 mm**](docs/12-LENTE-20MM.md) | **1 lente por LED, feixe 90°** |
 | [Resumo rápido](docs/DECISAO-RESUMO.md) | Decisões em 2 minutos |
+| [**Protótipo Pro Micro**](docs/13-PROTOTIPO-PROMICRO.md) | **4× WS2812B — começar aqui** |
 
 ## Decisões atuais
 

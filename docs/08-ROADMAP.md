@@ -8,7 +8,18 @@
 - [x] Hardware universal + **config futura** de cores
 - [x] Decoder **ATtiny** no módulo (não ESP)
 
-## Fase 1 — Protótipo (atual)
+## Fase 0b — Protótipo Pro Micro (atual)
+
+| # | Tarefa | Aceite |
+|---|--------|--------|
+| 0.1 | 4 módulos WS2812B + Pro Micro + fonte 5V | Boot pisca 4 LEDs |
+| 0.2 | Upload `firmware/promicro-4mod` | MIDI USB no DAW |
+| 0.3 | Notas C3–F3 controlam módulos 1–4 | Velocity = brilho |
+| 0.4 | PC 0 blackout, PC 1/2 presets | OK |
+
+Ver [13-PROTOTIPO-PROMICRO.md](13-PROTOTIPO-PROMICRO.md).
+
+## Fase 1 — Rig 24V (depois)
 
 | # | Tarefa | Aceite |
 |---|--------|--------|
