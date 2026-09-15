@@ -56,6 +56,7 @@ Arquivo `modules.json` na Cabeça — ver [11-CONFIGURACAO-MODULOS.md](11-CONFIG
 | ATtiny1614 | 1 |
 | LED 10 W WW + 10 W red | 1+1 |
 | Buck CC 1 A | 2 |
+| AO4407 anti-reverso | 2 |
 | Plug P4 + patch Cat5e | 1 par de cabos |
 | Fonte 24 V 5 A | 1 |
 | Heatsink alumínio | 1 |
