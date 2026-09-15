@@ -40,6 +40,7 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | [BOM](docs/06-BOM.md) | Lista de materiais v0 |
 | [Cablagem](docs/07-CABLAGEM.md) | Fios por módulo |
 | [**Tubo flex**](docs/14-TUBO-FLEX.md) | Gradiente, chase, MIDI CC 15–19 |
+| [**Compras AliExpress**](docs/15-ALIEXPRESS-BOM.md) | **O que buscar e o que evitar** |
 | [Roadmap](docs/08-ROADMAP.md) | v0 atual → v1 futuro |
 | [Resumo rápido](docs/DECISAO-RESUMO.md) | Decisões em 2 minutos |
 

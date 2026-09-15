@@ -21,7 +21,7 @@ Equivalente ao padrão que você descreveu: traços acesos de tamanhos variados 
 | LED | **Fita WS2812B** (60 LED/m ou 30 LED/m) dentro de **tubo silicone** difuso |
 | Tensão | **5 V** (mesma fonte dos módulos) |
 | Data | **Pin 5** do Pro Micro (separado dos módulos no pin 6) |
-| Quantidade | `NUM_TUBE_LEDS` no firmware (padrão **30**) |
+| Quantidade | `NUM_TUBE_LEDS` no firmware — **200** para tubo 4 m @ 50 LED/m |
 
 ### Onde comprar / montar
 
@@ -91,14 +91,27 @@ Com 4 módulos + 30 LEDs no tubo: fonte **5V / 3A** recomendada.
 Em `promicro-4mod.ino`:
 
 ```cpp
-#define NUM_TUBE_LEDS 30   // ex: 0,5 m @ 60 LED/m = 30
+#define NUM_TUBE_LEDS 200   // tubo 4 m @ 50 LED/m (padrão BTF reticulate)
 ```
 
-| Comprimento | 60 LED/m | 30 LED/m |
-|-------------|----------|----------|
-| 0,5 m | 30 | 15 |
-| 1 m | 60 | 30 |
-| 2 m | 120 | 60 |
+| Comprimento | 50 LED/m | 60 LED/m | 30 LED/m |
+|-------------|----------|----------|----------|
+| 0,5 m | 25 | 30 | 15 |
+| 1 m | 50 | 60 | 30 |
+| 2 m | 100 | 120 | 60 |
+| **4 m** | **200** | **240** | 120 |
+
+### Tubo comprado (4 m)
+
+| Campo | Valor |
+|-------|-------|
+| Anúncio | [AliExpress 1005006239466933](https://pt.aliexpress.com/item/1005006239466933.html) |
+| Comprimento | **4 m** |
+| Chip | WS2812B (confirmar na etiqueta ao receber) |
+| LEDs/m | **50** (mais comum) ou **60** — contar 1 m ou ler anúncio |
+| `NUM_TUBE_LEDS` | **200** ou **240** |
+
+**Não use o controle RF** do kit — ligue o **DIN** do tubo no **D5** do Pro Micro.
 
 ## Boot
 

@@ -49,6 +49,10 @@ Componentes para **4 módulos WS2812B + Pro Micro**.
 - [ ] Cadeia DIN→DOUT na ordem 1→2→3→4
 - [ ] Boot pisca R,G,B,W nos 4 módulos
 
+## Onde comprar
+
+Guia detalhado com buscas no AliExpress: **[15-ALIEXPRESS-BOM.md](15-ALIEXPRESS-BOM.md)**
+
 ## v1 BOM
 
 Rig 24V / 10W — [v1/README.md](v1/README.md).

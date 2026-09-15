@@ -15,7 +15,8 @@
 
 // --- Tubo flexível (fita WS2812B dentro do tubo silicone) ---
 #define TUBE_PIN      5
-#define NUM_TUBE_LEDS 30    // ajustar: LEDs por metro × comprimento do tubo
+// Tubo 4 m (AliExpress 1005006239466933): 50 LED/m → 200 | 60 LED/m → 240
+#define NUM_TUBE_LEDS 200
 
 #define LED_TYPE      WS2812B
 #define COLOR_ORDER   GRB
