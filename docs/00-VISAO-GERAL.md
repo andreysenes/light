@@ -62,6 +62,7 @@ Detalhes: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 - Padrão: **warm white 3000 K** + **vermelho 620 nm**.
 - Driver **corrente constante ~900 mA** por canal.
 - Dissipação: **~20 W** por módulo → heatsink obrigatório.
+- Óptica: **lente PMMA 20 mm (90°)** em cada LED — ver [12-LENTE-20MM.md](12-LENTE-20MM.md).
 
 ## Potência e barramento
 
