@@ -4,80 +4,89 @@
 
 Construir módulos de iluminação para palco/ensaio que:
 
-- Sejam **acopláveis** em cadeia (daisy-chain) ou com derivações em T.
-- Respondam a **MIDI** vindos de uma DAW (ou controlador hardware).
-- Usem **alimentação segura, barata e prática** (uma fonte central, não um transformador por módulo).
-- Permitem **mistura de cores** sem depender de LED RGB 10 W caro ou de difícil sourcing.
+- Sejam **acopláveis** em cadeia ou com derivações em T.
+- Respondam a **MIDI** de uma DAW.
+- Usem **um único ESP32** como cabeça de controle.
+- Levem **energia e dados no mesmo cabo** (Cabo StageMod).
+- Sejam **simples por módulo**: 2 cores × 10 W (padrão warm white + vermelho).
+- Permitam **reconfiguração futura** de combinações de cor (verde+vermelho, WW×2, vermelho+âmbar, …).
 
-## O que NÃO é (ainda)
-
-- Produto comercial certificado (sem norma EN/ABNT nesta fase).
-- Sistema DMX profissional (pode ser evolução futura).
-- Painel LED de vídeo / pixel mapping denso.
-
-## Princípio de cada módulo
-
-Cada módulo é uma **unidade luminosa endereçável**:
+## Arquitetura resumida
 
 ```
-┌─────────────────────────────────────────┐
-│  IN (24V, GND, RS485 A/B)               │
-│       │                                 │
-│  ┌────┴────┐    ┌──────────┐           │
-│  │ ESP32   │───►│ 3–4 ch.  │──► LEDs   │
-│  │ (C3/S3) │    │ driver   │    R G B  │
-│  └────┬────┘    └──────────┘    (WW)  │
-│       │                                 │
-│  OUT (24V, GND, RS485 A/B)              │
-└─────────────────────────────────────────┘
+┌─────────────┐     Cabo StageMod        ┌──────────────────┐
+│ Cabeça      │  (24V + GND + D+ + D−)   │ Módulo Dual      │
+│ ESP32-S3    │ ═══════════════════════► │ ATtiny + 2×10W   │
+│ MIDI USB    │                          │ WW + Red (padrão)│
+└─────────────┘                          └────────┬─────────┘
+                                                  │ OUT
+                                                  ▼
+                                            próximo módulo ...
 ```
 
-- **Master** (primeiro módulo ou caixa separada): recebe MIDI USB, traduz para comandos no barramento RS-485.
-- **Satélites**: recebem comando “módulo #N, R=, G=, B=” e aplicam PWM nos MOSFETs.
+## O que cada peça faz
 
-## Decisão sobre LEDs (sua dúvida)
+| Peça | Tem ESP? | Função |
+|------|----------|--------|
+| **Cabeça** | Sim (único) | MIDI, presets, RS-485 master, `modules.json` |
+| **Módulo** | Não (só ATtiny) | Decodifica addr, PWM em 2 canais, acende LEDs |
+| **Cabo StageMod** | — | Alimenta e comunica |
+| **Fonte 24 V** | — | Energia de todo o rig |
 
-| Abordagem | Prós | Contras |
-|-----------|------|---------|
-| **1× LED RGB 10 W integrado** | Menos LEDs físicos | Caro, dissipação concentrada, canais acoplados termicamente |
-| **3× LED mono 3 W (R, G, B)** | Barato (~US$ 0,15–0,50/cor), fácil de repor, controle independente | 3 pontos de luz (pode usar difusor) |
-| **1× star RGB 3 W (ânodo comum, 3 fios catodo)** | Barato (~US$ 2–3), já montado em star | Mesmas limitações de mistura de branco |
-| **RGB + WW 3 W** | Branco quente/neutro de qualidade | +1 canal driver + LED |
+## Módulo padrão vs configurável
 
-**Recomendação:** começar com **3× LED mono 3 W** (ou 1 star RGB 3 W com catodos separados — é o mesmo elétrico). Escalar para **3× 10 W mono** só se a luminância de 3 W for insuficiente após testes.
+**Hardware sempre igual:** 2 drivers, 2 soquetes star 10 W, IN/OUT StageMod.
 
-### Branco
+**O que varia:**
 
-- **Branco por software:** R+G+B (~70–80 % de cada canal) — funciona, mas cor do branco é “fria” e CRI baixo.
-- **Branco melhor:** adicionar LED **warm white 3000 K** ou **neutral white 4000 K** 3 W como 4º canal.
-- Para wash de palco pequeno, RGB puro costuma bastar; para câmera/gravação, vale o canal WW.
+| Variável | Como mudar |
+|----------|------------|
+| Cores | Trocar LED no soquete A ou B |
+| Papel MIDI | Editar `modules.json` na Cabeça |
+| Posição na rede | DIP addr no módulo |
 
-## Potência por módulo (estimativa)
+Exemplos:
 
-| Configuração | Corrente máx. @ 24 V barramento* | Observação |
-|--------------|----------------------------------|------------|
-| 3× 3 W RGB | ~0,5–0,7 A no barramento** | Com drivers buck CC eficientes |
-| 3× 10 W RGB | ~1,5–2 A | Requer heatsink maior |
+| Módulo | Ch A | Ch B |
+|--------|------|------|
+| 1 | warm_white | red |
+| 2 | warm_white | warm_white |
+| 3 | red | amber |
+| 4 | green | red |
 
-\* O barramento alimenta os drivers; a corrente no barramento é menor que a soma dos LEDs se usar conversão buck.
+Detalhes: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 
-\** Cada canal ~350 mA @ 2,2–3,4 V nos LEDs; perdas nos drivers.
+## LEDs — 10 W por cor
+
+- **1 LED mono por canal** (não RGB integrado).
+- Padrão: **warm white 3000 K** + **vermelho 620 nm**.
+- Driver **corrente constante ~900 mA** por canal.
+- Dissipação: **~20 W** por módulo → heatsink obrigatório.
+
+## Potência e barramento
+
+| Grandeza | Valor típico |
+|----------|--------------|
+| Por canal | 10 W |
+| Por módulo (2 ch) | ~20 W LED + perdas |
+| Corrente @ 24 V / módulo | ~1,0–1,2 A |
+| 8 módulos full | ~8–10 A → fonte 24 V / 10 A |
 
 ## Glossário
 
 | Termo | Significado |
 |-------|-------------|
-| Daisy-chain | Módulos ligados IN → OUT → IN → OUT em série |
-| Split / T | Derivação do barramento para ramos paralelos |
-| Injeção de energia | Reconectar V+ em ponto intermediário para compensar queda de cabo |
-| CC constante | Driver que mantém corrente no LED (recomendado > 1 W) |
-| RS-485 | Barramento serial diferencial, robusto em cabos longos |
+| Cabeça | Única unidade com ESP32 |
+| Cabo StageMod | Cabo 5 vias energia + RS-485 |
+| Módulo Dual | Bloco 2× 10 W com IN/OUT |
+| Addr | Endereço DIP no módulo |
+| Perfil | Par (tipo_A, tipo_B) na config da Cabeça |
 
 ## Riscos e mitigação
 
 | Risco | Mitigação |
 |-------|-----------|
-| Alimentar LED de alto watt pelo ESP | Fonte 24 V externa; ESP só com 5 V derivado |
-| MOSFET errado (não logic-level) | IRLB8721 / AO3400A; verificar curva @ Vgs=3,3 V |
-| Cabo fino + muitos módulos | 24 V, AWG 18–16 no tronco, fusível por módulo |
-| MIDI apenas por Wi‑Fi instável | USB MIDI no master como padrão; Wi‑Fi opcional |
+| Superaquecimento 10 W | Heatsink, teste 30 min @ 100 % |
+| Curto no cabo StageMod | Conector keyed, fusível por módulo |
+| Addr duplicado | Etiquetar módulos na montagem |
+| Cabeça offline | Blackout automático nos módulos (fade local opcional) |

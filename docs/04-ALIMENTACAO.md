@@ -1,123 +1,80 @@
-# Alimentação segura, barata e prática
+# Alimentação — 24 V, módulos 2× 10 W
 
-## Estratégia geral
+## Carga por módulo Dual
 
-**Uma fonte central 24 V DC** alimenta todos os módulos em paralelo no barramento, com pass-through IN→OUT em cada módulo.
+| Estado | Potência LED | Corrente barramento 24 V* |
+|--------|--------------|---------------------------|
+| 1 canal 100 % | ~10 W | ~0,5–0,6 A |
+| 2 canais 100 % | ~20 W | ~1,0–1,2 A |
+| Standby (PWM 0) | < 1 W | ~0,05 A |
 
-Por que **24 V** e não 12 V?
+\* Com drivers buck ~90 % eficiência.
 
-| Tensão | Corrente para ~200 W | Queda em cabo 5 m AWG18 (2 A) |
-|--------|----------------------|-------------------------------|
-| 12 V | ~17 A | ~0,5 V (4 % útil) |
-| 24 V | ~8 A | ~0,5 V (2 % útil) |
+## Dimensionamento fonte
 
-24 V permite cabos mais finos e splits mais longos antes de injeção.
+| Módulos | Corrente máx. estimada | Fonte 24 V |
+|---------|------------------------|------------|
+| 4 | ~5 A | 6 A (150 W) |
+| 8 | ~10 A | 10 A (240 W) |
+| 12 | ~15 A | 15 A (360 W) |
 
-## Dimensionamento da fonte
+Margem: **125 %** da carga contínua.
 
-Estimativa: **módulo Spot-S** ≈ 12–18 W nos LEDs + 1 W eletrônica ≈ **15–20 W** no pior caso.
+A **Cabeça** consome < 0,5 A adicional (ESP + buck).
 
-| Módulos | Potência LED | Fonte 24 V sugerida | Margem |
-|---------|--------------|---------------------|--------|
-| 4 | ~60–80 W | 24 V / **5 A** (120 W) | OK |
-| 8 | ~120–160 W | 24 V / **10 A** (240 W) | OK |
-| 12 | ~180–240 W | 24 V / **15 A** (360 W) | OK |
-| 16 | ~240–320 W | 24 V / **20 A** (480 W) | + injeção |
-
-**Regra:** fonte a **≥ 125 %** da carga contínua máxima.
-
-## Fontes recomendadas (BOM)
-
-| Tipo | Exemplo | Preço ref. | Notas |
-|------|---------|------------|-------|
-| Mean Well CLG-150-24 | 24 V 6,3 A | US$ 25–35 | IP67, confiável |
-| Mean Well LRS-200-24 | 24 V 8,5 A | US$ 20–30 | Bancada / rack |
-| Genérica 24 V 10 A | “24V 10A switching” | US$ 12–18 | Testar ripple; OK protótipo |
-| Notebook + boost | — | — | **Não** recomendado > 50 W |
-
-Entrada: **100–240 V AC** com cabo IEC com terra.
-
-## Distribuição no palco
+## Onde ligar a fonte
 
 ```
-                    ┌──── injeção V+ (cabo grosso AWG14)
-                    │
-[Fonte 24V]───[Distro box]───┬── tronco ── M1─M2─M3─M4
-                             │
-                             └── ramo ── M9─M10─M11
+[Fonte 24V] ──► [Distro] ──┬──► [Cabeça] (alimenta ESP + passa V+ ao cabo OUT)
+                           │
+                           └──► [Injeção opcional em ramos longos]
 ```
 
-### Distro box (barato, DIY)
+A Cabeça **não precisa** estar no caminho de corrente dos LEDs — pode ser derivação curta da distro. O cabo StageMod da Cabeça leva V+ em paralelo ao barramento dos módulos.
 
-Caixa com:
+## Cabo StageMod e corrente
 
-- Entrada: IEC + **fusível 10–20 A** + interruptor.
-- Saídas: 2–4× XT60 ou bornes 24 V.
-- **Barramento GND** comum.
-- Opcional: voltímetro barato.
+| AWG V+/GND | Corrente contínua segura | Uso |
+|------------|--------------------------|-----|
+| 18 | ~3 A | Patch entre módulos |
+| 16 | ~10 A | Tronco da distro à Cabeça / injeção |
 
-Custo: < R$ 50 em peças.
+Queda de tensão alvo: **< 0,5 V** no pior módulo.
 
-## Pass-through no módulo
+## Injeção de energia
 
-Cada módulo:
+Necessária quando:
 
-```
-IN V+ ── polyfuse 1.5A ──┬── buck local (ESP/drivers)
-                         └── OUT V+ (sem queda intencional)
-IN GND ──────────────────┬── GND placa
-                         └── OUT GND
-```
+- Mais de **4 módulos** num ramo com cabo 18 AWG, ou
+- Ramo > **5 m** de comprimento total de V+.
 
-**Não** usar trilha fina de PCB para passar 5 A; no protótipo usar fio AWG18 entre conectores.
+Segundo cabo 16 AWG da distro ao IN de um módulo intermediário (V+ e GND; dados continuam em série).
 
-## Injeção de energia — quando?
+## Proteção
 
-Injetar V+ de novo da distro quando:
+| Local | Proteção |
+|-------|----------|
+| Entrada fonte | Fusível 10–20 A + interruptor |
+| Cada módulo IN | Polyfuse **2 A** |
+| Cabeça IN | Polyfuse 3 A |
+| TVS | SMBJ24A em cada módulo |
 
-- Queda medida **> 1 V** no último módulo do ramo, ou
-- Mais de **4 módulos Spot-S** em série no mesmo cabo fino, ou
-- Ramo > **5 m** de cabo total.
+## Aterramento e shield
 
-Injeção = segundo cabo 24 V do distro ao conector IN do módulo intermediário (só V+ e GND; RS-485 continua em série).
+- Shield do Cabo StageMod: ligar ao GND **na Cabeça** (um ponto).
+- Nos módulos: shield não continuar em cadeia longa (evitar loop).
+- Terra da rede (IEC) na carcaça da fonte.
 
-## Fusíveis e proteção
+## Distro box (DIY)
 
-| Local | Valor | Tipo |
-|-------|-------|------|
-| Entrada fonte | 10–20 A | Fusível de vidro / automotivo |
-| Cada módulo | 1,5–2 A | Polyfuse recuperável |
-| Cada ramo distro | 5 A | Automotivo |
+- IEC + fusível + 2–4 saídas GX16 ou XT60.
+- Voltímetro opcional.
+- ~US$ 10–12 em peças.
 
-## Aterramento
+## Erros a evitar
 
-- **Terra da rede** → carcaça da fonte (se metálica).
-- **GND 24 V** é retorno de corrente; não flutuar.
-- Conectores metálicos: shell ligado ao GND **em um ponto** (fonte), não em todos os módulos (evita loop).
-
-## O que NÃO fazer
-
-| Erro | Risco |
-|------|-------|
-| Alimentar 10 W LED pelo pin 5 V do ESP | Queima ESP e USB do PC |
-| Fonte 12 V 1 A para 8 módulos | Queda, reset, fogo no cabo |
-| Sem fusível por módulo | Falha em um módulo derruba barramento |
-| Polaridade invertida em XT30 | Destrói drivers |
-
-## Custo alimentação (12 módulos, exemplo)
-
-| Item | Qtd | ~US$ |
-|------|-----|------|
-| Fonte 24 V 15 A | 1 | 25 |
-| Distro + fusíveis | 1 | 10 |
-| Cabo silicone 2× AWG18 20 m | 1 | 15 |
-| Conectores XT30 par | 15 | 10 |
-| **Total** | | **~60** |
-
-(LEDs e MCUs são custo separado na BOM principal.)
-
-## Alternativa ultra-barata (ensaio em casa)
-
-- Fonte **12 V 5 A** de câmera/CFTV.
-- Máximo **2–3 módulos** Spot-S com buck local.
-- Migrar para 24 V antes de montar rig completo.
+| Erro | Consequência |
+|------|--------------|
+| Fonte 12 V 5 A para 8 módulos 10 W | Queda, reset, cabo quente |
+| Sem fusível por módulo | Um curto derruba o rig |
+| GX16 subdimensionado na corrente | Conector derrete @ 2 A contínuo — usar pinos V+/GND AWG16 no tronco |

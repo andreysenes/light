@@ -1,77 +1,80 @@
 # Roadmap
 
-## Fase 0 — Decisões (atual) ✅
+## Fase 0 — Decisões ✅
 
-- [x] Arquitetura modular RS-485 + 24 V
-- [x] LED: 3× mono 3 W (não RGB 10 W integrado)
-- [x] Controle: MIDI USB via ESP32-S3 master
-- [x] BOM e topologia documentados
+- [x] **Cabeça única** ESP32-S3
+- [x] Cabo **StageMod** (energia + dados)
+- [x] Módulo **2× 10 W** — padrão WW + vermelho
+- [x] Hardware universal + **config futura** de cores
+- [x] Decoder **ATtiny** no módulo (não ESP)
 
-## Fase 1 — Protótipo único (próximo)
+## Fase 1 — Protótipo (atual)
 
-| # | Tarefa | Critério de aceite |
-|---|--------|-------------------|
-| 1.1 | Breadboard 1× R, G, B com MOSFET + PT4115 | 350 mA/canal estável |
-| 1.2 | Firmware PWM manual (serial) | Fade suave sem flicker |
-| 1.3 | USB MIDI → 3 canais | DAW controla R,G,B |
-| 1.4 | Teste térmico 1 h @ 80 % PWM | Heatsink < 70 °C |
+| # | Tarefa | Aceite |
+|---|--------|--------|
+| 1.1 | Montar **Cabeça**: ESP32 + MAX485 + MIDI USB | Envia frame teste serial |
+| 1.2 | Montar **1 módulo Dual** WW+R | 900 mA/canal medido |
+| 1.3 | Fabricar **1 cabo StageMod** 0,5 m GX16-5 | Continuidade + pinagem |
+| 1.4 | Protocolo SET_LEVELS addr=1 | Fade suave A e B |
+| 1.5 | Teste térmico 30 min 100 % | Heatsink < 65 °C |
+| 1.6 | MIDI do DAW → ambos canais | Reaper ou Ableton |
 
-**Entregável:** pasta `firmware/prototype-single/` (futuro).
-
-## Fase 2 — Dois módulos + barramento
-
-| # | Tarefa |
-|---|--------|
-| 2.1 | Adicionar MAX485 em dois ESP32 |
-| 2.2 | Implementar protocolo SET_RGBW |
-| 2.3 | Cabo 4 pinos 2 m entre módulos |
-| 2.4 | Endereçamento DIP |
-
-## Fase 3 — PCB e mecânica
+## Fase 2 — Config e segundo módulo
 
 | # | Tarefa |
 |---|--------|
-| 3.1 | Esquemático KiCad módulo satélite |
-| 3.2 | PCB 80×80 mm, revisão térmica |
-| 3.3 | Carcaça impressa 3D ou perfil alumínio |
-| 3.4 | Difusor |
+| 2.1 | `modules.json` na Cabeça |
+| 2.2 | Segundo módulo (ex. WW+WW) |
+| 2.3 | Cabos patch 0,5 m × 3 |
+| 2.4 | Modo Performance (notas por cor semântica) |
+| 2.5 | Adaptador T DIY |
 
-## Fase 4 — Rig 8–12 módulos
+## Fase 3 — PCB
+
+| # | Tarefa |
+|---|--------|
+| 3.1 | KiCad: PCB módulo Dual |
+| 3.2 | KiCad: PCB Cabeça (ou usar DevKit) |
+| 3.3 | KiCad: adaptador T-StageMod |
+| 3.4 | Carcaça alumínio módulo |
+
+## Fase 4 — Rig 8+ módulos
 
 | # | Tarefa |
 |---|--------|
 | 4.1 | Distro 24 V + fusíveis |
-| 4.2 | Cabos padronizados 0,5 / 1 / 2 m |
-| 4.3 | Presets MIDI no master |
-| 4.4 | Documentar layout de palco exemplo |
+| 4.2 | Estoque stars amber/green |
+| 4.3 | Presets Program Change |
+| 4.4 | Documentar layout palco exemplo |
 
 ## Fase 5 — Opcional
 
-- Canal WW em módulos selecionados
-- MIDI DIN IN
-- Portal web de configuração
-- Saída DMX512 do master (para integrar com mercado pro)
-- Art-Net para controle sem cabo USB
+- EEPROM tipo LED no módulo (auto-discovery)
+- MIDI DIN na Cabeça
+- DMX OUT da Cabeça
+- Portal web config Wi‑Fi (só Cabeça)
 
-## Perguntas em aberto (decidir na Fase 1)
-
-1. **Brilho alvo:** 3 W basta ou já projetar PCB para 10 W?
-2. **Form factor:** spot quadrado vs barra linear?
-3. **Quantos módulos** na primeira compra de componentes?
-4. **DAW principal** para testes de mapeamento?
-
-## Estrutura de repositório prevista
+## Estrutura de repositório
 
 ```
 /
 ├── README.md
-├── docs/           # especificação (atual)
+├── docs/
+│   ├── 09-CABO-STAGEMOD.md
+│   ├── 10-MODULO-DUAL.md
+│   └── 11-CONFIGURACAO-MODULOS.md
 ├── firmware/
-│   ├── master/     # ESP32-S3 MIDI + RS-485
-│   └── satellite/  # ESP32-C3 PWM
+│   ├── head/          # ESP32-S3 MIDI + RS-485
+│   └── module/        # ATtiny decoder
 ├── hardware/
-│   ├── kicad/      # esquemático + PCB
-│   └── mechanical/ # STL, perfis
-└── tools/
-    └── midi-test/  # scripts Python para teste sem DAW
+│   ├── kicad/
+│   └── cable/         # pinagem GX16-5
+└── config/
+    └── modules.json.example
 ```
+
+## Perguntas em aberto
+
+1. Quantos módulos na **primeira compra** (4, 8, 12)?
+2. **DAW** principal para mapear presets?
+3. Cabeça em **caixa de mesa** ou montada no truss junto ao M1?

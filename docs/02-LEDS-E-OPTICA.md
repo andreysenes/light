@@ -1,93 +1,90 @@
-# LEDs e óptica
+# LEDs e óptica — 2× 10 W por módulo
 
-## Sua ideia: 1 LED por cor
+## Padrão do módulo Dual
 
-Está **correta** e é a abordagem mais usada em DIY e em fixtures profissionais de baixo custo.
+| Soquete | LED padrão | Potência | Corrente driver |
+|---------|------------|----------|-----------------|
+| **A** | Warm white **3000 K** | 10 W | ~900 mA CC |
+| **B** | Vermelho **620–630 nm** | 10 W | ~900 mA CC |
 
-### Comparação prática
+Um LED mono por canal — sem RGB integrado.
 
-| Item | RGB 10 W integrado | 3× mono 3 W | 3× mono 10 W |
-|------|------------------|-------------|--------------|
-| Preço unitário (AliExpress) | US$ 3–8 | US$ 0,15–0,50/LED | US$ 0,80–2/LED |
-| Corrente típica/canal | ~300–350 mA | ~350 mA | ~900–1050 mA |
-| Dissipação | Alta em 1 chip | Espalhada | Requer heatsink sério |
-| Sourcing | Difícil 10 W com fios separados | Fácil | Fácil |
-| Controle | 3 MOSFETs de qualquer forma | 3 MOSFETs | 3 MOSFETs + driver CC forte |
+## Por que warm white + vermelho
 
-**Conclusão:** protótipo e primeiros 12 módulos com **3× 3 W mono**. Subir para 10 W só onde faltar luz.
+| Uso em palco | Cor |
+|--------------|-----|
+| Wash / iluminação geral | Warm white |
+| Clima, drama, backlight | Vermelho |
+| “Branco” adicional | Segundo WW em módulo configurado WW+WW |
 
-## Part numbers / buscas
+Combinação barata, LEDs fáceis de encontrar, bom para ensaio e shows pequenos.
 
-Pesquisar em AliExpress, LCSC ou Mouser:
+## LEDs 10 W — o que comprar
 
-| Cor | Busca típica | Vf @ 350 mA | Observação |
-|-----|--------------|-------------|------------|
-| Vermelho | `3W red LED star 620nm` | 2,0–2,4 V | ~400 mA máx. |
-| Verde | `3W green LED star 520nm` | 3,0–3,4 V | Mais eficiente em lm |
-| Azul | `3W blue LED star 460nm` | 3,0–3,4 V | Poucos lm; necessário para mistura |
-| Branco quente | `3W warm white 3000K star` | 3,0–3,6 V | Canal WW opcional |
+Stars 10 W costumam ter **3 chips em série** no mesmo PCB:
 
-### Alternativa: star RGB 3 W com catodos separados
+| Cor | Busca | Vf total @ 900 mA | lm aprox. |
+|-----|-------|-------------------|-----------|
+| Warm white | `10W warm white LED star 3000K` | 9–12 V | 800–900 |
+| Red | `10W red LED star 620nm` | 6–9 V | 300–400 |
+| Amber | `10W amber LED star 590nm` | 9–12 V | 400–500 |
+| Green | `10W green LED star` | 9–12 V | 600–700 |
 
-Produto tipo Adafruit #2530 / “SP3WRGB star PCB”:
+**Nunca** ligar star 10 W direto em 24 V sem driver CC.
 
-- **1 chip**, mas **3 fios de catodo** + ânodo comum.
-- Elétricamente idêntico a 3 LEDs mono no mesmo heatsink.
-- Bom para protótipo rápido; menos flexível para posicionar óptica.
+## Catálogo para módulos configuráveis
 
-## Mistura de cores e branco
+Mesmo soquete mecânico; estoque sugerido além do padrão:
 
-### RGB only
+| Tipo | Quando usar |
+|------|-------------|
+| `warm_white` | Wash, pele, ambiente |
+| `cool_white` | Luz fria / industrial |
+| `red` | Drama, alarme |
+| `amber` | Sunset, fogo |
+| `green` | Ambiente, terror, natureza |
+| `blue` | Frio, night club (fase 2) |
 
-```
-Branco "software" ≈ R: 90%, G: 70%, B: 55%  (ajustar a olho)
-Branco frio      ≈ R: 40%, G: 60%, B: 100%
-```
+Config na Cabeça: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 
-Limitações: bandas espectrais estreitas, sombras coloridas, CRI baixo.
+## Driver e elétrica
 
-### RGB + WW (recomendado para “branco de verdade”)
+| Canal | Vf @ 900 mA | Potência LED |
+|-------|-------------|--------------|
+| Red | ~2,4–2,8 V × 3 chips | ~7–8 W útil |
+| WW | ~3,2 V × 3 chips | ~9–10 W |
 
-- Acrescentar 1 LED WW 3 W e 4º MOSFET.
-- Branco = acender WW + pequena correção RGB.
-- Firmware: modo `WHITE` usa WW; modo `COLOR` usa RGB.
+Módulo buck CC ajustado para **900 mA** (ou 1050 mA se star suportar).
 
-## Óptica e montagem mecânica
+PWM no pino EN/DIM do driver — ver [03-ELETRONICA.md](03-ELETRONICA.md).
 
-| Elemento | Função | Sugestão |
-|----------|--------|----------|
-| Star PCB | Dissipação | Já vem no LED 3 W |
-| Heatsink | 3 W contínuo precisa | Perfil alumínio 40×40 mm ou star com aleta |
-| Difusor | Unificar 3 pontos de cor | Lente frosted 60–90° ou papel difusor resistente ao calor |
-| Refletor | Direcionalidade | Refletor MR16 DIY ou cone alumínio |
+## Óptica e mecânica
 
-**Regra térmica:** 3 W contínuo em LED star sem ventilação → temperatura de junção alta; em palco (horas ligado) usar pelo menos heatsink pequeno com ventilação passiva.
+| Elemento | Especificação |
+|----------|---------------|
+| Star PCB | 20 mm padrão, furo M3 |
+| Heatsink | Perfil Al ≥ 80 mm ou carcaça inteira em Al |
+| Difusor | Lente 60–90° frosted ou PMMA opal (cuidado com calor) |
+| Beam | 120° típico em star — aceitável para wash |
 
-## Eficiência: não ligar LED direto em 24 V
+Dois pontos de luz (A e B) próximos (~15–25 mm) + difusor comum unificam a mancha.
 
-LED 3 W não é “resistor + 12 V” como LED 5 mm.
+## Branco sem segundo canal RGB
 
-Opções de driver (detalhes em [03-ELETRONICA.md](03-ELETRONICA.md)):
+- **Warm white** já entrega branco de qualidade (CRI melhor que RGB misturado).
+- Módulo **WW + WW** = dobro de fluxo branco.
+- Não é necessário RGB para o caso de uso atual.
 
-1. **Buck CC** (PT4115, XL6001 module) — eficiente, recomendado.
-2. **Linear MOSFET + resistor** — simples, gera calor, OK para teste.
-3. **Fonte ajustável por canal** — caro, não escalar.
+## Potência e calor
 
-## Quantos módulos para um palco pequeno?
+| Cenário | Dissipação módulo |
+|---------|-------------------|
+| Só WW 100 % | ~12 W no heatsink |
+| WW + Red 100 % | ~22–25 W |
+| Red only | ~10 W |
 
-| Cenário | Módulos Spot-S (3×3 W) | Notas |
-|---------|------------------------|-------|
-| Ensaio em quarto | 2–4 | Parede wash |
-| Palco 3×4 m | 8–12 | 4 frente, 4 laterais, 4 trás |
-| DJ / festa sala média | 12–16 | Complementar com moving head se necessário |
+Regra: se não aguenta toque prolongado, aumentar heatsink ou reduzir duty cycle no show.
 
-Luminância total 12× (3×3 W) ≈ 36 chips × ~40 lm ≈ ordem de grandeza de vários PAR64 LED baratos — suficiente para ambiente pequeno/médio.
+## Upgrade por módulo
 
-## Upgrade path
-
-```
-Fase 1: 3× 3 W mono + difusor
-Fase 2: + canal WW
-Fase 3: trocar LEDs por 10 W (mesmo PCB driver com componentes recalculados)
-Fase 4: tira LED 12 V 5050 RGB em perfil alumínio como módulo “Bar”
-```
+Trocar star 10 W por **20 W** no futuro exige novo driver (1,5 A+) e heatsink maior — manter 10 W na v1.

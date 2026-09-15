@@ -1,151 +1,142 @@
-# Arquitetura modular
+# Arquitetura modular — cabeça única
 
-## Camadas do sistema
+## Princípio
+
+| Peça | Inteligência | Função |
+|------|--------------|--------|
+| **Cabeça** | ESP32-S3 | MIDI, presets, config de módulos, mestre RS-485 |
+| **Módulo Dual** | ATtiny (decoder) | 2× PWM → 2× driver 10 W → 2× LED |
+| **Cabo StageMod** | — | 24 V + GND + RS-485 no mesmo cabo |
+
+Não há ESP32 nos módulos. Isso reduz custo, calor e complexidade em cada ponto de luz.
+
+## Diagrama do sistema
 
 ```mermaid
-flowchart TB
-    subgraph daw [DAW / Controlador]
-        MIDI[MIDI USB / DIN]
+flowchart LR
+    subgraph daw [DAW]
+        MIDI[USB MIDI]
     end
 
-    subgraph master [Módulo Master]
-        ESP_S3[ESP32-S3]
-        USB[USB MIDI]
-        RS_M[Transceiver RS-485]
-        ESP_S3 --> USB
-        ESP_S3 --> RS_M
+    subgraph head [Cabeça — único ESP32]
+        ESP[ESP32-S3]
+        RS_M[MAX485]
+        ESP --> RS_M
     end
 
-    subgraph bus [Barramento 4 fios]
+    subgraph cable [Cabo StageMod]
         V24[V+ 24V]
         GND[GND]
-        AB[A / B RS-485]
+        DP[D+ / D−]
     end
 
-    subgraph mod [Módulo Satélite]
-        ESP_C3[ESP32-C3]
-        RS_S[RS-485]
-        DRV[Drivers R G B W]
-        LED[LEDs]
-        ESP_C3 --> RS_S
-        ESP_C3 --> DRV --> LED
+    subgraph mod [Módulo Dual — repetível]
+        RS_S[MAX485]
+        MCU[ATtiny]
+        DRV[2× driver 10W]
+        LED[LED A + LED B]
+        RS_S --> MCU --> DRV --> LED
     end
 
-    MIDI --> USB
-    RS_M --> bus
-    bus --> mod
-    mod --> bus
+    MIDI --> ESP
+    RS_M --> cable
+    cable --> mod
+    mod --> cable
 ```
 
-## Papéis
+## Cabeça (Head Unit)
 
-### Módulo Master (único)
+Caixa separada na mesa ou no rack — **não** compartilha dissipação com LEDs.
 
-- **MCU:** ESP32-S3 (USB nativo, bom para MIDI USB).
-- **Funções:**
-  - Receber MIDI (notas, CC, Program Change).
-  - Manter tabela de mapeamento (canal MIDI → módulo → cor).
-  - Enviar frames no RS-485 (broadcast ou endereçado).
-  - Opcional: portal web para configuração Wi‑Fi / Art-Net futuro.
+| Bloco | Componente |
+|-------|------------|
+| MCU | ESP32-S3 DevKit ou módulo USB |
+| Barramento | MAX485 (half-duplex) |
+| Alimentação local | Buck 24→5 V (fonte da Cabeça pode ser a mesma 24 V do rig) |
+| Interface | USB MIDI para DAW |
+| Armazenamento | `modules.json` em SPIFFS/LittleFS |
 
-### Módulo Satélite (repetível)
+Saída: **1× conector StageMod OUT** → primeiro módulo (ou distro + tronco).
 
-- **MCU:** ESP32-C3 (barato, suficiente para PWM + RS-485).
-- **Funções:**
-  - Endereço fixo (DIP switch, solder jumper ou config via master).
-  - PWM 12–16 kHz em 3–4 GPIOs → MOSFETs.
-  - Repetir sinal RS-485 (hardware já faz pass-through elétrico no barramento).
-  - Pass-through de **24 V** e **GND** (não regenerar energia).
+### Funções firmware Cabeça
 
-### Por que RS-485 e não I2C / Wi‑Fi only?
+1. Receber MIDI (notas, CC, Program Change).
+2. Resolver perfil de cada módulo (`ch_a`, `ch_b` por addr).
+3. Enviar frames `SET_LEVELS` no RS-485.
+4. Watchdog: blackout se USB desconectado (configurável).
+5. (Futuro) Portal web para editar `modules.json`.
 
-| Barramento | Alcance | Cabo comum | Adequação palco |
-|------------|---------|------------|-----------------|
-| I2C | < 1 m | 4 fios | Ruim (ruído, comprimento) |
-| Wi‑Fi mesh | ~30 m RF | Wi‑Fi | OK backup; latência/jitter em show |
-| **RS-485** | **até 100 m+** | **par trançado + alimentação** | **Ideal para cabo de módulo** |
-| DMX512 | 500 m | XLR 3 pinos | Padrão profissional (fase 2) |
+## Módulo Dual (satélite passivo)
 
-## Conectores por módulo
+Ver detalhes em [10-MODULO-DUAL.md](10-MODULO-DUAL.md).
 
-Cada módulo expõe **dois conectores idênticos** (IN e OUT) com pinagem fixa:
+Resumo:
 
-| Pino | Sinal | Notas |
-|------|-------|-------|
-| 1 | V+ 24 V | Fusível local 1–2 A |
-| 2 | GND | Referência comum |
-| 3 | RS-485 A | Par trançado com B |
-| 4 | RS-485 B | |
+- **2 canais × 10 W** — padrão warm white + vermelho.
+- PCB **universal** — outras cores = trocar star LED + config na Cabeça.
+- Endereço: **DIP switch** (3–4 bits).
+- Conectores: **IN** + **OUT** StageMod (pass-through V+, GND, D+, D−).
 
-**Opcional pin 5:** shield / chassi (ligar GND em um ponto só na fonte).
+## Cabo StageMod
 
-### Conector mecânico sugerido
+Especificação completa: [09-CABO-STAGEMOD.md](09-CABO-STAGEMOD.md).
 
-| Uso | Opção barata | Opção robusta |
-|-----|--------------|---------------|
-| Protótipo | XT30 (par) + RJ45 (dados only) | — |
-| Montagem | **GX16-4** ou **M16 4 pinos** | Amphenol LTW |
+| Via | Função |
+|-----|--------|
+| 1 | V+ 24 V |
+| 2 | GND |
+| 3 | D+ (RS-485 A) |
+| 4 | D− (RS-485 B) |
+| 5 | Shield (malha) |
 
-Manter **mesma pinagem** em todos os módulos evita cabos “cross”.
+Conector v1: **GX16-5** (aviação M16, 5 pinos).
 
-## Endereçamento
+## Por que RS-485 no cabo de palco
 
-- **8 módulos:** 3 bits DIP → endereço 1–7 (0 = broadcast desligado).
-- **12+ módulos:** endereço em EEPROM via master na primeira boot.
-- Protocolo simples proposto (ver [05-MIDI-DAW.md](05-MIDI-DAW.md)):
+| Barramento | Cabeça única + módulos simples |
+|------------|-------------------------------|
+| I2C | Alcance curto, ruído |
+| DMX512 | Viável (fase futura como modo compatível) |
+| **RS-485** | **Já no Cabo StageMod**, barato, 100 m+ |
+| Wi‑Fi por módulo | Descartado (sem ESP no módulo) |
 
-```
-Frame: [SYNC][ADDR][CMD][R][G][B][W][CRC]
-SYNC = 0xAA
-CMD  = 0x01 SET_RGBW, 0x02 FADE, 0x10 PING
-```
+## Endereçamento e configuração
 
-## Variante: master separado
+| Camada | Onde | O quê |
+|--------|------|-------|
+| Física | DIP no módulo | Addr 1–15 |
+| Lógica | Cabeça `modules.json` | Tipo cor ch A, ch B |
+| Física LED | Soquete star | LED 10 W correspondente |
 
-Se preferir que o primeiro módulo de luz seja igual aos outros:
+Exemplos de perfis: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 
-```
-[Fonte]──[Caixa Master só ESP32+RS485]──[Mód1]──[Mód2]──...
-              ▲
-           USB MIDI
-```
-
-Vantagem: master não compete por dissipação com LEDs.
-
-## Variante mínima (1 módulo, sem barramento)
-
-Para validar conceito:
-
-- 1× ESP32-S3 + 3× MOSFET + 3× LED 3 W.
-- MIDI USB direto, sem RS-485.
-- Evolui para satélite depois copiando firmware e adicionando transceiver.
-
-## Split em T (sua topologia)
-
-O barramento **não exige** que todos os módulos estejam numa única linha elétrica longa:
+## Split em T
 
 ```
-                    ┌──► Mód 5
-                    ├──► Mód 6
-Tronco: M1─M2─M3─M4┤
-                    ├──► Mód 7
-                    └──► Mód 8
-
-Ramo: M4─M9─M10─M11─M12
+[Cabeça]═══[M1]═══[M2]═══[M3]═══[M4]═══ ...
+                              ├════ [M5]
+                              ├════ [M6]
+                              └════ [M9]═══[M10]═══ ...
 ```
 
-**Regras:**
+- Adaptador **T-StageMod** ou distro com várias saídas GX16.
+- RS-485 em derivação: OK até ~12 módulos em palco pequeno.
+- Ramo com muitos módulos 10 W → **injeção V+** da fonte (ver [04-ALIMENTACAO.md](04-ALIMENTACAO.md)).
 
-1. **RS-485:** cada split é uma derivação do par A/B; evitar “estrela” com mais de 2 derivações sem repeater — para palco pequeno (< 8 módulos) costuma funcionar.
-2. **24 V:** ramos longos ou muitos módulos num ramo → **injetar V+** de novo a partir da fonte (ver [04-ALIMENTACAO.md](04-ALIMENTACAO.md)).
-3. **GND:** sempre retornar à fonte; não criar loops de terra com shield em vários pontos.
+## Dimensionamento rápido
 
-## Tamanho físico do módulo (alvo)
+| Módulos | Potência LED máx. | Corrente 24 V (barramento)* | Fonte |
+|---------|-------------------|----------------------------|-------|
+| 4 | 80 W | ~4 A | 24 V / 6 A |
+| 8 | 160 W | ~8 A | 24 V / 10 A |
+| 12 | 240 W | ~12 A | 24 V / 15 A |
 
-| Versão | LEDs | Dimensão alvo | Uso |
-|--------|------|---------------|-----|
-| Spot-S | 3× 3 W | 80×80×40 mm | Cabeça de luz, side fill |
-| Spot-M | 3× 10 W | 120×120×50 mm | Front wash pequeno |
-| Bar | tira 12 V RGB + MOSFET | perfil alumínio 0,5 m | Wash linear |
+\* Com drivers buck eficientes; cada módulo ~1–1,2 A @ 24 V em full blast.
 
-Começar pelo **Spot-S**.
+## Tamanho físico alvo
+
+| Peça | Dimensão alvo |
+|------|---------------|
+| Cabeça | Caixa 120×80×40 mm |
+| Módulo Dual | 100×100×45 mm (heatsink integrado) |
+| Cabo patch | 0,3–0,8 m entre módulos |

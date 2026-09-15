@@ -1,0 +1,9 @@
+{
+  "midi_channel": 1,
+  "modules": [
+    { "addr": 1, "ch_a": "warm_white", "ch_b": "red" },
+    { "addr": 2, "ch_a": "warm_white", "ch_b": "warm_white" },
+    { "addr": 3, "ch_a": "red", "ch_b": "amber" },
+    { "addr": 4, "ch_a": "green", "ch_b": "red" }
+  ]
+}
