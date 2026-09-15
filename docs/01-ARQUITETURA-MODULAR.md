@@ -6,7 +6,8 @@
 |------|------|--------|
 | **Cabeça** | Pro Micro | MIDI USB → pixels WS2812B |
 | **Módulo 1–4** | Nenhum | 1 LED RGB + pass-through cabos |
-| **Fonte 5V** | — | Alimentação |
+| **Tubo flex** | Nenhum | Fita WS2812B em tubo silicone (muitos pixels) |
+| **Fonte 5V** | — | Alimentação (≥3A com tubo) |
 
 Não há ESP32, RS-485 nem decoder nos módulos na v0.
 
@@ -15,10 +16,9 @@ Não há ESP32, RS-485 nem decoder nos módulos na v0.
 ```mermaid
 flowchart LR
     DAW[DAW] -->|USB MIDI| PM[Pro Micro]
-    PM -->|GPIO D6| M1[Módulo 1 WS2812]
-    M1 -->|DOUT| M2[Módulo 2]
-    M2 -->|DOUT| M3[Módulo 3]
-    M3 -->|DOUT| M4[Módulo 4]
+    PM -->|D6| M1[Módulo 1]
+    M1 --> M2 --> M3 --> M4
+    PM -->|D5| TUB[Tubo flex WS2812B]
 ```
 
 - Protocolo WS2812B: **endereço na posição** da cadeia (0, 1, 2, 3)
@@ -30,7 +30,8 @@ flowchart LR
 |------|----------------|
 | Placa | SparkFun Pro Micro 5V / Arduino Leonardo |
 | USB | MIDI nativo (ATmega32U4) |
-| Data out | **Pin 6** (configurável em `LED_PIN`) |
+| Data módulos | **Pin 6** (`MODULE_PIN`) |
+| Data tubo | **Pin 5** (`TUBE_PIN`) |
 | Firmware | `firmware/promicro-4mod/promicro-4mod.ino` |
 
 ### Responsabilidades

@@ -9,6 +9,7 @@ Documentação: [docs/](../../docs/) · MIDI: [05-MIDI-DAW.md](../../docs/05-MID
 - **MIDI USB** nativo do Pro Micro (ATmega32U4)
 - **4 módulos** = 4 pixels numa cadeia WS2812B (data em série)
 - **RGB completo** em cada módulo — qualquer cor via CC
+- **Tubo flexível** (pin D5) — gradiente, chase, rainbow ([14-TUBO-FLEX.md](../../docs/14-TUBO-FLEX.md))
 - Notas **C3–F3** acendem o módulo com a cor RGB já definida; **velocity** = brilho
 - **PC 0–6** = presets de cor (blackout, warm, R, G, B, magenta, branco)
 - **CC 7** = master dimmer
@@ -22,7 +23,8 @@ Documentação: [docs/](../../docs/) · MIDI: [05-MIDI-DAW.md](../../docs/05-MID
              ├── VCC Mód 1 ── VCC Mód 2 ── VCC Mód 3 ── VCC Mód 4
              └── GND comum (Pro Micro + todos os módulos)
 
-Pro Micro D6 ──► [470Ω] ──► DIN Mód1 ── DOUT ──► DIN Mód2 ── ... ──► Mód4
+Pro Micro D6 ──► [470Ω] ──► DIN Mód1 ── ... ──► Mód4
+Pro Micro D5 ──► [470Ω] ──► DIN fita WS2812B no tubo flexível
 ```
 
 ### Por módulo (chicote simples)

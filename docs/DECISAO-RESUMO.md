@@ -18,7 +18,8 @@ DAW ──USB──► [Pro Micro] ──D6──► [Mod1]──►[Mod2]──
 | Cor | **RGB completo** (CC 1–14) |
 | Alimentação | **5V** / 1A |
 | Dados | **1 fio** WS2812 (pin D6) |
-| Cabos | 5V + GND + DATA (3 fios) |
+| Spot | D6 — 5V + GND + DATA (3 fios) |
+| Tubo flex | D5 — fita WS2812B, efeito gradiente/chase |
 
 ## MIDI rápido
 

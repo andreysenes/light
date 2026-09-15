@@ -14,9 +14,14 @@
 |-------|----------|
 | 4× WS2812B branco 100% | ~**240 mA** |
 | Pro Micro | ~**50 mA** |
-| **Total** | **~300 mA** típico · **350 mA** pico |
+| 4 módulos apenas | ~300 mA |
+| + tubo 30 LED | ~**2 A** |
+| + tubo 60 LED | ~**3,5 A** |
 
-Fonte **1A** tem margem confortável.
+| Config | Fonte 5V |
+|--------|------------|
+| Só 4 módulos | **1 A** |
+| Módulos + tubo | **3 A** recomendado |
 
 ## Como ligar
 

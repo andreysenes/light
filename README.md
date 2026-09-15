@@ -13,8 +13,9 @@ DAW ──MIDI USB──► [Pro Micro] ──D6──► Mod1 ──► Mod2 �
 | Peça | Função |
 |------|--------|
 | **Pro Micro** | Cabeça única — MIDI → cores RGB |
-| **Módulo** | 1× WS2812B + pass-through 5V/GND/DATA |
-| **Fonte 5V** | Alimenta Pro Micro e os 4 LEDs |
+| **Módulo spot** | 1× WS2812B + pass-through 5V/GND/DATA |
+| **Tubo flex** | Fita WS2812B em tubo silicone — gradiente / chase (pin D5) |
+| **Fonte 5V** | Pro Micro + spots + tubo (≥ **3A** com tubo) |
 
 Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 
@@ -38,6 +39,7 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | [MIDI / DAW](docs/05-MIDI-DAW.md) | CC RGB, notas, presets |
 | [BOM](docs/06-BOM.md) | Lista de materiais v0 |
 | [Cablagem](docs/07-CABLAGEM.md) | Fios por módulo |
+| [**Tubo flex**](docs/14-TUBO-FLEX.md) | Gradiente, chase, MIDI CC 15–19 |
 | [Roadmap](docs/08-ROADMAP.md) | v0 atual → v1 futuro |
 | [Resumo rápido](docs/DECISAO-RESUMO.md) | Decisões em 2 minutos |
 
@@ -49,7 +51,8 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | Módulos | **4×** com **1 WS2812B** cada |
 | Cor | **RGB completo** por módulo (CC 1–14) |
 | Alimentação | **5 V** / ≥ 1 A |
-| Dados | **1 fio** WS2812B (cadeia série, pin D6) |
+| Dados spot | **D6** — cadeia 4 módulos |
+| Tubo flex | **D5** — fita WS2812B (efeitos gradiente) |
 | Cabos | 5V + GND + DATA (3 fios entre módulos) |
 
 ## MIDI rápido

@@ -21,7 +21,26 @@ Cada módulo: **3 Control Changes** (R, G, B). Valor DAW 0–127 → LED 0–255
 
 | CC | Função |
 |----|--------|
-| **7** | Master dimmer (todos os módulos) |
+| **7** | Master dimmer (módulos + tubo) |
+
+## Tubo flexível — CC 15–19
+
+| CC | Função |
+|----|--------|
+| **15** | Efeito: 0=off · chase · **gradient wave** · rainbow · solid |
+| **16** | Matiz (cor base) |
+| **17** | Velocidade da animação |
+| **18** | Densidade / largura das manchas de luz |
+| **19** | Brilho (modo sólido) |
+
+| PC | Preset tubo |
+|----|-------------|
+| **7** | Gradient wave (efeito `--- -- -` em movimento) |
+| **8** | Chase / cometa |
+| **9** | Rainbow |
+| **10** | Tubo off |
+
+Detalhes: [14-TUBO-FLEX.md](14-TUBO-FLEX.md).
 
 ## Notas (gatilho + brilho)
 

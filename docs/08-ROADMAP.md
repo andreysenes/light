@@ -6,6 +6,7 @@
 |---|--------|--------|
 | 0.1 | Documentação v0 | ✅ |
 | 0.2 | Firmware `promicro-4mod` + RGB CC 1–14 | ✅ |
+| 0.2b | Tubo flex D5 + gradient wave / chase | ✅ |
 | 0.3 | Montar 4 módulos WS2812B + fonte 5V | 🔲 |
 | 0.4 | Upload + boot test (R,G,B,W) | 🔲 |
 | 0.5 | MIDI no DAW — CC cores + notas C3–F3 | 🔲 |
