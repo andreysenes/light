@@ -8,14 +8,13 @@ Links de busca (cole no AliExpress se o link não abrir):
 |---|------|---------------------|
 | 1 | Pro Micro | `Pro Micro ATmega32U4 5V 16MHz` |
 | 2 | WS2812B módulo (×4) | `WS2812B breakout board 5V DIN DOUT` |
-| 3 | Tubo neon flex | `WS2812B neon tube 5V 1m silicone` |
-| 4 | Fita WS2812B (opcional) | `WS2812B LED strip 5V 60LED/m 1m` |
-| 5 | Fonte 5V 3A | `5V 3A power supply DC adapter` |
-| 6 | Resistor 470Ω | `470 ohm resistor 1/4W 100pcs` |
-| 7 | Capacitor 1000µF | `1000uf 16V electrolytic capacitor` |
-| 8 | Fio silicone | `silicone wire 22AWG red black green` |
-| 9 | JST 3 pin (opcional) | `JST SM 3 pin connector cable` |
-| 10 | Borne / terminal (opcional) | `DC barrel 5.5x2.1 female panel mount` |
+| 3 | Tubo neon flex | `WS2812B neon tube 5V silicone` (já é fita addressable dentro do silicone) |
+| 4 | Fonte 5V 10A | `5V 10A power supply SMPS switching` |
+| 5 | Resistor 470Ω | `470 ohm resistor 1/4W 100pcs` |
+| 6 | Capacitor 1000µF | `1000uf 16V electrolytic capacitor` |
+| 7 | Fio silicone | `silicone wire 22AWG red black green` |
+| 8 | JST 3 pin (opcional) | `JST SM 3 pin connector cable` |
+| 9 | Borne / terminal (opcional) | `DC barrel 5.5x2.1 female panel mount` |
 
 ---
 
@@ -91,7 +90,7 @@ WS2812B LED strip 5V 60LED/m IP30 1 meter
 
 - Cortar **4 LEDs** com tesoura nas linhas de corte
 - Soldar fios em 5V / GND / DIN / DOUT de cada pedaço
-- Mais barato se já vai comprar fita para o tubo
+- Alternativa barata se não quiser breakout com PCB
 
 ### Evitar
 
@@ -110,43 +109,23 @@ WS2812B LED strip 5V 60LED/m IP30 1 meter
 
 ## 3. Tubo flexível neon (gradiente / chase)
 
-### O que buscar — tubo pronto (mais fácil)
+O tubo neon **já inclui** a fita addressable dentro do silicone — **não precisa comprar fita separada**.
+
+### O que buscar — tubo pronto
 
 ```
-WS2812B neon LED tube 5V 1m silicone IP67
+WS2812B neon LED tube 5V silicone IP67
 ```
 
-ou
-
-```
-BTF-LIGHTING neon tube WS2812B 5V
-```
+Modelo do projeto: **D15-Woven Magic** (WS2811, 50 LED/m) — [detalhes](14-TUBO-FLEX.md#tubo-comprado-4-m--manual-d15-woven-magic).
 
 ### Filtros críticos
 
 | Campo | Valor |
 |-------|-------|
 | Voltagem | **DC 5V** (não 12V) |
-| Chip / IC | **WS2812B** (ou WS2812) |
-| Comprimento | **0,5 m** ou **1 m** para protótipo |
-| LEDs/m | **60** ou **30** (anotar para `NUM_TUBE_LEDS`) |
-
-### Calcular `NUM_TUBE_LEDS`
-
-| Comprimento | 60 LED/m | 30 LED/m |
-|-------------|----------|----------|
-| 0,5 m | **30** | 15 |
-| 1 m | **60** | 30 |
-
-### Loja recomendada para tubo/fita
-
-**BTF-LIGHTING Official Store** — muitos anúncios de neon flex 5V WS2812B; leia comentários com foto.
-
-### Opção DIY (mais barato)
-
-1. Comprar fita `WS2812B 5V 60LED/m 1m` (~US$ 3)
-2. Comprar `silicone neon tube 10mm LED strip diffuser` (~US$ 2–5)
-3. Deslizar a fita dentro do tubo
+| Chip / IC | **WS2811** ou WS2812B (addressable) |
+| LEDs/m | Anotar para `NUM_TUBE_LEDS` (ex.: **50** = 200 LEDs em 4 m) |
 
 ### Evitar
 
@@ -158,8 +137,7 @@ BTF-LIGHTING neon tube WS2812B 5V
 
 | Item | ~US$ |
 |------|------|
-| Tubo neon 1 m 5V WS2812B | 8–15 |
-| Fita + tubo silicone separados | 5–10 |
+| Tubo neon 4 m 5V addressable | 15–40 |
 
 ---
 
@@ -168,13 +146,7 @@ BTF-LIGHTING neon tube WS2812B 5V
 ### O que buscar
 
 ```
-5V 3A power adapter DC switching supply
-```
-
-ou
-
-```
-5V 3000mA power supply 5.5x2.1mm
+5V 10A power supply SMPS switching
 ```
 
 ### Filtros
@@ -182,8 +154,8 @@ ou
 | Campo | Valor |
 |-------|-------|
 | Saída | **5V DC** |
-| Corrente | **≥ 3A** (com tubo + 4 módulos) |
-| Conector | P4 **5.5×2.1 mm** (comum) |
+| Corrente | **≥ 5A** (tubo 4 m); **10A** recomendado |
+| Entrada | **100–240V** (bivolt) |
 
 Só 4 módulos sem tubo: **1A** basta.
 
@@ -197,7 +169,8 @@ Só 4 módulos sem tubo: **1A** basta.
 | Amperagem | ~US$ |
 |-----------|------|
 | 5V 1A | 2–4 |
-| 5V 3A | 4–8 |
+| 5V 5A | 6–10 |
+| 5V 10A | 10–18 |
 
 ---
 
@@ -262,12 +235,12 @@ Na linha 5V da fonte.
 |---|------|-----|------|
 | 1 | Pro Micro 5V 32U4 | 1–2 | 4 |
 | 2 | WS2812B breakout ou 10pcs mini PCB | 4–10 | 2 |
-| 3 | Tubo neon WS2812B **5V** 0,5–1 m | 1 | 10 |
-| 4 | Fonte 5V **3A** | 1 | 6 |
+| 3 | Tubo neon **5V** addressable (ex. 4 m D15) | 1 | — (já tem) |
+| 4 | Fonte 5V **10A** | 1 | 12 |
 | 5 | Resistor 470Ω | 5+ | 1 |
 | 6 | Capacitor 1000µF 16V | 2 | 1 |
 | 7 | Fio silicone 22AWG | 1 kit | 3 |
-| | **Total estimado** | | **~25–30** |
+| | **Total estimado** (sem tubo/Pro Micro/LEDs) | | **~15–20** |
 
 Envio Brasil: +US$ 0–15 dependendo do vendedor e promo “Choice” / “AliExpress Standard”.
 
@@ -288,7 +261,7 @@ Envio Brasil: +US$ 0–15 dependendo do vendedor e promo “Choice” / “AliEx
 
 ### Tubo
 
-- [ ] Etiqueta ou anúncio diz **5V** e **WS2812B**
+- [ ] Etiqueta diz **5V** e chip addressable (**WS2811** no D15)
 - [ ] Contar LEDs ou medir: atualizar `NUM_TUBE_LEDS` no `.ino`
 - [ ] Teste com PC 7 (gradient wave)
 
@@ -304,7 +277,7 @@ Envio Brasil: +US$ 0–15 dependendo do vendedor e promo “Choice” / “AliEx
 1. Pro Micro + **1** WS2812B (teste pin D6)
 2. Adicionar módulos 2–4 em cadeia
 3. Ligar tubo no **D5**; ajustar `NUM_TUBE_LEDS`
-4. Fonte 5V 3A alimentando tudo (GND comum)
+4. Fonte 5V 10A alimentando tudo (GND comum; injeção 5V no meio do tubo 4 m)
 
 Firmware: [firmware/promicro-4mod/](../firmware/promicro-4mod/)
 
