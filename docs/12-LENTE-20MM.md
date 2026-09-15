@@ -6,7 +6,7 @@ Cada canal do módulo Dual usa **1 lente de 20 mm** sobre o star 10 W, para conc
 
 | Sem lente (star nu) | Com lente 20 mm |
 |---------------------|-----------------|
-| Emissão ~120° Lambertiana — muita luz nas laterais e no gabinete | Feixe controlado (ex. 60–90°) |
+| Emissão ~120° Lambertiana — muita luz nas laterais e no gabinete | Feixe controlado **90°** |
 | Mancha irregular a 1–2 m | Mancha mais uniforme no palco |
 | Parede/gabinete aquece sem contribuir para o wash | Mais lm “úteis” na zona alvo |
 | Dois pontos de cor muito separados visualmente | Cada cor com mancha definida; overlap configurável |
@@ -19,8 +19,7 @@ A potência elétrica é a mesma (10 W); o ganho é **eficiência óptica aparen
 |-----------|-------------------|
 | Diâmetro lente | **20 mm** |
 | Material | **PMMA** (acrílico óptico) |
-| Ângulo de feixe (wash) | **60°** ou **90°** (padrão: **90°**) |
-| Ângulo alternativo (spot) | 30° ou 45° (módulos de destaque) |
+| Ângulo de feixe | **90°** (fixo em todo o projeto) |
 | Compatibilidade LED | Star **20 mm**, chip COB/LED central ~9–14 mm |
 | Quantidade por módulo | **2** (uma em A, uma em B) |
 
@@ -29,7 +28,6 @@ A potência elétrica é a mesma (10 W); o ganho é **eficiência óptica aparen
 | Item | Termos AliExpress / LCSC |
 |------|--------------------------|
 | Lente 90° | `20mm LED lens 90 degree PMMA` |
-| Lente 60° | `20mm LED lens 60 degree high power` |
 | Suporte | `20mm LED lens holder bracket` |
 | Kit | `20mm lens + holder for 1W 3W 5W 10W LED` |
 
@@ -73,19 +71,18 @@ Vista frontal (exemplo):
 ```
 
 - Centro a centro: **28–32 mm** (lentes 20 mm quase encostadas com borda mínima).
-- Com ambas 90°: overlap da mancha a **~1 m** ajuda wash unificado.
-- Com 60°: manchas mais separadas — bom para acento bicolor.
+- Ambas as lentes em **90°**: overlap da mancha a **~1 m** ajuda wash unificado entre WW e vermelho.
 
-## Escolha do ângulo de feixe
+## Ângulo de feixe: 90° (padrão único)
 
-| Ângulo | Uso | Distância típica |
-|--------|-----|------------------|
-| **30–45°** | Spot, corpo de ator, cor forte | 2–4 m |
-| **60°** | Wash médio, truss baixo | 1,5–3 m |
-| **90°** | **Wash largo, parede, DJ** — **padrão StageMod** | 1–2,5 m |
-| 120°+ | Raro em lente 20 mm; próximo do LED nu | — |
+Todo módulo StageMod usa **somente lente 90°** nos canais A e B.
 
-**Padrão de fábrica:** 90° em A e B. Estoque opcional de 60° para módulos de frente de palco.
+| Parâmetro | Valor |
+|-----------|-------|
+| Ângulo | **90°** |
+| Uso | Wash largo, parede, palco pequeno/médio |
+| Distância típica | 1–2,5 m do módulo à superfície iluminada |
+| Estoque | Comprar **apenas 90°** — simplifica montagem e reposição |
 
 ## Compatibilidade térmica
 
@@ -118,8 +115,6 @@ O holder pode ter **furos de ventilação** laterais para convecção entre star
 - Silkscreen: círculo **Ø20** = zona da lente.
 - Keep-out: altura **12 mm** acima do star para carcaça frontal.
 
-## Troca de lente no campo
+## Reposição
 
-Mesmo LED, outro ângulo: desparafusar holder, trocar lente PMMA (WW e Red independentes).
-
-Não é necessário alterar `modules.json` — só ótica.
+Lente danificada: trocar por outra **90°** idêntica. Não alterar `modules.json`.

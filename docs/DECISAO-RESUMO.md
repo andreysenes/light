@@ -30,7 +30,7 @@ Especificação: [09-CABO-STAGEMOD.md](09-CABO-STAGEMOD.md).
 | A | Warm white 3000 K | 10 W | Lente **20 mm 90°** |
 | B | Vermelho | 10 W | Lente **20 mm 90°** |
 
-- **1 lente por LED** — melhor dispersão e mais lux na mancha útil (mesma potência elétrica).
+- **1 lente 90° por LED** — feixe fixo em todo o rig; melhor dispersão e mais lux na mancha útil.
 - Mesma placa para todas as combinações — troca LED, lente reaproveita.
 - Detalhes: [12-LENTE-20MM.md](12-LENTE-20MM.md).
 

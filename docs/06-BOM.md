@@ -85,12 +85,11 @@ Ver [09-CABO-STAGEMOD.md](09-CABO-STAGEMOD.md).
 | Reserva LEDs/drivers 15 % | 25 |
 | **Total** | **~258** |
 
-## Óptica — estoque lentes (opcional)
+## Óptica — estoque lentes (12 módulos)
 
 | Item | Qty | ~US$ | Uso |
 |------|-----|------|-----|
-| Lente 20 mm **60°** | 8 | 3 | Módulos de frente / feixe mais estreito |
-| Lente 20 mm **90°** | 24 | 8 | Padrão wash (estoque 12 módulos × 2) |
+| Lente 20 mm **90°** | 26 | 9 | 12 módulos × 2 + 2 reserva |
 | Holder 20 mm spare | 4 | 1 | Reposição |
 
 ## Estoque LEDs extras (configurável)

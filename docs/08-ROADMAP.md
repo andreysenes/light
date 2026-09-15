@@ -38,7 +38,7 @@
 | 3.2 | KiCad: PCB Cabeça (ou usar DevKit) |
 | 3.3 | KiCad: adaptador T-StageMod |
 | 3.4 | Carcaça alumínio com aberturas Ø20 mm |
-| 3.5 | Validar lente 60° vs 90° em palco real |
+| 3.5 | Validar mancha 90° a 1 m e 2 m de distância |
 
 ## Fase 4 — Rig 8+ módulos
 

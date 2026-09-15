@@ -53,7 +53,7 @@ Mesma placa para todas as combinações futuras:
 ```
 
 - Soquetes: padrão **star PCB 20 mm** (furo M3) ou solda direta.
-- **1 lente PMMA Ø 20 mm** por canal (padrão **90°** wash) + holder no heatsink.
+- **1 lente PMMA Ø 20 mm, 90°** por canal + holder no heatsink.
 - Centros das ópticas: **~30 mm** um do outro.
 - Trocar cor = trocar LED + atualizar config na Cabeça (lente reutiliza).
 - Detalhes ópticos: [12-LENTE-20MM.md](12-LENTE-20MM.md).

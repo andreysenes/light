@@ -64,7 +64,7 @@ Cada star 10 W recebe **1 lente óptica de 20 mm** (PMMA) + holder, para dispers
 
 | Elemento | Especificação |
 |----------|---------------|
-| Lente | **Ø 20 mm PMMA**, feixe **90°** (padrão wash) ou 60° (frente estreita) |
+| Lente | **Ø 20 mm PMMA**, feixe **90°** (único ângulo do projeto) |
 | Holder | Anel 20 mm fixado no heatsink/PCB |
 | Star PCB | 20 mm, furo M3 — compatível com kits lens+holder comuns |
 | Folga LED–lente | 0,5–1,5 mm (PMMA não suporta contato quente) |
