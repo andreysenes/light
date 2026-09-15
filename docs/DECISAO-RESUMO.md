@@ -3,25 +3,20 @@
 ## Uma cabeça, módulos burros
 
 ```
-DAW ──USB──► [ESP32 Cabeça] ═══ Cabo StageMod ═══ [Mod]──[Mod]──[Mod]
+DAW ──USB──► [ESP32 Cabeça] ── P4 + RJ45 ── [Mod]──[Mod]──[Mod]
 ```
 
 - **Só 1 ESP32** no sistema (na Cabeça).
 - Módulos = **ATtiny** + 2 drivers + 2 LEDs (sem Wi‑Fi, sem USB).
 
-## Cabo especial StageMod
+## Cabos baratos (sem chicote especial)
 
-**5 fios em um cabo** + conector **GX16-5**:
+| Chicote | Conector | Função |
+|---------|----------|--------|
+| **Energia** | **P4** (5,5×2,1 mm, centro +) | 24 V + GND |
+| **Dados** | **RJ45** + Cat5e | RS-485 (pin 4-5) |
 
-| Fio | Função |
-|-----|--------|
-| 1 | V+ 24 V |
-| 2 | GND |
-| 3 | D+ |
-| 4 | D− |
-| 5 | Shield |
-
-Especificação: [09-CABO-STAGEMOD.md](09-CABO-STAGEMOD.md).
+Dois cabos por salto — muito mais barato que conector aviação. Detalhes: [09-CABLAGEM.md](09-CABLAGEM.md).
 
 ## Módulo: 2 cores × 10 W + lente 20 mm
 
@@ -60,7 +55,7 @@ Arquivo `modules.json` na Cabeça — ver [11-CONFIGURACAO-MODULOS.md](11-CONFIG
 | ATtiny1614 | 1 |
 | LED 10 W WW + 10 W red | 1+1 |
 | Buck CC 1 A | 2 |
-| GX16-5 macho+fêmea | 2 pares |
+| Plug P4 + patch Cat5e | 1 par de cabos |
 | Fonte 24 V 5 A | 1 |
 | Heatsink alumínio | 1 |
 

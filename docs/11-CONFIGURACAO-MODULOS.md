@@ -9,7 +9,7 @@ O hardware é **sempre o mesmo**: 2 canais × 10 W. O que muda entre módulos é
          │  MIDI → lógica → RS-485                  │
          │  modules.json: addr → (tipo A, tipo B)   │
          └──────────────────┬───────────────────────┘
-                            │ Cabo StageMod
+                            │ P4 + RJ45
          ┌──────────────────┼──────────────────────┐
          ▼                  ▼                      ▼
     Mod 1 (WW+R)      Mod 2 (WW+WW)         Mod 3 (R+Amb)

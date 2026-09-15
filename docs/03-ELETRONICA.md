@@ -11,7 +11,7 @@
 └────────────────────────────┘     │  PWM B ──► Driver CC ──► R │
                                    └────────────────────────────┘
          ▲                                      ▲
-    Fonte 24 V ─────────── Cabo StageMod ──────┘
+    Fonte 24 V ─────────── P4 + RJ45 ──────────┘
 ```
 
 Referência conceitual MOSFET: [vídeo ESP + MOSFET](https://www.youtube.com/watch?v=HSeckw3VLy8) — aplica-se ao **chaveamento**, não à alimentação do LED pelo ESP.
@@ -22,9 +22,9 @@ Referência conceitual MOSFET: [vídeo ESP + MOSFET](https://www.youtube.com/wat
 |-------|-------|-------|
 | MCU | ESP32-S3-WROOM | USB nativo |
 | RS-485 | MAX485 / SP3485 | DE+RE em 1 GPIO |
-| Alimentação | Buck 24→5 V | Alimenta ESP; entrada do Cabo StageMod |
-| Saída | GX16-5 OUT | Para primeiro módulo |
-| Entrada fonte | GX16 ou borne | V+ 24 V da fonte central |
+| Alimentação | Buck 24→5 V | Alimenta ESP; entrada P4 da fonte |
+| Saída dados | RJ45 | RS-485 para primeiro módulo |
+| Saída energia | P4 ou borne | 24 V para distro / módulos |
 
 GPIO sugeridos:
 
@@ -90,10 +90,9 @@ GPIO ──100Ω──┤G  IRLB8721
 ## Pass-through no módulo
 
 ```
-IN pin1 V+ ── polyfuse 2A ──┬── buck drivers
-                            └── OUT pin1 V+
-IN pin2 GND ────────────────┬── OUT pin2 GND
-IN pin3/4 D+/D− ── MAX485 ─┴── OUT pin3/4
+P4 IN  V+ ── polyfuse 2A ──┬── buck drivers ── P4 OUT V+
+P4 IN  GND ────────────────┴── P4 OUT GND
+RJ45 IN pin4/5 ── MAX485 ──┬── RJ45 OUT pin4/5 (pass-through)
 ```
 
 Trilha V+: fio AWG18 entre conectores ou trilha ≥ 3 mm na PCB.
@@ -117,4 +116,4 @@ Trilha V+: fio AWG18 entre conectores ou trilha ≥ 3 mm na PCB.
 1. Cabeça: ESP32 envia “hello” serial USB + loopback RS-485.
 2. 1 canal: ATtiny + 1 driver + 1 LED 10 W (começar em 50 % PWM).
 3. Medir corrente e temperatura.
-4. Adicionar segundo canal + cabo StageMod curto.
+4. Adicionar segundo canal + cabos P4 e Cat5e curtos.

@@ -4,10 +4,10 @@
 
 | Peça | Conector | Função |
 |------|----------|--------|
-| Fonte | Bornes / IEC | 24 V AC-DC |
-| Cabeça | GX16 IN (fonte) + GX16 OUT (StageMod) | MIDI + mestre RS-485 |
-| Módulo | GX16 IN + OUT | Pass-through energia + dados |
-| Cabo | StageMod 5 vias | Liga tudo |
+| Fonte | Bornes / IEC / P4 | 24 V AC-DC |
+| Cabeça | P4 + RJ45 OUT | MIDI + mestre RS-485 |
+| Módulo | P4 IN/OUT + RJ45 IN/OUT | Pass-through energia e dados |
+| Cabos | P4 + patch Cat5e | Dois chicotes por salto |
 
 ## Linear simples
 
@@ -25,13 +25,13 @@
                                                   └──═[M9]═══[M10]═══ ...
 ```
 
-Adaptador **T-StageMod**: 1 IN, 2 OUT — pinos 1–4 em paralelo.
+Adaptadores **T-P4** e **T-RJ45**: derivação de energia e dados em paralelo.
 
 ## Ordem de montagem
 
 1. Fonte **off**.
 2. Cabeça na distro; USB no laptop.
-3. Cabo tronco Cabeça → M1 → M2 … (só eletrônica, LEDs em baixa potência).
+3. Par de cabos Cabeça → M1 → M2 … (P4 + Cat5e; LEDs em baixa potência).
 4. Medir 24 V em cada IN.
 5. Configurar DIP addrs únicos.
 6. Upload `modules.json` na Cabeça.
@@ -42,8 +42,8 @@ Adaptador **T-StageMod**: 1 IN, 2 OUT — pinos 1–4 em paralelo.
 | Etiqueta | Conteúdo |
 |----------|----------|
 | Módulo | `StageMod #3 — WW+R — IN← OUT→` |
-| Cabo patch | comprimento + `StageMod` |
-| Cabo tronco | anel vermelho no lado V+ |
+| Cabo P4 | fita vermelha = lado fonte |
+| Cabo Cat5e | azul ou etiqueta `DADOS` |
 
 ## RS-485 em split
 
@@ -54,7 +54,7 @@ Adaptador **T-StageMod**: 1 IN, 2 OUT — pinos 1–4 em paralelo.
 ## Montagem física
 
 - Módulos em perfil 20×20, inclinação 20–35° para wash.
-- Cabos com folga; não pendurar peso no GX16.
+- Cabos com folga; não pendurar peso nos P4/RJ45.
 - Cabeça na mesa técnica — USB curto ao laptop.
 
 ## Falhas comuns

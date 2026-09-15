@@ -2,44 +2,47 @@
 
 Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 
-## Kit protótipo — Cabeça + 1 módulo + 1 cabo
+## Kit protótipo — Cabeça + 1 módulo + cabos
 
 | Qty | Item | Ref | ~US$ | Notas |
 |-----|------|-----|------|-------|
-| 1 | ESP32-S3 DevKit USB | | 6 | **Único ESP do sistema** |
+| 1 | ESP32-S3 DevKit USB | | 6 | **Único ESP** |
 | 2 | MAX485 / SP3485 | | 1,00 | Cabeça + módulo |
 | 1 | ATtiny1614-SS | | 0,60 | Decoder módulo |
-| 2 | LED 10 W warm white star | 3000 K | 1,60 | Soquete A padrão |
-| 1 | LED 10 W red star | 620 nm | 0,80 | Soquete B padrão |
-| 2 | Módulo buck CC 900 mA | PT4115/XL6001 | 2,00 | 1 por canal |
-| 2 | IRLB8721 | TO-220 | 1,00 | Se PWM via EN |
+| 2 | LED 10 W warm white star | 3000 K | 1,60 | Canal A |
+| 1 | LED 10 W red star | 620 nm | 0,80 | Canal B |
+| 2 | Módulo buck CC 900 mA | PT4115/XL6001 | 2,00 | |
+| 2 | IRLB8721 | TO-220 | 1,00 | Opcional |
 | 1 | DIP-3 | | 0,15 | Endereço |
 | 1 | Buck 24→5 V | Mini560 | 0,80 | Cabeça |
 | 2 | Polyfuse 2 A | | 0,20 | |
 | 1 | TVS SMBJ24A | | 0,15 | |
-| 4 | GX16-5 conector | macho+fêmea ×2 | 8,00 | 1 cabo + IN/OUT módulo |
-| 1 | Cabo 5 condutores 0,5 m | | 3,00 | Cabo StageMod patch |
-| 1 | Fonte 24 V 5 A | | 12 | |
-| 1 | Heatsink Al 80 mm | | 4,00 | Módulo |
-| 2 | Lente LED 20 mm 90° PMMA | | 0,60 | 1 por canal A/B |
-| 2 | Holder lente 20 mm | | 0,40 | Fixar no heatsink |
+| 4 | Jack P4 fêmea painel | 5,5×2,1 mm | 0,40 | 2× módulo IN/OUT |
+| 2 | Plug P4 macho | | 0,20 | Cabos energia |
+| 2 | Jack RJ45 fêmea painel | | 0,40 | 2× módulo IN/OUT |
+| 1 | Cabo 2× AWG18 0,5 m + P4 | | 0,50 | Patch energia |
+| 1 | Patch Cat5e 0,5 m | | 0,40 | Patch dados |
+| 2 | Lente PMMA 20 mm 90° | | 0,60 | |
+| 2 | Holder lente 20 mm | | 0,40 | |
+| 1 | Fonte 24 V 5 A com P4 | | 12 | |
+| 1 | Heatsink Al 80 mm | | 4,00 | |
 | 1 | Caixa ABS Cabeça | | 3,00 | |
-| — | Misc | | 5 | |
-| | **Total protótipo** | | **~48** | |
+| — | Misc | | 4 | |
+| | **Total protótipo** | | **~41** | |
 
-## Cabeça (Head Unit) — unitário
+## Cabeça (Head Unit)
 
 | Qty | Item | ~US$ |
 |-----|------|------|
 | 1 | ESP32-S3 DevKit | 6 |
 | 1 | MAX485 | 0,50 |
 | 1 | Buck 24→5 V | 0,80 |
-| 1 | GX16-5 OUT | 2,00 |
-| 1 | Bornes ou GX16 IN (da fonte) | 2,00 |
+| 1 | RJ45 fêmea | 0,20 |
+| 1 | P4 fêmea (da fonte) | 0,10 |
 | 1 | Caixa | 3,00 |
-| | **Total** | **~14** |
+| | **Total** | **~11** |
 
-## Módulo Dual — por unidade (produção)
+## Módulo Dual — por unidade
 
 | Qty | Item | ~US$ |
 |-----|------|------|
@@ -49,70 +52,57 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 2 | IRLB8721 (opcional) | 1,00 |
 | 1 | LED 10 W WW | 0,80 |
 | 1 | LED 10 W red | 0,80 |
-| 1 | Polyfuse 2 A | 0,10 |
-| 1 | TVS SMBJ24A | 0,15 |
-| 2 | GX16-5 IN+OUT | 4,00 |
+| 2 | Lente 20 mm 90° + holder | 1,00 |
+| 2 | P4 fêmea IN+OUT | 0,20 |
+| 2 | RJ45 fêmea IN+OUT | 0,40 |
+| 1 | Polyfuse + TVS | 0,25 |
 | 1 | DIP-3 | 0,15 |
 | 1 | Heatsink / carcaça Al | 4,00 |
-| 2 | Lente PMMA 20 mm 90° | 0,60 |
-| 2 | Holder lente 20 mm | 0,40 |
 | 1 | PCB | 2,00 |
-| | **Por módulo** | **~17** |
+| | **Por módulo** | **~14** |
 
-Sem ESP — **~US$ 1–2 mais barato** que versão anterior com ESP32-C3.
+## Cabos por salto (módulo → módulo)
 
-## Cabo StageMod — por unidade
-
-| Tipo | Comprimento | ~US$ |
-|------|-------------|------|
-| Patch | 0,5 m | 4 |
-| Patch | 1 m | 5 |
-| Tronco | 2 m AWG16 V+ | 8 |
-| Adaptador T | 1× IN, 2× OUT | 12 (DIY PCB) |
-
-Ver [09-CABO-STAGEMOD.md](09-CABO-STAGEMOD.md).
+| Item | ~US$ | Notas |
+|------|------|-------|
+| Patch P4 AWG18 0,5 m | 0,50 | Macho-macho |
+| Patch Cat5e 0,5 m | 0,40 | RJ45 crimpado |
+| **Total / salto** | **~0,90** | vs ~US$ 7 com GX16-5 |
 
 ## Sistema 8 módulos + Cabeça
 
 | Categoria | ~US$ |
 |-----------|------|
-| Cabeça | 14 |
-| 8× Módulo Dual @ 17 | 136 |
+| Cabeça | 11 |
+| 8× Módulo @ 14 | 112 |
 | Fonte 24 V 10 A | 28 |
-| Distro + fusíveis | 12 |
-| 9× cabo patch 0,5 m | 36 |
-| 1× cabo tronco 2 m | 8 |
-| Reserva LEDs/drivers 15 % | 25 |
-| **Total** | **~258** |
+| Distro + fusíveis | 10 |
+| 8× par cabos P4+Cat5e | 7 |
+| Reserva 15 % | 25 |
+| **Total** | **~193** |
 
-## Óptica — estoque lentes (12 módulos)
+## Estoque conectores (12 módulos)
 
-| Item | Qty | ~US$ | Uso |
-|------|-----|------|-----|
-| Lente 20 mm **90°** | 26 | 9 | 12 módulos × 2 + 2 reserva |
-| Holder 20 mm spare | 4 | 1 | Reposição |
+| Item | Qty | ~US$ |
+|------|-----|------|
+| P4 fêmea painel | 30 | 3 |
+| P4 macho | 20 | 2 |
+| RJ45 fêmea painel | 30 | 6 |
+| Patch Cat5e 0,5 m | 12 | 5 |
+| Cabo AWG18 + P4 DIY | 12 | 6 |
+| Lente 90° reserva | 4 | 1 |
 
-## Estoque LEDs extras (configurável)
+## O que mudou vs cabo único GX16
 
-| LED 10 W | Qty sugerida | ~US$ |
-|----------|--------------|------|
-| Amber | 4 | 3 |
-| Green | 4 | 3 |
-| Cool white | 2 | 2 |
-
-Para converter módulos WW+R → outras combinações.
-
-## O que saiu da BOM (vs v1)
-
-| Removido | Motivo |
-|----------|--------|
-| ESP32-C3 por módulo | Cabeça única |
-| LED 3 W RGB | Agora 10 W dual |
-| Conector 4 pin | Cabo StageMod 5 pin |
+| Removido | Substituído por |
+|----------|-----------------|
+| GX16-5 | P4 + RJ45 |
+| Cabo 5 condutores | AWG18 + Cat5e |
+| ~US$ 7/salto | **~US$ 0,90/salto** |
 
 ## Checklist antes de lote
 
-- [ ] Cabeça + 1 módulo estável 30 min @ 100 % ambos canais
-- [ ] Cabo StageMod patch testado com osciloscópio/logic (RS-485)
-- [ ] Heatsink < 65 °C
-- [ ] `modules.json` com 3 perfis diferentes testados no DAW
+- [ ] P4 centro + em todos os cabos
+- [ ] RJ45 pin 4-5 pass-through IN→OUT
+- [ ] 30 min térmico @ 100 % com lentes 90°
+- [ ] RS-485 estável com 3 módulos em cadeia

@@ -14,7 +14,7 @@ Potência máxima do módulo: **~20 W** (+ perdas driver ≈ 22–25 W do barram
 ## Bloco funcional
 
 ```
-IN (StageMod 5p) ──► pass-through OUT
+IN (P4 + RJ45) ──► pass-through OUT
          │
     ┌────┴────────────────────────────┐
     │  MAX485  ◄──► ATtiny (decoder)  │
@@ -157,7 +157,8 @@ Módulo só responde se `ADDR` = seu DIP ou broadcast `0xFF`.
 | Buck CC 1 A | 2 | 2,00 |
 | IRLB8721 (se necessário) | 2 | 1,00 |
 | LED 10 W WW + 10 W R | 1+1 | 2,00 |
-| GX16-5 IN + OUT | 2 | 4,00 |
+| P4 fêmea IN + OUT (×2) | 4 | 0,60 |
+| RJ45 fêmea IN + OUT (×2) | 4 | 0,80 |
 | Heatsink / carcaça Al | 1 | 3,00 |
 | Lente PMMA 20 mm 90° | 2 | 0,60 |
 | Holder lente 20 mm | 2 | 0,40 |

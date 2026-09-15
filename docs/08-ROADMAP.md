@@ -3,7 +3,7 @@
 ## Fase 0 — Decisões ✅
 
 - [x] **Cabeça única** ESP32-S3
-- [x] Cabo **StageMod** (energia + dados)
+- [x] Cablagem **P4 + RJ45** (energia e dados separados)
 - [x] Módulo **2× 10 W** — padrão WW + vermelho
 - [x] Hardware universal + **config futura** de cores
 - [x] Decoder **ATtiny** no módulo (não ESP)
@@ -14,7 +14,7 @@
 |---|--------|--------|
 | 1.1 | Montar **Cabeça**: ESP32 + MAX485 + MIDI USB | Envia frame teste serial |
 | 1.2 | Montar **1 módulo Dual** WW+R | 900 mA/canal medido |
-| 1.3 | Fabricar **1 cabo StageMod** 0,5 m GX16-5 | Continuidade + pinagem |
+| 1.3 | Fabricar **1 par cabos** 0,5 m: P4 + Cat5e/RJ45 | P4 centro +; pin 4-5 dados |
 | 1.4 | Protocolo SET_LEVELS addr=1 | Fade suave A e B |
 | 1.5 | Montar **lentes 20 mm 90°** + holder em A e B | Folga 0,5–1,5 mm; feixe sem obstrução |
 | 1.6 | Teste térmico 30 min 100 % | Heatsink < 65 °C; PMMA sem deformar |
@@ -26,9 +26,9 @@
 |---|--------|
 | 2.1 | `modules.json` na Cabeça |
 | 2.2 | Segundo módulo (ex. WW+WW) |
-| 2.3 | Cabos patch 0,5 m × 3 |
+| 2.3 | Cabos patch P4 + Cat5e × 3 |
 | 2.4 | Modo Performance (notas por cor semântica) |
-| 2.5 | Adaptador T DIY |
+| 2.5 | Adaptadores T-P4 e T-RJ45 DIY |
 
 ## Fase 3 — PCB
 
@@ -36,7 +36,7 @@
 |---|--------|
 | 3.1 | KiCad: PCB módulo Dual |
 | 3.2 | KiCad: PCB Cabeça (ou usar DevKit) |
-| 3.3 | KiCad: adaptador T-StageMod |
+| 3.3 | KiCad: adaptadores T-P4 e T-RJ45 |
 | 3.4 | Carcaça alumínio com aberturas Ø20 mm |
 | 3.5 | Validar mancha 90° a 1 m e 2 m de distância |
 
@@ -62,7 +62,7 @@
 /
 ├── README.md
 ├── docs/
-│   ├── 09-CABO-STAGEMOD.md
+│   ├── 09-CABLAGEM.md
 │   ├── 10-MODULO-DUAL.md
 │   └── 11-CONFIGURACAO-MODULOS.md
 ├── firmware/
@@ -70,7 +70,7 @@
 │   └── module/        # ATtiny decoder
 ├── hardware/
 │   ├── kicad/
-│   └── cable/         # pinagem GX16-5
+│   └── cable/         # pinagem P4 + RJ45
 └── config/
     └── modules.json.example
 ```

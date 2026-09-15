@@ -5,7 +5,7 @@ Sistema de módulos de luz acopláveis para palco/estúdio: **um único ESP32 co
 ## Arquitetura em uma frase
 
 ```
-DAW ──MIDI USB──► [Cabeça ESP32] ═══ Cabo StageMod (24V + RS-485) ═══ [Mod1]──[Mod2]──[Mod3]──...
+DAW ──MIDI USB──► [Cabeça ESP32] ── P4 (24V) + RJ45 (dados) ── [Mod1]──[Mod2]──[Mod3]──...
 ```
 
 Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
@@ -23,7 +23,7 @@ Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
 | [BOM](docs/06-BOM.md) | Lista de materiais |
 | [Topologia](docs/07-TOPOLOGIA-CABEAMENTO.md) | Daisy-chain e splits |
 | [Roadmap](docs/08-ROADMAP.md) | Próximos passos |
-| [**Cabo StageMod**](docs/09-CABO-STAGEMOD.md) | **5 condutores, GX16-5, pinagem** |
+| [**Cablagem**](docs/09-CABLAGEM.md) | **P4 energia + RJ45 dados (Cat5e)** |
 | [**Módulo Dual**](docs/10-MODULO-DUAL.md) | **2× 10 W, hardware universal** |
 | [**Config módulos**](docs/11-CONFIGURACAO-MODULOS.md) | **WW+R, WW×2, R+amber, …** |
 | [**Lente 20 mm**](docs/12-LENTE-20MM.md) | **1 lente por LED, feixe 90°** |
@@ -37,7 +37,7 @@ Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
 | Módulo | **2 canais × 10 W** — padrão **warm white + vermelho** |
 | Óptica | **Lente PMMA 20 mm** (90°) — **1 por LED** |
 | MCU no módulo | **ATtiny** decoder (não ESP) |
-| Cabo | **StageMod**: V+ 24 V, GND, D+, D−, shield — [especificação](docs/09-CABO-STAGEMOD.md) |
+| Cabos | **P4** (24 V) + **RJ45/Cat5e** (RS-485) — [especificação](docs/09-CABLAGEM.md) |
 | Config futura | Mesma PCB; trocar LED + `modules.json` na Cabeça |
 | Fonte | 24 V central, dimensionada pelo número de módulos |
 
@@ -51,13 +51,13 @@ Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
                                     └── Mod 9 ── Mod 10 ── ...
 ```
 
-`═══` = Cabo StageMod (energia + dados no mesmo chicote).
+Cada salto = **2 cabos baratos**: P4 (energia) + patch rede (dados).
 
 ## Próximo passo
 
 1. Montar **Cabeça** (ESP32 + MAX485 + MIDI USB).
 2. Montar **1 módulo Dual** (2× 10 W WW+R).
-3. Fazer **1 cabo StageMod** patch 0,5 m (GX16-5).
+3. Fazer **1 par de cabos** patch: P4 + Cat5e 0,5 m.
 4. Validar protocolo e dissipação térmica.
 
 Ver [docs/08-ROADMAP.md](docs/08-ROADMAP.md).

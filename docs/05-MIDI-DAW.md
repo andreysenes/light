@@ -8,7 +8,7 @@ Toda lógica MIDI vive na **Cabeça** (único ESP32). Módulos só recebem níve
 sequenceDiagram
     participant DAW
     participant Head as Cabeça ESP32
-    participant Bus as Cabo StageMod
+    participant Bus as RJ45 RS-485
     participant Mod as Módulo addr=N
 
     DAW->>Head: MIDI Note/CC

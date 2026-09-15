@@ -7,15 +7,15 @@ Construir módulos de iluminação para palco/ensaio que:
 - Sejam **acopláveis** em cadeia ou com derivações em T.
 - Respondam a **MIDI** de uma DAW.
 - Usem **um único ESP32** como cabeça de controle.
-- Levem **energia e dados no mesmo cabo** (Cabo StageMod).
+- Usam **cabos baratos separados**: **P4** (energia) + **RJ45/Cat5e** (dados).
 - Sejam **simples por módulo**: 2 cores × 10 W (padrão warm white + vermelho).
 - Permitam **reconfiguração futura** de combinações de cor (verde+vermelho, WW×2, vermelho+âmbar, …).
 
 ## Arquitetura resumida
 
 ```
-┌─────────────┐     Cabo StageMod        ┌──────────────────┐
-│ Cabeça      │  (24V + GND + D+ + D−)   │ Módulo Dual      │
+┌─────────────┐   P4 (24V) + RJ45 (dados) ┌──────────────────┐
+│ Cabeça      │ ────────────────────────► │ Módulo Dual      │
 │ ESP32-S3    │ ═══════════════════════► │ ATtiny + 2×10W   │
 │ MIDI USB    │                          │ WW + Red (padrão)│
 └─────────────┘                          └────────┬─────────┘
@@ -30,12 +30,12 @@ Construir módulos de iluminação para palco/ensaio que:
 |------|----------|--------|
 | **Cabeça** | Sim (único) | MIDI, presets, RS-485 master, `modules.json` |
 | **Módulo** | Não (só ATtiny) | Decodifica addr, PWM em 2 canais, acende LEDs |
-| **Cabo StageMod** | — | Alimenta e comunica |
+| **Cabos P4 + RJ45** | — | Energia e dados (separados) |
 | **Fonte 24 V** | — | Energia de todo o rig |
 
 ## Módulo padrão vs configurável
 
-**Hardware sempre igual:** 2 drivers, 2 soquetes star 10 W, IN/OUT StageMod.
+**Hardware sempre igual:** 2 drivers, 2 soquetes star 10 W, IN/OUT P4 + RJ45.
 
 **O que varia:**
 
@@ -78,7 +78,7 @@ Detalhes: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 | Termo | Significado |
 |-------|-------------|
 | Cabeça | Única unidade com ESP32 |
-| Cabo StageMod | Cabo 5 vias energia + RS-485 |
+| Cablagem | P4 24 V + Cat5e RS-485 |
 | Módulo Dual | Bloco 2× 10 W com IN/OUT |
 | Addr | Endereço DIP no módulo |
 | Perfil | Par (tipo_A, tipo_B) na config da Cabeça |
@@ -88,6 +88,6 @@ Detalhes: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 | Risco | Mitigação |
 |-------|-----------|
 | Superaquecimento 10 W | Heatsink, teste 30 min @ 100 % |
-| Curto no cabo StageMod | Conector keyed, fusível por módulo |
+| P4 invertido | Centro +; testar antes de ligar; fusível por módulo |
 | Addr duplicado | Etiquetar módulos na montagem |
 | Cabeça offline | Blackout automático nos módulos (fade local opcional) |
