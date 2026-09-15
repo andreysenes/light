@@ -41,11 +41,10 @@ Arquivo `modules.json` na Cabeça — ver [11-CONFIGURACAO-MODULOS.md](11-CONFIG
 
 ## Alimentação e proteção
 
-- Fonte **24 V** central.
-- ~**1,2 A por módulo** em carga máxima.
-- 8 módulos → fonte **24 V / 10 A**.
-- Fusível na entrada + polyfuse em cada módulo.
-- **Anti-reverso P4:** P-MOS **AO4407** em todo **P4 IN** (módulo + Cabeça) — cabo invertido não queima a placa.
+- Fonte **24 V** → **Cabeça P4 IN** → **P4 OUT** alimenta todo o rig (única fonte).
+- **Anti-reverso na Cabeça:** P-MOS **IRF9540N** no barramento de saída — cabo invertido não queima módulos.
+- ~**1,2 A por módulo**; 8 módulos → fonte **24 V / 10 A**.
+- Polyfuse **10 A** na Cabeça + **2 A** em cada módulo.
 
 ## Primeira compra (protótipo)
 
@@ -56,7 +55,7 @@ Arquivo `modules.json` na Cabeça — ver [11-CONFIGURACAO-MODULOS.md](11-CONFIG
 | ATtiny1614 | 1 |
 | LED 10 W WW + 10 W red | 1+1 |
 | Buck CC 1 A | 2 |
-| AO4407 anti-reverso | 2 |
+| IRF9540N anti-reverso (Cabeça) | 1 |
 | Plug P4 + patch Cat5e | 1 par de cabos |
 | Fonte 24 V 5 A | 1 |
 | Heatsink alumínio | 1 |

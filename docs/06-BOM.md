@@ -17,8 +17,10 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 1 | Buck 24→5 V | Mini560 | 0,80 | Cabeça |
 | 2 | Polyfuse 2 A | | 0,20 | |
 | 1 | TVS SMBJ24A | | 0,15 | |
-| 2 | AO4407 P-MOS | SO-8 | 0,20 | Anti-reverso: módulo + Cabeça |
-| 2 | Resistor 10 kΩ | | 0,02 | Gate P-MOS |
+| 1 | IRF9540N P-MOS | TO-220 | 0,40 | Anti-reverso **só na Cabeça** |
+| 1 | Resistor 10 kΩ | | 0,01 | Gate P-MOS |
+| 1 | Polyfuse 10 A | | 0,15 | Após anti-reverso na Cabeça |
+| 1 | Heatsink TO-220 pequeno | | 0,20 | Cabeça @ carga alta |
 | 4 | Jack P4 fêmea painel | 5,5×2,1 mm | 0,40 | 2× módulo IN/OUT |
 | 2 | Plug P4 macho | | 0,20 | Cabos energia |
 | 2 | Jack RJ45 fêmea painel | | 0,40 | 2× módulo IN/OUT |
@@ -30,7 +32,7 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 1 | Heatsink Al 80 mm | | 4,00 | |
 | 1 | Caixa ABS Cabeça | | 3,00 | |
 | — | Misc | | 4 | |
-| | **Total protótipo** | | **~41** | |
+| | **Total protótipo** | | **~42** | |
 
 ## Cabeça (Head Unit)
 
@@ -40,10 +42,12 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 1 | MAX485 | 0,50 |
 | 1 | Buck 24→5 V | 0,80 |
 | 1 | RJ45 fêmea | 0,20 |
-| 1 | P4 fêmea (da fonte) | 0,10 |
-| 1 | AO4407 anti-reverso | 0,10 |
+| 1 | P4 fêmea IN + P4 macho OUT | 0,20 |
+| 1 | IRF9540N + heatsink TO-220 | 0,60 |
+| 1 | Polyfuse 10 A + TVS SMBJ24A | 0,30 |
+| 1 | Resistor 10 kΩ + LED verde (opc.) | 0,10 |
 | 1 | Caixa | 3,00 |
-| | **Total** | **~11** |
+| | **Total** | **~12** |
 
 ## Módulo Dual — por unidade
 
@@ -58,13 +62,11 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 2 | Lente 20 mm 90° + holder | 1,00 |
 | 2 | P4 fêmea IN+OUT | 0,20 |
 | 2 | RJ45 fêmea IN+OUT | 0,40 |
-| 1 | AO4407 anti-reverso | 0,10 |
-| 1 | Resistor 10 kΩ | 0,01 |
-| 1 | Polyfuse + TVS | 0,25 |
+| 1 | Polyfuse 2 A + TVS | 0,25 |
 | 1 | DIP-3 | 0,15 |
 | 1 | Heatsink / carcaça Al | 4,00 |
 | 1 | PCB | 2,00 |
-| | **Por módulo** | **~14** |
+| | **Por módulo** | **~13** |
 
 ## Cabos por salto (módulo → módulo)
 
@@ -78,7 +80,7 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 
 | Categoria | ~US$ |
 |-----------|------|
-| Cabeça | 11 |
+| Cabeça (com anti-reverso) | 12 |
 | 8× Módulo @ 14 | 112 |
 | Fonte 24 V 10 A | 28 |
 | Distro + fusíveis | 10 |
@@ -108,7 +110,7 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 ## Checklist antes de lote
 
 - [ ] P4 centro + em todos os cabos
-- [ ] Cabo P4 invertido: corrente ~0 (anti-reverso OK)
+- [ ] Cabeça: P4 invertido na fonte/OUT → corrente ≈ 0 em todo o rig
 - [ ] RJ45 pin 4-5 pass-through IN→OUT
 - [ ] 30 min térmico @ 100 % com lentes 90°
 - [ ] RS-485 estável com 3 módulos em cadeia

@@ -12,7 +12,7 @@
 
 | # | Tarefa | Aceite |
 |---|--------|--------|
-| 1.1 | Montar **Cabeça**: ESP32 + MAX485 + MIDI USB | Envia frame teste serial |
+| 1.1 | Montar **Cabeça**: ESP32 + MAX485 + **anti-reverso IRF9540N** + MIDI USB | Envia frame teste; teste P4 invertido |
 | 1.2 | Montar **1 módulo Dual** WW+R | 900 mA/canal medido |
 | 1.3 | Fabricar **1 par cabos** 0,5 m: P4 + Cat5e/RJ45 | P4 centro +; pin 4-5 dados |
 | 1.4 | **Anti-reverso P-MOS** no P4 IN | Cabo invertido não aquece placa |

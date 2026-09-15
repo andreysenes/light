@@ -51,7 +51,9 @@ Caixa separada na mesa ou no rack — **não** compartilha dissipação com LEDs
 |-------|------------|
 | MCU | ESP32-S3 DevKit ou módulo USB |
 | Barramento | MAX485 (half-duplex) |
-| Alimentação local | Buck 24→5 V (fonte da Cabeça pode ser a mesma 24 V do rig) |
+| Entrada | P4 IN — fonte 24 V |
+| **Proteção** | **P-MOS anti-reverso** no barramento → **P4 OUT** (única saída de energia) |
+| Alimentação local | Buck 24→5 V (do barramento protegido) |
 | Interface | USB MIDI para DAW |
 | Armazenamento | `modules.json` em SPIFFS/LittleFS |
 

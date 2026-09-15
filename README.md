@@ -38,7 +38,7 @@ Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
 | Óptica | **Lente PMMA 20 mm** (90°) — **1 por LED** |
 | MCU no módulo | **ATtiny** decoder (não ESP) |
 | Cabos | **P4** (24 V) + **RJ45/Cat5e** (RS-485) — [especificação](docs/09-CABLAGEM.md) |
-| Proteção P4 | **P-MOS anti-reverso** em cada entrada de energia |
+| Proteção | **Anti-reverso P-MOS na saída P4 da Cabeça** (IRF9540N — única fonte do rig) |
 | Config futura | Mesma PCB; trocar LED + `modules.json` na Cabeça |
 | Fonte | 24 V central, dimensionada pelo número de módulos |
 

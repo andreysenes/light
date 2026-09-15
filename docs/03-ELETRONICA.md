@@ -22,9 +22,102 @@ Referência conceitual MOSFET: [vídeo ESP + MOSFET](https://www.youtube.com/wat
 |-------|-------|-------|
 | MCU | ESP32-S3-WROOM | USB nativo |
 | RS-485 | MAX485 / SP3485 | DE+RE em 1 GPIO |
-| Alimentação | Buck 24→5 V | Alimenta ESP; entrada P4 da fonte |
+| Entrada energia | P4 IN | Fonte 24 V (centro +) |
+| **Proteção OUT** | **P-MOS anti-reverso** | **Obrigatório no P4 OUT — única saída do rig** |
+| Alimentação | Buck 24→5 V | Alimenta ESP; **após** barramento protegido |
 | Saída dados | RJ45 | RS-485 para primeiro módulo |
-| Saída energia | P4 ou borne | 24 V para distro / módulos |
+| Saída energia | **P4 OUT** | 24 V protegido → todos os módulos |
+
+### Cabeça — barramento de energia (única fonte do sistema)
+
+A Cabeça é o **único ponto** que alimenta a cadeia de módulos. A proteção anti-reverso na **saída P4** evita que um cabo invertido ou erro de montagem destrua drivers, LEDs e MCUs em todo o rig.
+
+```
+                    ┌── Cabeça ─────────────────────────────────────┐
+  Fonte 24V         │                                               │
+  P4 ──────────────►│ P4 IN                                         │
+  (centro +)        │   │                                           │
+                    │   ├──► [P-MOS anti-reverso] ──► V+_BUS         │
+                    │   │         │                      │          │
+                    │   │         │                      ├── P4 OUT ──┼──► Mód1…MódN
+                    │   │         │                      │          │
+                    │   └── GND ──┴──────────────────────┴── GND OUT─┼──►
+                    │              │                                   │
+                    │              ├── polyfuse 10A                      │
+                    │              ├── TVS SMBJ24A                       │
+                    │              └── buck 24→5 V ──► ESP32            │
+                    │                                               RJ45 OUT
+                    └───────────────────────────────────────────────────┘
+```
+
+| Etapa | Componente | Função |
+|-------|------------|--------|
+| 1 | **P-MOS** (IRF9540N ou AO4407) | Bloqueia V+ se polaridade invertida no barramento |
+| 2 | **Polyfuse 10 A** | Limita curto após proteção |
+| 3 | **TVS SMBJ24A** | Surto / transientes |
+| 4 | **P4 OUT** | Alimenta toda a cadeia P4 |
+
+> O buck do ESP32 liga em **V+_BUS** (após anti-reverso), não antes — assim o ESP também não recebe tensão invertida.
+
+### Circuito anti-reverso — P4 OUT (detalhe)
+
+```
+P4 IN centro (VIN+) ────── S
+                      ┌───┴───┐
+P4 IN casco  (GND) ───┤  G    │   P-MOS: IRF9540N (TO-220, até ~15 A)
+                      └───┬───┘           ou AO4407 (SO-8, até ~8 A rig pequeno)
+                          D ──► V+_BUS ──► polyfuse 10A ──► P4 OUT centro
+P4 IN casco ─────────────────────────────────────────────► P4 OUT casco
+```
+
+| Pino P-MOS | Ligação |
+|------------|---------|
+| **Source (S)** | P4 IN centro — VIN+ da fonte |
+| **Gate (G)** | P4 IN casco (GND) via **10 kΩ** |
+| **Drain (D)** | V+_BUS → polyfuse → P4 OUT centro |
+
+| Polaridade | Comportamento |
+|------------|---------------|
+| **Correta** (centro +24 V) | Vgs ≈ −24 V → MOSFET **liga** (~0,05–0,1 V de queda) |
+| **Invertida** | Vgs ≥ 0 → MOSFET **desliga** → corrente **≈ 0** em todo o rig |
+
+Resistor **10 kΩ** Gate → GND (casco P4). Opcional **100 kΩ** Source–Gate para OFF com plug solto.
+
+**Dissipação @ 10 A:** P ≈ I² × Rds(on) ≈ 10² × 0,2 Ω ≈ **2 W** no IRF9540N — usar **heatsink pequeno** ou dissipação no corpo TO-220.
+
+### Proteção no P4 IN (recomendado)
+
+Se a fonte também usa P4, pode inverter na entrada da Cabeça. Opções:
+
+| Abordagem | Notas |
+|-----------|-------|
+| **Um P-MOS só no IN** | Protege fonte + ESP + OUT com um estágio (IN e OUT em paralelo no V+_BUS após MOS) |
+| **Dois P-MOS** (IN + OUT) | IN protege a Cabeça; OUT protege se alguém ligar carga invertida no OUT sem fonte no IN |
+
+**Mínimo do projeto:** P-MOS no caminho entre **fonte e P4 OUT** (um estágio no IN da Cabeça equivale a proteger a saída, pois não há outro caminho de energia).
+
+Para clareza de montagem, documentamos como **anti-reverso no tronco de saída** imediatamente antes do **P4 OUT**.
+
+### Alternativa — diodo Schottky (somente protótipo)
+
+```
+VIN+ ──►|── SS54 (5 A) ──► V+_BUS
+```
+
+Simples, porém **~0,4 V × 10 A ≈ 4 W** de perda em carga máxima. Usar só em bancada; em produção preferir **P-MOS**.
+
+### Indicador visual (opcional)
+
+| LED | Ligação |
+|-----|---------|
+| Verde | V+_BUS → resistor 2,2 kΩ → LED → GND |
+| — | Aceso = polaridade correta e barramento ativo |
+
+### Teste de aceite (Cabeça)
+
+1. Fonte correta → LED verde ON; P4 OUT mede +24 V; MIDI/RS-485 OK.
+2. **Inverter cabo na fonte ou no P4 OUT** → corrente total **≈ 0 A**; sem aquecimento em módulos.
+3. Corrigir polaridade → sistema volta sem trocar fusível.
 
 GPIO sugeridos:
 
@@ -87,76 +180,17 @@ GPIO ──100Ω──┤G  IRLB8721
 
 **IRLB8721** para 10 W; **AO3400A** só se corrente < 2 A confirmada.
 
-## Proteção contra inversão de polaridade (P4)
+## Módulo — pass-through (sem anti-reverso)
 
-O P4 é plug comum e fácil de inverter. **Toda entrada de energia** (módulo P4 IN e Cabeça) leva proteção **antes** do polyfuse e dos drivers.
-
-### Solução recomendada — MOSFET P-channel (perda mínima)
+A proteção fica **só na Cabeça**. Módulos fazem pass-through do barramento já protegido + polyfuse local.
 
 ```
-P4 centro (VIN+) ────── S
-                    ┌───┴───┐
-P4 casco (GND) ─────┤  G    │  P-MOS ex. AO4407, AO3401
-                    └───┬───┘
-                        D ──► V+_PROT ── polyfuse 2A ── drivers...
-```
-
-| Pino P4 | Ligação |
-|---------|---------|
-| **Centro** | Source do P-MOS |
-| **Casco** | GND do sistema + **Gate** via resistor **10 kΩ** |
-| **Drain** | Barramento V+ protegido |
-
-**Polaridade correta** (centro +24 V, casco 0 V): Vgs ≈ −24 V → MOSFET **liga** (~0,05 V de queda).
-
-**Polaridade invertida**: Vgs ≥ 0 → MOSFET **desliga** — nada alimenta a placa.
-
-| Ref | Vds | Id | Pacote | ~US$ |
-|-----|-----|-----|--------|------|
-| **AO4407** | −30 V | −12 A | SO-8 | 0,10 |
-| **IRF9540N** | −100 V | −19 A | TO-220 | 0,40 |
-| Si2301CDS (SOT-23) | −20 V | −2,3 A | SOT-23 | 0,05 |
-
-Para módulo (~1,2 A): **AO4407** ou **Si2301** (se corrente confirmada). Cabeça/distribuição com mais corrente: **IRF9540N**.
-
-Resistor **10 kΩ** (Gate → casco P4). Opcional: **100 kΩ** Source–Gate para garantir OFF com plug solto.
-
-### Alternativa barata — diodo Schottky em série
-
-```
-P4 centro ──►|── SS34 ──► V+_PROT ── polyfuse ── ...
-             (ânodo entrada, catodo para carga)
-```
-
-| Ref | If | Vf @ 2 A | Notas |
-|-----|-----|----------|-------|
-| **SS34** | 3 A | ~0,35 V | ~0,7 W dissipada — aceitável |
-| SS54 | 5 A | ~0,45 V | Distro / tronco |
-
-Mais simples de montar; perda de ~3–8 W em carga máxima vs quase zero no P-MOS.
-
-### Onde colocar
-
-| Local | Proteção |
-|-------|----------|
-| **Módulo P4 IN** | P-MOS (obrigatório) |
-| **Módulo P4 OUT** | Sem proteção extra — já vem de barramento protegido |
-| **Cabeça P4 IN** | P-MOS |
-| **Fonte** | Opcional; módulos já se protegem |
-
-### Teste de aceite
-
-1. Alimentar correto → módulo liga, PING RS-485 OK.
-2. Inverter cabo P4 propositalmente → **corrente ≈ 0**, sem aquecimento de drivers/LED.
-3. Corrigir polaridade → volta a funcionar sem reset de fusível (polyfuse não disparou).
-
-## Pass-through no módulo
-
-```
-P4 IN  centro ── [P-MOS anti-reverso] ── V+ ── polyfuse ──┬── buck drivers ── P4 OUT V+
-P4 IN  casco  ────────────────────────────────────────────┴── P4 OUT GND
+P4 IN  centro ── V+ ── polyfuse 2A ──┬── buck drivers ── P4 OUT centro
+P4 IN  casco  ── GND ────────────────┴── P4 OUT casco
 RJ45 IN pin4/5 ── MAX485 ──┬── RJ45 OUT pin4/5 (pass-through)
 ```
+
+> Cabo P4 invertido **no meio da cadeia** ainda é perigoso — montar cabos com **centro +** certificado e fita vermelha na ponta da fonte. A Cabeça protege o erro na **primeira ligação** (fonte ou P4 OUT).
 
 Trilha V+: fio AWG18 entre conectores ou trilha ≥ 3 mm na PCB.
 
@@ -169,10 +203,11 @@ Trilha V+: fio AWG18 entre conectores ou trilha ≥ 3 mm na PCB.
 
 | Item | Valor |
 |------|-------|
-| Fusível Cabeça | 15–20 A (entrada fonte) |
+| Polyfuse Cabeça OUT | 10 A (após anti-reverso) |
 | Polyfuse módulo | 2 A |
-| Anti-reverso P4 | P-MOS AO4407 (módulo + Cabeça) |
-| TVS entrada | SMBJ24A |
+| **Anti-reverso Cabeça** | **IRF9540N** (TO-220) ou AO4407 |
+| TVS Cabeça | SMBJ24A no V+_BUS |
+| Heatsink | TO-220 na Cabeça se > 8 A contínuo |
 | Temperatura teste | 30 min @ 100 % ambos canais |
 
 ## Protótipo em breadboard (ordem)

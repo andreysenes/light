@@ -26,7 +26,7 @@ O **GND de dados** é o mesmo GND da alimentação — ligado na PCB do módulo 
 |------|----------------|
 | Conector | **DC barrel 5,5 mm × 2,1 mm** (P4 comum) |
 | Polaridade | **Centro = V+** · Externo = GND |
-| Proteção | **Anti-reverso** em cada P4 IN (P-MOS) — ver [03-ELETRONICA.md](03-ELETRONICA.md) |
+| Proteção anti-reverso | **Só na Cabeça (P4 OUT)** — única fonte do rig — ver [03-ELETRONICA.md](03-ELETRONICA.md) |
 | Tensão | 24 V DC |
 | Corrente por ligação P4 | ≤ **2 A** contínuo (patch entre 2 módulos) |
 
@@ -35,10 +35,12 @@ O **GND de dados** é o mesmo GND da alimentação — ligado na PCB do módulo 
 ### Por módulo (pass-through)
 
 ```
-[P4 IN centro] ── [P-MOS anti-reverso] ── V+ ── polyfuse 2A ──┬── drivers
-[P4 IN casco]  ── GND ───────────────────────────────────────┤
-[P4 OUT]       ── (mesmos nets após proteção) ────────────────┘
+[P4 IN centro] ── V+ ── polyfuse 2A ──┬── drivers
+[P4 IN casco]  ── GND ───────────────┤
+[P4 OUT]       ── (pass-through) ────┘
 ```
+
+Anti-reverso **não** vai no módulo — apenas **polyfuse 2 A** no IN.
 
 Entre módulos: cabo **P4 macho → macho** (extensão DC barata) ou **macho → fêmea** conforme o que estiver no módulo.
 
@@ -103,15 +105,28 @@ Módulo 1                          Módulo 2
 
 Dois cabos por salto — ainda **muito mais barato** que GX16-5 + cabo 5 vias.
 
-## Cabeça (Head Unit)
+## Cabeça (Head Unit) — única fonte + proteção
 
-| Saída | Conector | Liga em |
-|-------|----------|---------|
-| Alimentação | P4 macho (ou borne + P4) | Distro 24 V **ou** IN do M1 |
-| Dados | RJ45 | IN do M1 (par 4-5) |
-| USB | — | DAW |
+| Conector | Função |
+|----------|--------|
+| **P4 IN** | Fonte 24 V (centro +) |
+| **P4 OUT** | **Saída protegida** → toda a cadeia de módulos |
+| **RJ45** | RS-485 → M1 |
+| **USB** | MIDI / DAW |
 
-A Cabeça pode alimentar-se por P4 separado da cadeia de LEDs (recomendado: buck local na Cabeça).
+```
+Fonte ──► P4 IN [Cabeça: P-MOS anti-reverso] ──► P4 OUT ──► M1 ──► M2 ──► ...
+```
+
+| Item na Cabeça | Especificação |
+|----------------|---------------|
+| Anti-reverso | **P-MOS IRF9540N** (TO-220) no tronco de saída |
+| Após proteção | Polyfuse **10 A** + TVS SMBJ24A |
+| Buck ESP | Alimentado do barramento **já protegido** |
+
+Detalhe do circuito: [03-ELETRONICA.md](03-ELETRONICA.md).
+
+**Teste:** inverter cabo na fonte ou no P4 OUT → corrente ≈ 0 em todo o rig.
 
 ## Split em T
 
@@ -140,7 +155,8 @@ Resistor **120 Ω** entre D+ e D− no **último** módulo de cada ramo longo (j
 
 | Risco | Mitigação |
 |-------|-----------|
-| P4 invertido | **P-MOS anti-reverso** no IN; etiqueta vermelha no centro +; testar multímetro |
+| P4 invertido na fonte/OUT | **Anti-reverso na Cabeça** bloqueia; etiqueta vermelha no centro + |
+| P4 invertido entre módulos | Evitar com cabos certificados; módulos não têm anti-reverso |
 | Corrente alta num P4 só | Máx. ~2 A por patch; distro com AWG16 |
 | Ruído RS-485 | Par trançado Cat5e; não enrolar dados junto do P4 por metros |
 | GND flutuante | GND P4 = GND MAX485 em cada módulo |
@@ -148,7 +164,7 @@ Resistor **120 Ω** entre D+ e D− no **último** módulo de cada ramo longo (j
 ## Checklist montagem
 
 - [ ] P4: centro = +24 V em todos os cabos
-- [ ] Anti-reverso: cabo invertido **não** aquece placa (corrente ~0)
+- [ ] Cabeça: cabo invertido na fonte/OUT → corrente **≈ 0 A** em todo o rig
 - [ ] RJ45: pin 4-5 contínuo IN→OUT em cada módulo
 - [ ] Sem curto V+ ↔ GND na entrada P4
 - [ ] Terminação 120 Ω só no fim do ramo dados

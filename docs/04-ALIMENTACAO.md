@@ -25,12 +25,17 @@ A **Cabeça** consome < 0,5 A adicional (ESP + buck).
 ## Onde ligar a fonte
 
 ```
-[Fonte 24V] ──► [Distro] ──┬──► [Cabeça] (alimenta ESP + passa V+ ao cabo OUT)
-                           │
-                           └──► [Injeção opcional em ramos longos]
+[Fonte 24V] ──► P4 IN [Cabeça + anti-reverso] ── P4 OUT ──┬──► M1 ──► M2 ──► ...
+                                                          └──► [Injeção opcional]
 ```
 
-A Cabeça **não precisa** estar no caminho de corrente dos LEDs — pode ser derivação curta da distro. A cadeia **P4** leva 24 V em paralelo entre módulos.
+A **Cabeça** é a **única fonte** do barramento P4 dos módulos. O **anti-reverso** na saída da Cabeça protege drivers, LEDs e ATtinys de polaridade invertida na fonte ou no primeiro cabo.
+
+| Proteção na Cabeça | Valor |
+|--------------------|-------|
+| Anti-reverso | P-MOS **IRF9540N** (até ~15 A) |
+| Polyfuse após MOS | **10 A** |
+| TVS | SMBJ24A |
 
 ## Cabo P4 e corrente
 
@@ -55,9 +60,8 @@ Segundo cabo 16 AWG da distro ao IN de um módulo intermediário (V+ e GND; dado
 | Local | Proteção |
 |-------|----------|
 | Entrada fonte | Fusível 10–20 A + interruptor |
-| Cada módulo **P4 IN** | **P-MOS anti-reverso** + polyfuse **2 A** |
-| Cabeça **P4 IN** | **P-MOS anti-reverso** + polyfuse 3 A |
-| TVS | SMBJ24A em cada módulo |
+| **Cabeça** (P4 IN → OUT) | **P-MOS IRF9540N** + polyfuse **10 A** + TVS SMBJ24A |
+| Cada módulo **P4 IN** | Polyfuse **2 A** + TVS (sem anti-reverso — barramento já protegido na Cabeça) |
 
 ## Aterramento e shield
 

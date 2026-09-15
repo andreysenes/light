@@ -88,6 +88,6 @@ Detalhes: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 | Risco | Mitigação |
 |-------|-----------|
 | Superaquecimento 10 W | Heatsink, teste 30 min @ 100 % |
-| P4 invertido | P-MOS anti-reverso em cada IN; etiqueta centro + |
+| P4 invertido na fonte/Cabeça | Anti-reverso **IRF9540N na Cabeça** bloqueia o rig; etiqueta centro + nos cabos |
 | Addr duplicado | Etiquetar módulos na montagem |
 | Cabeça offline | Blackout automático nos módulos (fade local opcional) |
