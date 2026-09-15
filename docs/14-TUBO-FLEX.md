@@ -23,12 +23,9 @@ Equivalente ao padrão que você descreveu: traços acesos de tamanhos variados 
 | Data | **Pin 5** do Pro Micro (separado dos módulos no pin 6) |
 | Quantidade | `NUM_TUBE_LEDS` no firmware — **200** para tubo 4 m @ 50 LED/m |
 
-### Onde comprar / montar
+### Onde comprar
 
-| Opção | Busca |
-|-------|-------|
-| Fita + tubo | `WS2812B LED strip` + `silicone diffuser tube 10mm` |
-| Pronto | `WS2812B neon flex` / `LED neon tube addressable` |
+Tubo neon pronto — a fita addressable **já vem dentro** do silicone. Busca: `WS2812B neon flex` / `LED neon tube addressable 5V`.
 
 ### Ligação
 
@@ -43,7 +40,7 @@ Pro Micro D5 ──► DIN da fita no tubo
 | Pino Pro Micro | Destino |
 |----------------|---------|
 | **D6** | 4× módulos spot |
-| **D5** | Tubo flexível (fita WS2812B) |
+| **D5** | Tubo flexível neon (WS2811/WS2812B integrado) |
 
 Resistor **470Ω** em cada linha de data (D5 e D6). Capacitor **1000µF** no início de cada alimentação 5V.
 
