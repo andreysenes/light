@@ -60,7 +60,7 @@ Arquivo `modules.json` na Cabeça — ver [11-CONFIGURACAO-MODULOS.md](11-CONFIG
 | Fonte 24 V 5 A | 1 |
 | Heatsink alumínio | 1 |
 
-~**US$ 41** para validar Cabeça + 1 módulo + par de cabos P4/Cat5e.
+~**US$ 42** para validar Cabeça + 1 módulo + par de cabos P4/Cat5e.
 
 ## Próximo passo
 
