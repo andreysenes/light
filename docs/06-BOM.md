@@ -17,6 +17,8 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 1 | Buck 24→5 V | Mini560 | 0,80 | Cabeça |
 | 2 | Polyfuse 2 A | | 0,20 | |
 | 1 | TVS SMBJ24A | | 0,15 | |
+| 2 | AO4407 P-MOS | SO-8 | 0,20 | Anti-reverso: módulo + Cabeça |
+| 2 | Resistor 10 kΩ | | 0,02 | Gate P-MOS |
 | 4 | Jack P4 fêmea painel | 5,5×2,1 mm | 0,40 | 2× módulo IN/OUT |
 | 2 | Plug P4 macho | | 0,20 | Cabos energia |
 | 2 | Jack RJ45 fêmea painel | | 0,40 | 2× módulo IN/OUT |
@@ -39,6 +41,7 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 1 | Buck 24→5 V | 0,80 |
 | 1 | RJ45 fêmea | 0,20 |
 | 1 | P4 fêmea (da fonte) | 0,10 |
+| 1 | AO4407 anti-reverso | 0,10 |
 | 1 | Caixa | 3,00 |
 | | **Total** | **~11** |
 
@@ -55,6 +58,8 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 2 | Lente 20 mm 90° + holder | 1,00 |
 | 2 | P4 fêmea IN+OUT | 0,20 |
 | 2 | RJ45 fêmea IN+OUT | 0,40 |
+| 1 | AO4407 anti-reverso | 0,10 |
+| 1 | Resistor 10 kΩ | 0,01 |
 | 1 | Polyfuse + TVS | 0,25 |
 | 1 | DIP-3 | 0,15 |
 | 1 | Heatsink / carcaça Al | 4,00 |
@@ -103,6 +108,7 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 ## Checklist antes de lote
 
 - [ ] P4 centro + em todos os cabos
+- [ ] Cabo P4 invertido: corrente ~0 (anti-reverso OK)
 - [ ] RJ45 pin 4-5 pass-through IN→OUT
 - [ ] 30 min térmico @ 100 % com lentes 90°
 - [ ] RS-485 estável com 3 módulos em cadeia

@@ -55,8 +55,8 @@ Segundo cabo 16 AWG da distro ao IN de um módulo intermediário (V+ e GND; dado
 | Local | Proteção |
 |-------|----------|
 | Entrada fonte | Fusível 10–20 A + interruptor |
-| Cada módulo IN | Polyfuse **2 A** |
-| Cabeça IN | Polyfuse 3 A |
+| Cada módulo **P4 IN** | **P-MOS anti-reverso** + polyfuse **2 A** |
+| Cabeça **P4 IN** | **P-MOS anti-reverso** + polyfuse 3 A |
 | TVS | SMBJ24A em cada módulo |
 
 ## Aterramento e shield

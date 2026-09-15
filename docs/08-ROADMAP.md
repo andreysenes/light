@@ -15,10 +15,11 @@
 | 1.1 | Montar **Cabeça**: ESP32 + MAX485 + MIDI USB | Envia frame teste serial |
 | 1.2 | Montar **1 módulo Dual** WW+R | 900 mA/canal medido |
 | 1.3 | Fabricar **1 par cabos** 0,5 m: P4 + Cat5e/RJ45 | P4 centro +; pin 4-5 dados |
-| 1.4 | Protocolo SET_LEVELS addr=1 | Fade suave A e B |
-| 1.5 | Montar **lentes 20 mm 90°** + holder em A e B | Folga 0,5–1,5 mm; feixe sem obstrução |
-| 1.6 | Teste térmico 30 min 100 % | Heatsink < 65 °C; PMMA sem deformar |
-| 1.7 | MIDI do DAW → ambos canais | Reaper ou Ableton |
+| 1.4 | **Anti-reverso P-MOS** no P4 IN | Cabo invertido não aquece placa |
+| 1.5 | Protocolo SET_LEVELS addr=1 | Fade suave A e B |
+| 1.6 | Montar **lentes 20 mm 90°** + holder em A e B | Folga 0,5–1,5 mm; feixe sem obstrução |
+| 1.7 | Teste térmico 30 min 100 % | Heatsink < 65 °C; PMMA sem deformar |
+| 1.8 | MIDI do DAW → ambos canais | Reaper ou Ableton |
 
 ## Fase 2 — Config e segundo módulo
 

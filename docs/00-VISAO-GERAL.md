@@ -88,6 +88,6 @@ Detalhes: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 | Risco | Mitigação |
 |-------|-----------|
 | Superaquecimento 10 W | Heatsink, teste 30 min @ 100 % |
-| P4 invertido | Centro +; testar antes de ligar; fusível por módulo |
+| P4 invertido | P-MOS anti-reverso em cada IN; etiqueta centro + |
 | Addr duplicado | Etiquetar módulos na montagem |
 | Cabeça offline | Blackout automático nos módulos (fade local opcional) |

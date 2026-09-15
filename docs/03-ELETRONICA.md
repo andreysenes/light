@@ -87,11 +87,74 @@ GPIO ──100Ω──┤G  IRLB8721
 
 **IRLB8721** para 10 W; **AO3400A** só se corrente < 2 A confirmada.
 
+## Proteção contra inversão de polaridade (P4)
+
+O P4 é plug comum e fácil de inverter. **Toda entrada de energia** (módulo P4 IN e Cabeça) leva proteção **antes** do polyfuse e dos drivers.
+
+### Solução recomendada — MOSFET P-channel (perda mínima)
+
+```
+P4 centro (VIN+) ────── S
+                    ┌───┴───┐
+P4 casco (GND) ─────┤  G    │  P-MOS ex. AO4407, AO3401
+                    └───┬───┘
+                        D ──► V+_PROT ── polyfuse 2A ── drivers...
+```
+
+| Pino P4 | Ligação |
+|---------|---------|
+| **Centro** | Source do P-MOS |
+| **Casco** | GND do sistema + **Gate** via resistor **10 kΩ** |
+| **Drain** | Barramento V+ protegido |
+
+**Polaridade correta** (centro +24 V, casco 0 V): Vgs ≈ −24 V → MOSFET **liga** (~0,05 V de queda).
+
+**Polaridade invertida**: Vgs ≥ 0 → MOSFET **desliga** — nada alimenta a placa.
+
+| Ref | Vds | Id | Pacote | ~US$ |
+|-----|-----|-----|--------|------|
+| **AO4407** | −30 V | −12 A | SO-8 | 0,10 |
+| **IRF9540N** | −100 V | −19 A | TO-220 | 0,40 |
+| Si2301CDS (SOT-23) | −20 V | −2,3 A | SOT-23 | 0,05 |
+
+Para módulo (~1,2 A): **AO4407** ou **Si2301** (se corrente confirmada). Cabeça/distribuição com mais corrente: **IRF9540N**.
+
+Resistor **10 kΩ** (Gate → casco P4). Opcional: **100 kΩ** Source–Gate para garantir OFF com plug solto.
+
+### Alternativa barata — diodo Schottky em série
+
+```
+P4 centro ──►|── SS34 ──► V+_PROT ── polyfuse ── ...
+             (ânodo entrada, catodo para carga)
+```
+
+| Ref | If | Vf @ 2 A | Notas |
+|-----|-----|----------|-------|
+| **SS34** | 3 A | ~0,35 V | ~0,7 W dissipada — aceitável |
+| SS54 | 5 A | ~0,45 V | Distro / tronco |
+
+Mais simples de montar; perda de ~3–8 W em carga máxima vs quase zero no P-MOS.
+
+### Onde colocar
+
+| Local | Proteção |
+|-------|----------|
+| **Módulo P4 IN** | P-MOS (obrigatório) |
+| **Módulo P4 OUT** | Sem proteção extra — já vem de barramento protegido |
+| **Cabeça P4 IN** | P-MOS |
+| **Fonte** | Opcional; módulos já se protegem |
+
+### Teste de aceite
+
+1. Alimentar correto → módulo liga, PING RS-485 OK.
+2. Inverter cabo P4 propositalmente → **corrente ≈ 0**, sem aquecimento de drivers/LED.
+3. Corrigir polaridade → volta a funcionar sem reset de fusível (polyfuse não disparou).
+
 ## Pass-through no módulo
 
 ```
-P4 IN  V+ ── polyfuse 2A ──┬── buck drivers ── P4 OUT V+
-P4 IN  GND ────────────────┴── P4 OUT GND
+P4 IN  centro ── [P-MOS anti-reverso] ── V+ ── polyfuse ──┬── buck drivers ── P4 OUT V+
+P4 IN  casco  ────────────────────────────────────────────┴── P4 OUT GND
 RJ45 IN pin4/5 ── MAX485 ──┬── RJ45 OUT pin4/5 (pass-through)
 ```
 
@@ -108,6 +171,7 @@ Trilha V+: fio AWG18 entre conectores ou trilha ≥ 3 mm na PCB.
 |------|-------|
 | Fusível Cabeça | 15–20 A (entrada fonte) |
 | Polyfuse módulo | 2 A |
+| Anti-reverso P4 | P-MOS AO4407 (módulo + Cabeça) |
 | TVS entrada | SMBJ24A |
 | Temperatura teste | 30 min @ 100 % ambos canais |
 

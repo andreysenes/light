@@ -39,12 +39,13 @@ Dois cabos por salto — muito mais barato que conector aviação. Detalhes: [09
 
 Arquivo `modules.json` na Cabeça — ver [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
 
-## Alimentação
+## Alimentação e proteção
 
 - Fonte **24 V** central.
 - ~**1,2 A por módulo** em carga máxima.
 - 8 módulos → fonte **24 V / 10 A**.
 - Fusível na entrada + polyfuse em cada módulo.
+- **Anti-reverso P4:** P-MOS **AO4407** em todo **P4 IN** (módulo + Cabeça) — cabo invertido não queima a placa.
 
 ## Primeira compra (protótipo)
 
@@ -59,7 +60,7 @@ Arquivo `modules.json` na Cabeça — ver [11-CONFIGURACAO-MODULOS.md](11-CONFIG
 | Fonte 24 V 5 A | 1 |
 | Heatsink alumínio | 1 |
 
-~**US$ 45** para validar Cabeça + 1 módulo + 1 cabo.
+~**US$ 41** para validar Cabeça + 1 módulo + par de cabos P4/Cat5e.
 
 ## Próximo passo
 

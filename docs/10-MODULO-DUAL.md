@@ -58,6 +58,16 @@ Mesma placa para todas as combinações futuras:
 - Trocar cor = trocar LED + atualizar config na Cabeça (lente reutiliza).
 - Detalhes ópticos: [12-LENTE-20MM.md](12-LENTE-20MM.md).
 
+## Entrada P4 — anti-reverso
+
+Cada **P4 IN** inclui **P-MOS** (AO4407) antes do polyfuse:
+
+- Centro P4 → Source  
+- Casco P4 → GND + Gate (10 kΩ)  
+- Drain → V+ protegido  
+
+Cabo P4 invertido **não** alimenta drivers nem LEDs. Esquema: [03-ELETRONICA.md](03-ELETRONICA.md).
+
 ## Drivers 10 W
 
 | Canal | Vf @ 1 A | Driver sugerido |

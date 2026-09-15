@@ -26,6 +26,7 @@ O **GND de dados** é o mesmo GND da alimentação — ligado na PCB do módulo 
 |------|----------------|
 | Conector | **DC barrel 5,5 mm × 2,1 mm** (P4 comum) |
 | Polaridade | **Centro = V+** · Externo = GND |
+| Proteção | **Anti-reverso** em cada P4 IN (P-MOS) — ver [03-ELETRONICA.md](03-ELETRONICA.md) |
 | Tensão | 24 V DC |
 | Corrente por ligação P4 | ≤ **2 A** contínuo (patch entre 2 módulos) |
 
@@ -34,9 +35,9 @@ O **GND de dados** é o mesmo GND da alimentação — ligado na PCB do módulo 
 ### Por módulo (pass-through)
 
 ```
-[P4 fêmea IN] ── V+ ── polyfuse 2A ──┬── drivers
-              ── GND ───────────────┤
-[P4 fêmea OUT] ── (mesmos nets) ────┘   ← cabo macho-macho chega aqui
+[P4 IN centro] ── [P-MOS anti-reverso] ── V+ ── polyfuse 2A ──┬── drivers
+[P4 IN casco]  ── GND ───────────────────────────────────────┤
+[P4 OUT]       ── (mesmos nets após proteção) ────────────────┘
 ```
 
 Entre módulos: cabo **P4 macho → macho** (extensão DC barata) ou **macho → fêmea** conforme o que estiver no módulo.
@@ -139,7 +140,7 @@ Resistor **120 Ω** entre D+ e D− no **último** módulo de cada ramo longo (j
 
 | Risco | Mitigação |
 |-------|-----------|
-| P4 invertido | Centro + marcado; testar multímetro antes |
+| P4 invertido | **P-MOS anti-reverso** no IN; etiqueta vermelha no centro +; testar multímetro |
 | Corrente alta num P4 só | Máx. ~2 A por patch; distro com AWG16 |
 | Ruído RS-485 | Par trançado Cat5e; não enrolar dados junto do P4 por metros |
 | GND flutuante | GND P4 = GND MAX485 em cada módulo |
@@ -147,6 +148,7 @@ Resistor **120 Ω** entre D+ e D− no **último** módulo de cada ramo longo (j
 ## Checklist montagem
 
 - [ ] P4: centro = +24 V em todos os cabos
+- [ ] Anti-reverso: cabo invertido **não** aquece placa (corrente ~0)
 - [ ] RJ45: pin 4-5 contínuo IN→OUT em cada módulo
 - [ ] Sem curto V+ ↔ GND na entrada P4
 - [ ] Terminação 120 Ω só no fim do ramo dados
