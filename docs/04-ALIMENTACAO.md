@@ -1,84 +1,59 @@
-# Alimentação — 24 V, módulos 2× 10 W
+# Alimentação — v0 (5V)
 
-## Carga por módulo Dual
+## Fonte
 
-| Estado | Potência LED | Corrente barramento 24 V* |
-|--------|--------------|---------------------------|
-| 1 canal 100 % | ~10 W | ~0,5–0,6 A |
-| 2 canais 100 % | ~20 W | ~1,0–1,2 A |
-| Standby (PWM 0) | < 1 W | ~0,05 A |
+| Item | Especificação |
+|------|----------------|
+| Tensão | **5 V DC** |
+| Corrente mínima | **1 A** (recomendado **2 A**) |
+| Tipo | USB charger, buck 5V, fonte bench |
 
-\* Com drivers buck ~90 % eficiência.
+## Dimensionamento
 
-## Dimensionamento fonte
-
-| Módulos | Corrente máx. estimada | Fonte 24 V |
-|---------|------------------------|------------|
-| 4 | ~5 A | 6 A (150 W) |
-| 8 | ~10 A | 10 A (240 W) |
-| 12 | ~15 A | 15 A (360 W) |
-
-Margem: **125 %** da carga contínua.
-
-A **Cabeça** consome < 0,5 A adicional (ESP + buck).
-
-## Onde ligar a fonte
-
-```
-[Fonte 24V] ──► P4 IN [Cabeça + anti-reverso] ── P4 OUT ──┬──► M1 ──► M2 ──► ...
-                                                          └──► [Injeção opcional]
-```
-
-A **Cabeça** é a **única fonte** do barramento P4 dos módulos. O **anti-reverso** na saída da Cabeça protege drivers, LEDs e ATtinys de polaridade invertida na fonte ou no primeiro cabo.
-
-| Proteção na Cabeça | Valor |
-|--------------------|-------|
-| Anti-reverso | P-MOS **IRF9540N** (até ~15 A) |
-| Polyfuse após MOS | **10 A** |
-| TVS | SMBJ24A |
-
-## Cabo P4 e corrente
-
-| AWG no patch P4 | Corrente contínua segura | Uso |
-|-----------------|--------------------------|-----|
-| 18 | ~3 A | Patch P4 entre 2 módulos (~1,2 A cada) |
-| 16 | ~10 A | Fonte → distro (não passar 10 A só por P4 em cadeia longa) |
-
-Queda de tensão alvo: **< 0,5 V** no pior módulo.
-
-## Injeção de energia
-
-Necessária quando:
-
-- Mais de **4 módulos** num ramo com cabo 18 AWG, ou
-- Ramo > **5 m** de comprimento total de V+.
-
-Segundo cabo 16 AWG da distro ao IN de um módulo intermediário (V+ e GND; dados continuam em série).
-
-## Proteção
-
-| Local | Proteção |
+| Carga | Corrente |
 |-------|----------|
-| Entrada fonte | Fusível 10–20 A + interruptor |
-| **Cabeça** (P4 IN → OUT) | **P-MOS IRF9540N** + polyfuse **10 A** + TVS SMBJ24A |
-| Cada módulo **P4 IN** | Polyfuse **2 A** + TVS (sem anti-reverso — barramento já protegido na Cabeça) |
+| 4× WS2812B branco 100% | ~**240 mA** |
+| Pro Micro | ~**50 mA** |
+| **Total** | **~300 mA** típico · **350 mA** pico |
 
-## Aterramento e shield
+Fonte **1A** tem margem confortável.
 
-- Dados RS-485: GND comum com P4 em cada módulo (PCB).
-- Nos módulos: shield não continuar em cadeia longa (evitar loop).
-- Terra da rede (IEC) na carcaça da fonte.
+## Como ligar
 
-## Distro box (DIY)
+```
+[Fonte 5V] ──┬── (+) Pro Micro VCC
+             ├── (+) Módulo1…4 VCC (em paralelo ou cadeia)
+             └── (−) GND comum a todos
+```
 
-- IEC + fusível + 2–4 saídas P4 ou borne + AWG16.
-- Voltímetro opcional.
-- ~US$ 10–12 em peças.
+### USB do PC
+
+- OK para **programar** e testar **1 LED**
+- **Não** recomendado para 4 LEDs full white contínuo (limite ~500 mA do USB com risco de queda)
+
+## Limitação de módulos @ 5V
+
+| Fator | Limite v0 |
+|-------|-----------|
+| Firmware | **4 módulos** (`NUM_MODULES`) |
+| Corrente | Escala linear — 8 LEDs ≈ 500 mA → fonte 1A ainda OK |
+| Queda de tensão | AWG fino longo → cores instáveis no fim da cadeia |
+
+Para **mais brilho** ou **muitos módulos**, planejar **v1** com 24V — [v1/README.md](v1/README.md).
+
+## Tabela rápida
+
+| LEDs WS2812 @ 5V | Corrente max ~ | Fonte sugerida |
+|------------------|----------------|----------------|
+| 4 | 0,25 A | 1 A |
+| 8 | 0,5 A | 1 A |
+| 16 | 1 A | 2 A |
+| 32 | 2 A | 3 A |
 
 ## Erros a evitar
 
 | Erro | Consequência |
 |------|--------------|
-| Fonte 12 V 5 A para 8 módulos 10 W | Queda, reset, cabo quente |
-| Sem fusível por módulo | Um curto derruba o rig |
-| Cadeia P4 longa com muitos módulos | Derrete plug — usar distro AWG16 + vários P4 curtos |
+| Ligar 24V nos WS2812B | Destrói LEDs |
+| GND desconectado | Comportamento errático / sem comunicação |
+| Sem capacitor no 1º LED | Piscadas aleatórias |

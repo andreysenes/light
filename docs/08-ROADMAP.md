@@ -1,94 +1,55 @@
 # Roadmap
 
-## Fase 0 — Decisões ✅
+## v0 — atual ✅ / em montagem
 
-- [x] **Cabeça única** ESP32-S3
-- [x] Cablagem **P4 + RJ45** (energia e dados separados)
-- [x] Módulo **2× 10 W** — padrão WW + vermelho
-- [x] Hardware universal + **config futura** de cores
-- [x] Decoder **ATtiny** no módulo (não ESP)
-
-## Fase 0b — Protótipo Pro Micro (atual)
-
-| # | Tarefa | Aceite |
+| # | Tarefa | Status |
 |---|--------|--------|
-| 0.1 | 4 módulos WS2812B + Pro Micro + fonte 5V | Boot pisca 4 LEDs |
-| 0.2 | Upload `firmware/promicro-4mod` | MIDI USB no DAW |
-| 0.3 | Notas C3–F3 controlam módulos 1–4 | Velocity = brilho |
-| 0.4 | PC 0 blackout, PC 1/2 presets | OK |
+| 0.1 | Documentação v0 | ✅ |
+| 0.2 | Firmware `promicro-4mod` + RGB CC 1–14 | ✅ |
+| 0.3 | Montar 4 módulos WS2812B + fonte 5V | 🔲 |
+| 0.4 | Upload + boot test (R,G,B,W) | 🔲 |
+| 0.5 | MIDI no DAW — CC cores + notas C3–F3 | 🔲 |
+| 0.6 | Presets PC 0–6 testados | 🔲 |
+| 0.7 | Carcaça mecânica básica (opcional) | 🔲 |
 
-Ver [13-PROTOTIPO-PROMICRO.md](13-PROTOTIPO-PROMICRO.md).
-
-## Fase 1 — Rig 24V (depois)
-
-| # | Tarefa | Aceite |
-|---|--------|--------|
-| 1.1 | Montar **Cabeça**: ESP32 + MAX485 + **anti-reverso IRF9540N** + MIDI USB | Envia frame teste; teste P4 invertido |
-| 1.2 | Montar **1 módulo Dual** WW+R | 900 mA/canal medido |
-| 1.3 | Fabricar **1 par cabos** 0,5 m: P4 + Cat5e/RJ45 | P4 centro +; pin 4-5 dados |
-| 1.4 | **Anti-reverso P-MOS** no P4 IN | Cabo invertido não aquece placa |
-| 1.5 | Protocolo SET_LEVELS addr=1 | Fade suave A e B |
-| 1.6 | Montar **lentes 20 mm 90°** + holder em A e B | Folga 0,5–1,5 mm; feixe sem obstrução |
-| 1.7 | Teste térmico 30 min 100 % | Heatsink < 65 °C; PMMA sem deformar |
-| 1.8 | MIDI do DAW → ambos canais | Reaper ou Ableton |
-
-## Fase 2 — Config e segundo módulo
+## v0.1 — melhorias opcionais
 
 | # | Tarefa |
 |---|--------|
-| 2.1 | `modules.json` na Cabeça |
-| 2.2 | Segundo módulo (ex. WW+WW) |
-| 2.3 | Cabos patch P4 + Cat5e × 3 |
-| 2.4 | Modo Performance (notas por cor semântica) |
-| 2.5 | Adaptadores T-P4 e T-RJ45 DIY |
+| 0.8 | Fade suave entre cores (no firmware) |
+| 0.9 | Aumentar para 6–8 módulos (`NUM_MODULES`) |
+| 0.10 | Salvar presets em EEPROM |
 
-## Fase 3 — PCB
+## v1 — rig de palco (planejado)
 
-| # | Tarefa |
+Migrar conceito MIDI validado na v0 para hardware de palco:
+
+| # | Marco |
 |---|--------|
-| 3.1 | KiCad: PCB módulo Dual |
-| 3.2 | KiCad: PCB Cabeça (ou usar DevKit) |
-| 3.3 | KiCad: adaptadores T-P4 e T-RJ45 |
-| 3.4 | Carcaça alumínio com aberturas Ø20 mm |
-| 3.5 | Validar mancha 90° a 1 m e 2 m de distância |
+| 1.1 | Cabeça **ESP32-S3** + MIDI USB |
+| 1.2 | Barramento **P4 (24V) + RJ45 (RS-485)** |
+| 1.3 | Módulo **Dual 2× 10W** (WW + vermelho) + ATtiny |
+| 1.4 | Lente **20mm 90°** |
+| 1.5 | Anti-reverso **IRF9540N** na Cabeça |
+| 1.6 | `modules.json` — perfis por módulo |
 
-## Fase 4 — Rig 8+ módulos
+Especificação completa: [v1/README.md](v1/README.md).
 
-| # | Tarefa |
-|---|--------|
-| 4.1 | Distro 24 V + fusíveis |
-| 4.2 | Estoque stars amber/green |
-| 4.3 | Presets Program Change |
-| 4.4 | Documentar layout palco exemplo |
-
-## Fase 5 — Opcional
-
-- EEPROM tipo LED no módulo (auto-discovery)
-- MIDI DIN na Cabeça
-- DMX OUT da Cabeça
-- Portal web config Wi‑Fi (só Cabeça)
-
-## Estrutura de repositório
+## Estrutura do repositório
 
 ```
 /
-├── README.md
+├── README.md                 # v0
 ├── docs/
-│   ├── 09-CABLAGEM.md
-│   ├── 10-MODULO-DUAL.md
-│   └── 11-CONFIGURACAO-MODULOS.md
+│   ├── 00–08, DECISAO        # documentação v0
+│   └── v1/                   # especificação futura
 ├── firmware/
-│   ├── head/          # ESP32-S3 MIDI + RS-485
-│   └── module/        # ATtiny decoder
-├── hardware/
-│   ├── kicad/
-│   └── cable/         # pinagem P4 + RJ45
-└── config/
-    └── modules.json.example
+│   └── promicro-4mod/        # firmware v0
+└── (v1: head/, module/, kicad/ — ainda não criados)
 ```
 
-## Perguntas em aberto
+## Critério para iniciar v1
 
-1. Quantos módulos na **primeira compra** (4, 8, 12)?
-2. **DAW** principal para mapear presets?
-3. Cabeça em **caixa de mesa** ou montada no truss junto ao M1?
+- [ ] v0 controla 4 módulos de forma estável no DAW por 1+ ensaio
+- [ ] Mapa MIDI (CC + notas) validado
+- [ ] Decisão: quantos módulos 10W no rig final (4, 8, 12)

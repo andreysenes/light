@@ -1,138 +1,79 @@
-# Arquitetura modular — cabeça única
+# Arquitetura — v0
 
-## Princípio
+## Papéis
 
-| Peça | Inteligência | Função |
-|------|--------------|--------|
-| **Cabeça** | ESP32-S3 | MIDI, presets, config de módulos, mestre RS-485 |
-| **Módulo Dual** | ATtiny (decoder) | 2× PWM → 2× driver 10 W → 2× LED |
-| **Cabos P4 + RJ45** | — | Energia 24 V e dados RS-485 separados |
+| Peça | MCU? | Função |
+|------|------|--------|
+| **Cabeça** | Pro Micro | MIDI USB → pixels WS2812B |
+| **Módulo 1–4** | Nenhum | 1 LED RGB + pass-through cabos |
+| **Fonte 5V** | — | Alimentação |
 
-Não há ESP32 nos módulos. Isso reduz custo, calor e complexidade em cada ponto de luz.
+Não há ESP32, RS-485 nem decoder nos módulos na v0.
 
-## Diagrama do sistema
+## Fluxo de dados
 
 ```mermaid
 flowchart LR
-    subgraph daw [DAW]
-        MIDI[USB MIDI]
-    end
-
-    subgraph head [Cabeça — único ESP32]
-        ESP[ESP32-S3]
-        RS_M[MAX485]
-        ESP --> RS_M
-    end
-
-    subgraph cable [P4 + RJ45]
-        V24[P4 24V]
-        DP[Cat5e RS-485]
-    end
-
-    subgraph mod [Módulo Dual — repetível]
-        RS_S[MAX485]
-        MCU[ATtiny]
-        DRV[2× driver 10W]
-        LED[LED A + LED B]
-        RS_S --> MCU --> DRV --> LED
-    end
-
-    MIDI --> ESP
-    RS_M --> cable
-    cable --> mod
-    mod --> cable
+    DAW[DAW] -->|USB MIDI| PM[Pro Micro]
+    PM -->|GPIO D6| M1[Módulo 1 WS2812]
+    M1 -->|DOUT| M2[Módulo 2]
+    M2 -->|DOUT| M3[Módulo 3]
+    M3 -->|DOUT| M4[Módulo 4]
 ```
 
-## Cabeça (Head Unit)
+- Protocolo WS2812B: **endereço na posição** da cadeia (0, 1, 2, 3)
+- Firmware trata `modules[0]`…`modules[3]` no FastLED
 
-Caixa separada na mesa ou no rack — **não** compartilha dissipação com LEDs.
+## Cabeça (Pro Micro)
 
-| Bloco | Componente |
-|-------|------------|
-| MCU | ESP32-S3 DevKit ou módulo USB |
-| Barramento | MAX485 (half-duplex) |
-| Entrada | P4 IN — fonte 24 V |
-| **Proteção** | **P-MOS anti-reverso** no barramento → **P4 OUT** (única saída de energia) |
-| Alimentação local | Buck 24→5 V (do barramento protegido) |
-| Interface | USB MIDI para DAW |
-| Armazenamento | `modules.json` em SPIFFS/LittleFS |
+| Item | Especificação |
+|------|----------------|
+| Placa | SparkFun Pro Micro 5V / Arduino Leonardo |
+| USB | MIDI nativo (ATmega32U4) |
+| Data out | **Pin 6** (configurável em `LED_PIN`) |
+| Firmware | `firmware/promicro-4mod/promicro-4mod.ino` |
 
-Saída: **P4** (24 V) + **RJ45** (dados) → primeiro módulo (ou distro + tronco).
+### Responsabilidades
 
-### Funções firmware Cabeça
+1. Receber MIDI (CC, notas, Program Change)
+2. Manter cor RGB de cada módulo
+3. Atualizar cadeia WS2812B (`FastLED.show()`)
 
-1. Receber MIDI (notas, CC, Program Change).
-2. Resolver perfil de cada módulo (`ch_a`, `ch_b` por addr).
-3. Enviar frames `SET_LEVELS` no RS-485.
-4. Watchdog: blackout se USB desconectado (configurável).
-5. (Futuro) Portal web para editar `modules.json`.
-
-## Módulo Dual (satélite passivo)
-
-Ver detalhes em [10-MODULO-DUAL.md](10-MODULO-DUAL.md).
-
-Resumo:
-
-- **2 canais × 10 W** — padrão warm white + vermelho.
-- PCB **universal** — outras cores = trocar star LED + config na Cabeça.
-- Endereço: **DIP switch** (3–4 bits).
-- Conectores: **P4 IN/OUT** (pass-through 24 V) + **RJ45 IN/OUT** (pass-through dados).
-
-## Cablagem
-
-Especificação completa: [09-CABLAGEM.md](09-CABLAGEM.md).
-
-| Chicote | Conector | Função |
-|---------|----------|--------|
-| Energia | **P4** 5,5×2,1 mm | 24 V, centro + |
-| Dados | **RJ45** + Cat5e | RS-485 pin 4-5 |
-
-## Por que RS-485 no cabo de palco
-
-| Barramento | Cabeça única + módulos simples |
-|------------|-------------------------------|
-| I2C | Alcance curto, ruído |
-| DMX512 | Viável (fase futura como modo compatível) |
-| **RS-485** | **Cat5e + RJ45**, barato, 100 m+ |
-| Wi‑Fi por módulo | Descartado (sem ESP no módulo) |
-
-## Endereçamento e configuração
-
-| Camada | Onde | O quê |
-|--------|------|-------|
-| Física | DIP no módulo | Addr 1–15 |
-| Lógica | Cabeça `modules.json` | Tipo cor ch A, ch B |
-| Física LED | Soquete star | LED 10 W correspondente |
-
-Exemplos de perfis: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
-
-## Split em T
+## Módulo (repetível × 4)
 
 ```
-[Cabeça]═══[M1]═══[M2]═══[M3]═══[M4]═══ ...
-                              ├════ [M5]
-                              ├════ [M6]
-                              └════ [M9]═══[M10]═══ ...
+     IN                          OUT
+  5V ──┬── VCC LED ──┬── 5V
+ GND ──┴── GND LED ──┴── GND
+DATA ───── DIN    DOUT ─── DATA
 ```
 
-- Adaptador **T-P4** + **T-RJ45** ou distro com várias saídas.
-- RS-485 em derivação: OK até ~12 módulos em palco pequeno.
-- Ramo com muitos módulos 10 W → **injeção V+** da fonte (ver [04-ALIMENTACAO.md](04-ALIMENTACAO.md)).
+| LED na cadeia | Índice firmware | Nota MIDI |
+|---------------|-----------------|-----------|
+| Módulo 1 (primeiro) | 0 | C3 (60) |
+| Módulo 2 | 1 | D3 (61) |
+| Módulo 3 | 2 | E3 (62) |
+| Módulo 4 (último) | 3 | F3 (63) |
 
-## Dimensionamento rápido
+## Alimentação
 
-| Módulos | Potência LED máx. | Corrente 24 V (barramento)* | Fonte |
-|---------|-------------------|----------------------------|-------|
-| 4 | 80 W | ~4 A | 24 V / 6 A |
-| 8 | 160 W | ~8 A | 24 V / 10 A |
-| 12 | 240 W | ~12 A | 24 V / 15 A |
+- **5V** e **GND** em paralelo em todos os módulos (não passam pelo Pro Micro para os LEDs)
+- Pro Micro: VCC da mesma fonte 5V ou USB só para programar
 
-\* Com drivers buck eficientes; cada módulo ~1–1,2 A @ 24 V em full blast.
+## Expansão
 
-## Tamanho físico alvo
+| Mudança | Esforço |
+|---------|---------|
+| Mais de 4 módulos | Alterar `NUM_MODULES` + fonte maior |
+| Módulos físicos separados | Mesma cadeia DATA |
+| v1 (24V, 10W) | Nova Cabeça + novos módulos — [v1/README.md](v1/README.md) |
 
-| Peça | Dimensão alvo |
-|------|---------------|
-| Cabeça | Caixa 120×80×40 mm |
-| Módulo Dual | 100×100×45 mm (heatsink integrado) |
-| Cabo patch | 0,3–0,8 m entre módulos |
+## Topologia física
+
+```
+        [Mod1]──[Mod2]──[Mod3]──[Mod4]
+           ▲
+      [Pro Micro + fonte 5V]
+```
+
+Splits em T **não** aplicam na v0 — uma única cadeia DATA.

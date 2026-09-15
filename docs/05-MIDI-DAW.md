@@ -1,115 +1,83 @@
-# MIDI e integração com DAW
+# MIDI e DAW — v0
 
-Toda lógica MIDI vive na **Cabeça** (único ESP32). Módulos só recebem níveis 0–255 nos canais A e B.
+Firmware: `firmware/promicro-4mod/promicro-4mod.ino`
 
 ## Fluxo
 
-```mermaid
-sequenceDiagram
-    participant DAW
-    participant Head as Cabeça ESP32
-    participant Bus as RJ45 RS-485
-    participant Mod as Módulo addr=N
-
-    DAW->>Head: MIDI Note/CC
-    Head->>Head: modules.json → ch A/B
-    Head->>Bus: SET_LEVELS(addr, A, B)
-    Bus->>Mod: frame RS-485
-    Mod->>Mod: PWM drivers
+```
+DAW ──USB MIDI──► Pro Micro ──► FastLED ──► 4× WS2812B RGB
 ```
 
-## Protocolo RS-485 (v2 — 2 canais)
+## Mapa MIDI — RGB por módulo
 
-| Byte | Campo | Descrição |
-|------|-------|-----------|
-| 0 | SYNC | 0xAA |
-| 1 | ADDR | 1–127 módulo; 0xFF broadcast |
-| 2 | CMD | Ver tabela |
-| 3 | CH_A | 0–255 |
-| 4 | CH_B | 0–255 |
-| 5 | CRC8 | XOR bytes 0–4 |
+Cada módulo: **3 Control Changes** (R, G, B). Valor DAW 0–127 → LED 0–255.
 
-| CMD | Valor | Ação |
-|-----|-------|------|
-| SET_LEVELS | 0x01 | Aplica A e B |
-| FADE | 0x02 | + uint16 ms |
-| BLACKOUT | 0x03 | A=0, B=0 (broadcast) |
-| PING | 0x10 | Módulo responde PONG |
-
-Baud: **115200** 8N1 half-duplex.
-
-## Mapeamento MIDI
-
-### Modo Performance (por cor semântica)
-
-Acende **todos os canais** configurados com aquele tipo em `modules.json`:
-
-| Nota | Tipo | Efeito |
-|------|------|--------|
-| C3 | red | Todos `ch_* == red` |
-| D3 | warm_white | Todos WW |
-| E3 | amber | Todos amber |
-| G3 | — | Blackout |
-
-Velocity → 0–127 → escala 0–255 no barramento.
-
-### Modo Técnico (por módulo)
+| Módulo | Vermelho | Verde | Azul |
+|--------|----------|-------|------|
+| **1** | CC **1** | CC **2** | CC **3** |
+| **2** | CC **4** | CC **5** | CC **6** |
+| **3** | CC **9** | CC **10** | CC **11** |
+| **4** | CC **12** | CC **13** | CC **14** |
 
 | CC | Função |
 |----|--------|
-| CC 20 | Selecionar addr 1–16 |
-| CC 21 | Nível ch A do addr selecionado |
-| CC 22 | Nível ch B do addr selecionado |
-| CC 7 | Master dimmer (todos os módulos) |
+| **7** | Master dimmer (todos os módulos) |
 
-### Program Change — presets
+## Notas (gatilho + brilho)
 
-| PC | Preset exemplo |
-|----|----------------|
-| 0 | Blackout |
-| 1 | Warm wash (WW 100 % onde existir) |
-| 2 | Red wash |
-| 3 | WW+red blend (WW 40 %, red 80 % nos módulos WW+R) |
+| Nota | Módulo | Comportamento |
+|------|--------|---------------|
+| **60** (C3) | 1 | Acende com RGB dos CC 1–3; **velocity** = brilho |
+| **61** (D3) | 2 | CC 4–6 |
+| **62** (E3) | 3 | CC 9–11 |
+| **63** (F3) | 4 | CC 12–14 |
+| Note off | — | Apaga o módulo |
 
-## Exemplo `modules.json`
+## Program Change (presets)
 
-```json
-{
-  "midi_channel": 1,
-  "modules": [
-    { "addr": 1, "ch_a": "warm_white", "ch_b": "red" },
-    { "addr": 2, "ch_a": "warm_white", "ch_b": "warm_white" },
-    { "addr": 3, "ch_a": "red", "ch_b": "amber" }
-  ]
-}
+| PC | Preset | Cor (todos os módulos) |
+|----|--------|------------------------|
+| **0** | Blackout | Apagado |
+| **1** | Warm white | RGB(255, 180, 80) |
+| **2** | Vermelho | RGB(255, 0, 0) |
+| **3** | Verde | RGB(0, 255, 0) |
+| **4** | Azul | RGB(0, 0, 255) |
+| **5** | Magenta | RGB(255, 0, 255) |
+| **6** | Branco | RGB(255, 255, 255) |
+
+## Canal MIDI
+
+```cpp
+#define MIDI_CHANNEL 1   // alterar; 0 = omni
 ```
 
-Lógica Cabeça ao receber “warm_white” note:
+## Configuração no DAW
 
-```text
-para cada módulo em modules:
-  se ch_a == warm_white → enviar CH_A com nível
-  se ch_b == warm_white → enviar CH_B com nível
-```
+### Reaper
 
-## DAW — configuração rápida
+1. Preferences → MIDI → habilitar dispositivo USB do Pro Micro
+2. Track com saída MIDI → Pro Micro
+3. Envelope ou knobs nos CC 1–14
 
-**Reaper:** Preferences → MIDI → habilitar ESP USB → track com hardware MIDI out.
+### Ableton Live
 
-**Ableton:** Preferences → Link/MIDI → Track On no dispositivo.
+1. Preferences → Link/MIDI → Track On no Pro Micro
+2. MIDI mapping nos knobs para CC 1–14
 
-Latência típica USB MIDI: 1–3 ms + 1 frame RS-485 (~1 ms).
+## Exemplo de uso
 
-## Watchdog
+1. `CC1=127, CC2=0, CC3=0` → módulo 1 vermelho
+2. `CC2=127` → amarelo
+3. `CC1=127, CC3=127` → magenta
+4. Nota C3 velocity 100 → módulo 1 com ~80% do brilho
 
-| Evento | Ação padrão |
-|--------|-------------|
-| USB MIDI desconectado 2 s | BLACKOUT broadcast |
-| Módulo não responde PING | Log serial; UI futura marca offline |
-| Nota de pânico (G9) | BLACKOUT imediato |
+## Latência
 
-## Evolução futura
+| Trecho | Tempo típico |
+|--------|--------------|
+| USB MIDI | 1–3 ms |
+| FastLED update | < 1 ms |
 
-- MIDI DIN IN na Cabeça (6N138).
-- Emulação DMX OUT (Cabeça como conversor MIDI→DMX para outros fixtures).
-- RTP-MIDI via Wi‑Fi **só na Cabeça** (módulos inalterados).
+## v1 (futuro)
+
+MIDI na Cabeça ESP32 + RS-485 para módulos 10W — mapa em evolução; ver [v1/README.md](v1/README.md).

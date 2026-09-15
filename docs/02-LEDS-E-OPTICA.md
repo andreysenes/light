@@ -1,100 +1,63 @@
-# LEDs e óptica — 2× 10 W por módulo
+# LEDs — WS2812B RGB (v0)
 
-## Padrão do módulo Dual
+## LED usado
 
-| Soquete | LED padrão | Potência | Corrente driver |
-|---------|------------|----------|-----------------|
-| **A** | Warm white **3000 K** | 10 W | ~900 mA CC |
-| **B** | Vermelho **620–630 nm** | 10 W | ~900 mA CC |
+| Item | Especificação |
+|------|----------------|
+| Tipo | **WS2812B** (ou WS2812B-B breakout) |
+| Tensão | **5 V** |
+| Cor | **RGB completo** — 8 bits por canal |
+| Por módulo | **1 LED** |
+| Total no rig | **4 LEDs** |
 
-Um LED mono por canal — sem RGB integrado.
+## Por que WS2812B na v0
 
-## Por que warm white + vermelho
+| Vantagem | Detalhe |
+|----------|---------|
+| RGB completo | Milhões de cores — sem misturar LEDs mono |
+| 1 fio data | Cadeia simples entre módulos |
+| Barato | Comum em estoque DIY |
+| Integrado | Driver dentro do LED — sem MOSFET |
 
-| Uso em palco | Cor |
-|--------------|-----|
-| Wash / iluminação geral | Warm white |
-| Clima, drama, backlight | Vermelho |
-| “Branco” adicional | Segundo WW em módulo configurado WW+WW |
+## Cor e brilho
 
-Combinação barata, LEDs fáceis de encontrar, bom para ensaio e shows pequenos.
+| Controle MIDI | Efeito |
+|---------------|--------|
+| CC 1–14 | R, G, B por módulo (0–255) |
+| CC 7 | Master dimmer (FastLED brightness) |
+| Velocity (notas) | Escala RGB do módulo |
+| PC presets | Cores pré-definidas em todos |
 
-## LEDs 10 W — o que comprar
+Não é necessário LED warm white separado — **R+G parcial** faz amarelo/laranja; **R+G+B** faz branco.
 
-Stars 10 W costumam ter **3 chips em série** no mesmo PCB:
+## Consumo
 
-| Cor | Busca | Vf total @ 900 mA | lm aprox. |
-|-----|-------|-------------------|-----------|
-| Warm white | `10W warm white LED star 3000K` | 9–12 V | 800–900 |
-| Red | `10W red LED star 620nm` | 6–9 V | 300–400 |
-| Amber | `10W amber LED star 590nm` | 9–12 V | 400–500 |
-| Green | `10W green LED star` | 9–12 V | 600–700 |
+| Estado | Corrente por LED | 4 LEDs |
+|--------|------------------|--------|
+| Apagado | ~1 mA | ~4 mA |
+| Cor média | ~20–40 mA | ~80–160 mA |
+| Branco full | ~60 mA | **~240 mA** |
 
-**Nunca** ligar star 10 W direto em 24 V sem driver CC.
+Fonte **5V / 1A** é suficiente com margem.
 
-## Catálogo para módulos configuráveis
+## Ordem de cores no firmware
 
-Mesmo soquete mecânico; estoque sugerido além do padrão:
+```cpp
+#define COLOR_ORDER GRB   // padrão WS2812B
+```
 
-| Tipo | Quando usar |
-|------|-------------|
-| `warm_white` | Wash, pele, ambiente |
-| `cool_white` | Luz fria / industrial |
-| `red` | Drama, alarme |
-| `amber` | Sunset, fogo |
-| `green` | Ambiente, terror, natureza |
-| `blue` | Frio, night club (fase 2) |
+Se as cores saírem trocadas (vermelho aparece verde), testar `RGB` ou `BGR` no `.ino`.
 
-Config na Cabeça: [11-CONFIGURACAO-MODULOS.md](11-CONFIGURACAO-MODULOS.md).
+## Limitações vs. palco grande
 
-## Driver e elétrica
+| WS2812B v0 | LED 10W v1 (futuro) |
+|------------|---------------------|
+| ~0,3 W / LED | ~10–20 W / módulo |
+| Luz de proximidade / efeito | Wash de palco |
+| Sem lente dedicada | Lente 20mm 90° planejada |
 
-| Canal | Vf @ 900 mA | Potência LED |
-|-------|-------------|--------------|
-| Red | ~2,4–2,8 V × 3 chips | ~7–8 W útil |
-| WW | ~3,2 V × 3 chips | ~9–10 W |
+Para wash de palco grande, evoluir para [v1](v1/README.md).
 
-Módulo buck CC ajustado para **900 mA** (ou 1050 mA se star suportar).
+## Boot visual
 
-PWM no pino EN/DIM do driver — ver [03-ELETRONICA.md](03-ELETRONICA.md).
-
-## Óptica — lente 20 mm por LED
-
-Cada star 10 W recebe **1 lente óptica de 20 mm** (PMMA) + holder, para dispersar o feixe de forma controlada e aproveitar melhor os lúmens na área do palco.
-
-| Elemento | Especificação |
-|----------|---------------|
-| Lente | **Ø 20 mm PMMA**, feixe **90°** (único ângulo do projeto) |
-| Holder | Anel 20 mm fixado no heatsink/PCB |
-| Star PCB | 20 mm, furo M3 — compatível com kits lens+holder comuns |
-| Folga LED–lente | 0,5–1,5 mm (PMMA não suporta contato quente) |
-| Heatsink | Perfil Al ≥ 80 mm; lente não substitui dissipação |
-| Centros A–B | 28–32 mm entre eixos das duas lentes |
-
-Especificação completa: [12-LENTE-20MM.md](12-LENTE-20MM.md).
-
-### Efeito prático
-
-- Star nu ≈ 120° — muita luz perdida nas bordas do módulo.
-- Lente 90° ≈ lux **2–4× maior** na mancha útil a 1–2 m (mesma potência elétrica).
-- WW e Red mantêm manchas distintas mas com overlap ajustável pela distância entre lentes.
-
-## Branco sem segundo canal RGB
-
-- **Warm white** já entrega branco de qualidade (CRI melhor que RGB misturado).
-- Módulo **WW + WW** = dobro de fluxo branco.
-- Não é necessário RGB para o caso de uso atual.
-
-## Potência e calor
-
-| Cenário | Dissipação módulo |
-|---------|-------------------|
-| Só WW 100 % | ~12 W no heatsink |
-| WW + Red 100 % | ~22–25 W |
-| Red only | ~10 W |
-
-Regra: se não aguenta toque prolongado, aumentar heatsink ou reduzir duty cycle no show.
-
-## Upgrade por módulo
-
-Trocar star 10 W por **20 W** no futuro exige novo driver (1,5 A+) e heatsink maior — manter 10 W na v1.
+Após upload, firmware pisca cada módulo: **vermelho → verde → azul → branco** — confirma ordem da cadeia e ordem GRB.

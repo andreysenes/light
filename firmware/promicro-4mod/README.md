@@ -1,6 +1,8 @@
-# Protótipo v0 — Pro Micro + 4× WS2812B
+# StageMod v0 — Firmware Pro Micro + 4× WS2812B
 
-Primeiro hardware do StageMod usando o que você já tem: **1 Pro Micro** e **4 LEDs WS2812B** (um por módulo).
+Firmware oficial da **v0**: **1 Pro Micro** e **4 LEDs WS2812B** (um por módulo), **RGB completo** via MIDI.
+
+Documentação: [docs/](../../docs/) · MIDI: [05-MIDI-DAW.md](../../docs/05-MIDI-DAW.md) · Cablagem: [07-CABLAGEM.md](../../docs/07-CABLAGEM.md)
 
 ## O que este firmware faz
 
@@ -112,6 +114,6 @@ Após upload, o boot pisca os 4 módulos em branco em sequência. Se não piscar
 - [ ] Migrar Cabeça para ESP32-S3 + RS-485 (doc principal do repo)
 - [ ] Trocar WS2812B por LEDs 10W quando hardware estiver pronto
 
-## Relação com o projeto completo
+## v1 (futuro)
 
-Este protótipo valida **MIDI → luz modular** antes do rig 24V / P4 / ATtiny. A lógica de `modules.json` e endereços do StageMod completo evolui deste mapeamento nota→módulo.
+Rig 24V / 10W / ESP32 — [docs/v1/](../../docs/v1/README.md). A v0 valida **MIDI → luz modular** antes dessa migração.

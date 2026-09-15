@@ -1,82 +1,68 @@
-# StageMod — Iluminação de palco modular com ESP32 + MIDI
+# StageMod v0 — Iluminação de palco modular + MIDI
 
-Sistema de módulos de luz acopláveis para palco/estúdio: **um único ESP32 como cabeça**, cabo proprietário **energia + dados**, módulos simples com **2× 10 W** por unidade (padrão warm white + vermelho), configuráveis no futuro para outras combinações de cores.
+**4 módulos** acopláveis, **1 LED WS2812B RGB** por módulo, controlados por **Pro Micro** via **MIDI USB** a partir de uma DAW.
 
-## Arquitetura em uma frase
-
-```
-DAW ──MIDI USB──► [Cabeça ESP32] ── P4 (24V) + RJ45 (dados) ── [Mod1]──[Mod2]──[Mod3]──...
-```
-
-Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
-
-## Começar agora — protótipo com o que você tem
-
-**Pro Micro + 4× WS2812B** (1 LED por módulo), MIDI USB:
-
-| | |
-|---|---|
-| Firmware | [firmware/promicro-4mod/promicro-4mod.ino](firmware/promicro-4mod/promicro-4mod.ino) |
-| Ligação | [firmware/promicro-4mod/README.md](firmware/promicro-4mod/README.md) |
-| Doc | [docs/13-PROTOTIPO-PROMICRO.md](docs/13-PROTOTIPO-PROMICRO.md) |
+## Arquitetura v0
 
 ```
 DAW ──MIDI USB──► [Pro Micro] ──D6──► Mod1 ──► Mod2 ──► Mod3 ──► Mod4
-                      └── Fonte 5V (≥1A) ── VCC/GND em cadeia
+                      │
+                   Fonte 5V (≥1A) ── VCC/GND em cadeia nos módulos
 ```
 
-Notas **C3–F3** = módulos 1–4. Upload com Arduino IDE (placa Leonardo / Pro Micro).
+| Peça | Função |
+|------|--------|
+| **Pro Micro** | Cabeça única — MIDI → cores RGB |
+| **Módulo** | 1× WS2812B + pass-through 5V/GND/DATA |
+| **Fonte 5V** | Alimenta Pro Micro e os 4 LEDs |
 
-## Documentação (rig final 24V)
+Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
+
+## Começar
+
+| Passo | Onde |
+|-------|------|
+| 1. Ligar hardware | [docs/07-CABLAGEM.md](docs/07-CABLAGEM.md) |
+| 2. Upload firmware | [firmware/promicro-4mod/](firmware/promicro-4mod/) |
+| 3. Mapear MIDI no DAW | [docs/05-MIDI-DAW.md](docs/05-MIDI-DAW.md) |
+
+## Documentação v0
 
 | Documento | Conteúdo |
 |-----------|----------|
-| [Visão geral](docs/00-VISAO-GERAL.md) | Objetivos e decisões atuais |
-| [Arquitetura](docs/01-ARQUITETURA-MODULAR.md) | Cabeça única, barramento, splits |
-| [LEDs](docs/02-LEDS-E-OPTICA.md) | 10 W mono, WW + vermelho |
-| [Eletrônica](docs/03-ELETRONICA.md) | Drivers, MOSFET, decoder ATtiny |
-| [Alimentação](docs/04-ALIMENTACAO.md) | 24 V, injeção, fusíveis |
-| [MIDI / DAW](docs/05-MIDI-DAW.md) | Mapeamento e protocolo |
-| [BOM](docs/06-BOM.md) | Lista de materiais |
-| [Topologia](docs/07-TOPOLOGIA-CABEAMENTO.md) | Daisy-chain e splits |
-| [Roadmap](docs/08-ROADMAP.md) | Próximos passos |
-| [**Cablagem**](docs/09-CABLAGEM.md) | **P4 energia + RJ45 dados (Cat5e)** |
-| [**Módulo Dual**](docs/10-MODULO-DUAL.md) | **2× 10 W, hardware universal** |
-| [**Config módulos**](docs/11-CONFIGURACAO-MODULOS.md) | **WW+R, WW×2, R+amber, …** |
-| [**Lente 20 mm**](docs/12-LENTE-20MM.md) | **1 lente por LED, feixe 90°** |
+| [Visão geral](docs/00-VISAO-GERAL.md) | Objetivos e decisões v0 |
+| [Arquitetura](docs/01-ARQUITETURA-MODULAR.md) | Cabeça + 4 módulos em cadeia |
+| [LEDs](docs/02-LEDS-E-OPTICA.md) | WS2812B RGB |
+| [Eletrônica](docs/03-ELETRONICA.md) | Pro Micro, data, 5V |
+| [Alimentação](docs/04-ALIMENTACAO.md) | Fonte 5V, limites |
+| [MIDI / DAW](docs/05-MIDI-DAW.md) | CC RGB, notas, presets |
+| [BOM](docs/06-BOM.md) | Lista de materiais v0 |
+| [Cablagem](docs/07-CABLAGEM.md) | Fios por módulo |
+| [Roadmap](docs/08-ROADMAP.md) | v0 atual → v1 futuro |
 | [Resumo rápido](docs/DECISAO-RESUMO.md) | Decisões em 2 minutos |
-| [**Protótipo Pro Micro**](docs/13-PROTOTIPO-PROMICRO.md) | **4× WS2812B — começar aqui** |
 
-## Decisões atuais
+## Decisões v0
 
 | Tópico | Decisão |
 |--------|---------|
-| Controle | **1× ESP32-S3** na Cabeça (MIDI USB → RS-485) |
-| Módulo | **2 canais × 10 W** — padrão **warm white + vermelho** |
-| Óptica | **Lente PMMA 20 mm** (90°) — **1 por LED** |
-| MCU no módulo | **ATtiny** decoder (não ESP) |
-| Cabos | **P4** (24 V) + **RJ45/Cat5e** (RS-485) — [especificação](docs/09-CABLAGEM.md) |
-| Proteção | **Anti-reverso P-MOS na saída P4 da Cabeça** (IRF9540N — única fonte do rig) |
-| Config futura | Mesma PCB; trocar LED + `modules.json` na Cabeça |
-| Fonte | 24 V central, dimensionada pelo número de módulos |
+| Cabeça | **1× Pro Micro** (ATmega32U4, MIDI USB) |
+| Módulos | **4×** com **1 WS2812B** cada |
+| Cor | **RGB completo** por módulo (CC 1–14) |
+| Alimentação | **5 V** / ≥ 1 A |
+| Dados | **1 fio** WS2812B (cadeia série, pin D6) |
+| Cabos | 5V + GND + DATA (3 fios entre módulos) |
 
-## Topologia
+## MIDI rápido
 
-```
-[Fonte 24V]──►[Cabeça ESP32]═══╡ Mod 1 ╞═══╡ Mod 2 ╞═══╡ Mod 3 ╞═══╡ Mod 4 ╞═══
-                                    │                    │
-                                    ╞══ Mod 5    Mod 6 ╞═╡
-                                    ╞══ Mod 7    Mod 8 ╞═╡
-                                    └── Mod 9 ── Mod 10 ── ...
-```
+| Módulo | R | G | B |
+|--------|---|---|---|
+| 1 | CC 1 | CC 2 | CC 3 |
+| 2 | CC 4 | CC 5 | CC 6 |
+| 3 | CC 9 | CC 10 | CC 11 |
+| 4 | CC 12 | CC 13 | CC 14 |
 
-Cada salto = **2 cabos baratos**: P4 (energia) + patch rede (dados).
+Notas **C3–F3** = módulos 1–4 (velocity = brilho). **CC 7** = dimmer. **PC 0** = blackout.
 
-## Próximo passo
+## v1 (futuro)
 
-1. Montar **Cabeça** (ESP32 + MAX485 + MIDI USB).
-2. Montar **1 módulo Dual** (2× 10 W WW+R).
-3. Fazer **1 par de cabos** patch: P4 + Cat5e 0,5 m.
-4. Validar protocolo e dissipação térmica.
-
-Ver [docs/08-ROADMAP.md](docs/08-ROADMAP.md).
+Rig de palco 24V, LEDs 10W, ESP32, P4 + RJ45 — especificação em [docs/v1/](docs/v1/).
