@@ -1,7 +1,7 @@
 /*
  * StageMod v0 — Pro Micro
  * - 4× WS2812B (módulos spot, pin 6)
- * - Tubo flexível WS2812B addressable (gradiente / chase, pin 5)
+ * - Tubo D15-Woven Magic WS2811 (gradiente / chase, pin 5)
  *
  * Bibliotecas: MIDI Library (FortySevenEffects), FastLED
  */
@@ -13,13 +13,14 @@
 #define MODULE_PIN    6
 #define NUM_MODULES   4
 
-// --- Tubo flexível (fita WS2812B dentro do tubo silicone) ---
+// --- Tubo D15-Woven Magic (manual: IC WS2811, 50 LED/m, corte 20 mm) ---
 #define TUBE_PIN      5
-// Tubo 4 m (AliExpress 1005006239466933): 50 LED/m → 200 | 60 LED/m → 240
-#define NUM_TUBE_LEDS 200
+#define NUM_TUBE_LEDS 200   // 4 m × 50 LED/m
 
-#define LED_TYPE      WS2812B
-#define COLOR_ORDER   GRB
+#define MODULE_LED_TYPE   WS2812B
+#define MODULE_COLOR_ORDER GRB
+#define TUBE_LED_TYPE     WS2811
+#define TUBE_COLOR_ORDER  RGB   // se cores invertidas, trocar para GRB
 
 #define MIDI_NOTE_MODULE_1  60
 #define MIDI_CHANNEL        1
@@ -356,8 +357,8 @@ void bootTestTube() {
 }
 
 void setup() {
-  FastLED.addLeds<LED_TYPE, MODULE_PIN, COLOR_ORDER>(modules, NUM_MODULES);
-  FastLED.addLeds<LED_TYPE, TUBE_PIN, COLOR_ORDER>(tube, NUM_TUBE_LEDS);
+  FastLED.addLeds<MODULE_LED_TYPE, MODULE_PIN, MODULE_COLOR_ORDER>(modules, NUM_MODULES);
+  FastLED.addLeds<TUBE_LED_TYPE, TUBE_PIN, TUBE_COLOR_ORDER>(tube, NUM_TUBE_LEDS);
   FastLED.setBrightness(masterBrightness);
   FastLED.clear(true);
 

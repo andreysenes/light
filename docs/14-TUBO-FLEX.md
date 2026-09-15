@@ -18,7 +18,7 @@ Equivalente ao padrão que você descreveu: traços acesos de tamanhos variados 
 
 | Item | Especificação |
 |------|----------------|
-| LED | **Fita WS2812B** (60 LED/m ou 30 LED/m) dentro de **tubo silicone** difuso |
+| LED | **D15-Woven Magic** — tubo silicone Ø15 mm, **WS2811**, **50 LED/m** |
 | Tensão | **5 V** (mesma fonte dos módulos) |
 | Data | **Pin 5** do Pro Micro (separado dos módulos no pin 6) |
 | Quantidade | `NUM_TUBE_LEDS` no firmware — **200** para tubo 4 m @ 50 LED/m |
@@ -53,8 +53,9 @@ Resistor **470Ω** em cada linha de data (D5 e D6). Capacitor **1000µF** no in�
 |--------------|----------------|
 | 30 | ~1,8 A |
 | 60 | ~3,6 A |
+| 200 (4 m) | ~**12 A** pico / **4–6 A** em efeitos |
 
-Com 4 módulos + 30 LEDs no tubo: fonte **5V / 3A** recomendada.
+Com 4 módulos + tubo **4 m**: fonte **5V / 10A** + injeção de 5V a cada ~1–2 m.
 
 ## Efeitos no firmware
 
@@ -101,17 +102,33 @@ Em `promicro-4mod.ino`:
 | 2 m | 100 | 120 | 60 |
 | **4 m** | **200** | **240** | 120 |
 
-### Tubo comprado (4 m)
+### Tubo comprado (4 m) — manual D15-Woven Magic
 
 | Campo | Valor |
 |-------|-------|
+| Modelo | **D15-Woven Magic** |
 | Anúncio | [AliExpress 1005006239466933](https://pt.aliexpress.com/item/1005006239466933.html) |
 | Comprimento | **4 m** |
-| Chip | WS2812B (confirmar na etiqueta ao receber) |
-| LEDs/m | **50** (mais comum) ou **60** — contar 1 m ou ler anúncio |
-| `NUM_TUBE_LEDS` | **200** ou **240** |
+| Tensão | **5 V DC** |
+| Chip | **WS2811** (IC 2811) — não é WS2812B |
+| LEDs/m | **50** (corte a cada **20 mm**) |
+| Potência | **3,1 W/m** → ~12,4 W total (~2,5 A nominal) |
+| IP | **IP67** |
+| `NUM_TUBE_LEDS` | **200** |
 
-**Não use o controle RF** do kit — ligue o **DIN** do tubo no **D5** do Pro Micro.
+### Fios do conector (3 pinos)
+
+| Fio | Função |
+|-----|--------|
+| **Vermelho** | +5V |
+| **Do meio** | **DATA** (DIN) → Pro Micro **D5** |
+| **Externo** | GND |
+
+Resistor **470Ω** entre D5 e DATA. **Não use o controle RF** do kit.
+
+### Firmware
+
+Módulos = `WS2812B` (pin 6). Tubo = `WS2811` (pin 5). Se as cores do tubo saírem trocadas, altere `TUBE_COLOR_ORDER` para `GRB` no `.ino`.
 
 ## Boot
 
