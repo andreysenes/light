@@ -1,4 +1,7 @@
-# Configuração de módulos — combinações de cores
+# Configuração de módulos v1 — combinações de cores
+
+> **Planejado v1** — não implementado. v0 usa CC RGB direto: [05-MIDI-DAW.md](../05-MIDI-DAW.md).
+
 
 O hardware é **sempre o mesmo**: 2 canais × 10 W. O que muda entre módulos é **qual LED está soldado em cada soquete** e **como a Cabeça mapeia MIDI** para esse módulo.
 

@@ -1,4 +1,7 @@
-# Lente óptica 20 mm — um por LED
+# Lente óptica 20 mm v1 — um por LED
+
+> **Planejado v1** — não implementado. v0 usa WS2812B sem lente dedicada.
+
 
 Cada canal do módulo Dual usa **1 lente de 20 mm** sobre o star 10 W, para concentrar o fluxo útil na área iluminada e reduzir desperdício lateral.
 

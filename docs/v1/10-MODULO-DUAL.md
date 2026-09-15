@@ -1,4 +1,7 @@
-# Módulo Dual — 2× 10 W, sem ESP
+# Módulo Dual v1 — 2× 10 W, sem ESP
+
+> **Planejado v1** — não implementado. Projeto atual: [v0](../00-VISAO-GERAL.md).
+
 
 Módulo luminoso **simples**: apenas drivers, decodificador de barramento e dois soquetes de LED. Toda inteligência fica na **Cabeça** (único ESP32).
 

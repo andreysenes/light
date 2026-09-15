@@ -1,4 +1,7 @@
-# Cablagem — energia P4 + cabo de dados separado
+# Cablagem v1 — energia P4 + cabo de dados separado
+
+> **Planejado v1** — não implementado. Projeto atual: [v0](../07-CABLAGEM.md).
+
 
 Para **baratear**, o StageMod **não** usa cabo especial 5 vias. São **dois chicotes independentes** em cada ligação:
 

@@ -1,26 +1,31 @@
 /*
- * StageMod — Protótipo v0
- * Pro Micro (ATmega32U4) + 4× WS2812B em cadeia (1 LED por módulo)
- * MIDI USB → RGB completo por módulo
+ * StageMod v0 — Pro Micro
+ * - 4× WS2812B (módulos spot, pin 6)
+ * - Tubo flexível WS2812B addressable (gradiente / chase, pin 5)
  *
  * Bibliotecas: MIDI Library (FortySevenEffects), FastLED
- * Placa: Arduino Leonardo / SparkFun Pro Micro (5V, 16MHz)
  */
 
 #include <MIDI.h>
 #include <FastLED.h>
 
-#define LED_PIN     6
-#define NUM_MODULES 4
-#define LED_TYPE    WS2812B
-#define COLOR_ORDER GRB
+// --- Módulos spot (4× LED individuais) ---
+#define MODULE_PIN    6
+#define NUM_MODULES   4
 
-#define MIDI_NOTE_MODULE_1  60   // C3 = módulo 1
-#define MIDI_CHANNEL        1    // 0 = omni
+// --- Tubo flexível (fita WS2812B dentro do tubo silicone) ---
+#define TUBE_PIN      5
+#define NUM_TUBE_LEDS 30    // ajustar: LEDs por metro × comprimento do tubo
+
+#define LED_TYPE      WS2812B
+#define COLOR_ORDER   GRB
+
+#define MIDI_NOTE_MODULE_1  60
+#define MIDI_CHANNEL        1
 
 CRGB modules[NUM_MODULES];
+CRGB tube[NUM_TUBE_LEDS];
 
-// Cor RGB alvo de cada módulo (0–255) — editável via CC
 uint8_t moduleR[NUM_MODULES];
 uint8_t moduleG[NUM_MODULES];
 uint8_t moduleB[NUM_MODULES];
@@ -29,16 +34,45 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 
 uint8_t masterBrightness = 255;
 
-// CC 1–3 = Mod1 R,G,B · 4–6 = Mod2 · 9–11 = Mod3 · 12–14 = Mod4 · 7 = dimmer
-static const uint8_t CC_RGB_MAP[][3] = {
-  { 1,  2,  3  },  // módulo 0
-  { 4,  5,  6  },  // módulo 1
-  { 9,  10, 11 },  // módulo 2
-  { 12, 13, 14 },  // módulo 3
+// --- Tubo: estado e efeitos ---
+enum TubeEffect : uint8_t {
+  TUBE_OFF = 0,
+  TUBE_CHASE = 1,          // cometa com rastro
+  TUBE_GRADIENT_WAVE = 2,  // ondas de luz de larguras variadas ( ---  --  - )
+  TUBE_RAINBOW = 3,        // gradiente arco-íris estático no tubo
+  TUBE_SOLID = 4,
 };
+
+TubeEffect tubeEffect = TUBE_OFF;
+uint8_t tubeHue = 160;
+uint8_t tubeSpeed = 80;       // 0–255
+uint8_t tubeDensity = 64;     // comprimento das “manchas” de luz
+uint8_t tubeSolidBrightness = 200;
+
+uint16_t tubeAnimOffset = 0;
+uint8_t chaseHead = 0;
+unsigned long lastAnimMs = 0;
+
+static const uint8_t CC_RGB_MAP[][3] = {
+  { 1,  2,  3  },
+  { 4,  5,  6  },
+  { 9,  10, 11 },
+  { 12, 13, 14 },
+};
+
+// Tubo: CC 15=efeito 16=matiz 17=velocidade 18=densidade 19=brilho sólido
+#define CC_TUBE_EFFECT   15
+#define CC_TUBE_HUE      16
+#define CC_TUBE_SPEED    17
+#define CC_TUBE_DENSITY  18
+#define CC_TUBE_SOLID_BRI 19
 
 uint8_t midiToByte(byte value) {
   return (uint8_t)map(value, 0, 127, 0, 255);
+}
+
+void showAll() {
+  FastLED.show();
 }
 
 void applyModuleColor(int index) {
@@ -55,12 +89,93 @@ void applyModuleColorScaled(int index, uint8_t scale) {
   );
 }
 
-void showAll() {
-  FastLED.show();
+void tubeBlackout() {
+  fill_solid(tube, NUM_TUBE_LEDS, CRGB::Black);
 }
 
-void blackout() {
+// Cometa: cabeça brilhante + rastro que apaga
+void renderTubeChase() {
+  tubeBlackout();
+  uint8_t tailLen = map(tubeDensity, 0, 255, 2, 12);
+
+  for (uint8_t t = 0; t < tailLen; t++) {
+    int pos = (int)chaseHead - t;
+    if (pos < 0) pos += NUM_TUBE_LEDS;
+    if (pos >= NUM_TUBE_LEDS) pos -= NUM_TUBE_LEDS;
+
+    uint8_t bri = 255 - (uint8_t)((uint16_t)t * 255 / tailLen);
+    tube[pos] = CHSV(tubeHue, 255, bri);
+  }
+}
+
+// Ondas de brilho — cria manchas de tamanhos diferentes que se movem:
+// visual:  ------    --   ---   -     -----
+void renderTubeGradientWave() {
+  uint8_t freq = map(tubeDensity, 0, 255, 8, 48);
+
+  for (int i = 0; i < NUM_TUBE_LEDS; i++) {
+    uint16_t phase = (uint16_t)i * freq + tubeAnimOffset;
+    uint8_t wave = sin8((uint8_t)(phase & 0xFF));
+    // Segunda harmônica para variar largura dos “traços”
+    uint8_t wave2 = sin8((uint8_t)((phase * 2) & 0xFF));
+    uint8_t bri = (uint8_t)((uint16_t)wave * wave2 / 255);
+    tube[i] = CHSV(tubeHue, 220, bri);
+  }
+}
+
+void renderTubeRainbow() {
+  for (int i = 0; i < NUM_TUBE_LEDS; i++) {
+    uint8_t hue = (uint8_t)((uint16_t)i * 255 / NUM_TUBE_LEDS + tubeHue);
+    tube[i] = CHSV(hue, 255, 200);
+  }
+}
+
+void renderTubeSolid() {
+  fill_solid(tube, NUM_TUBE_LEDS, CHSV(tubeHue, 255, tubeSolidBrightness));
+}
+
+void renderTube() {
+  switch (tubeEffect) {
+    case TUBE_OFF:
+      tubeBlackout();
+      break;
+    case TUBE_CHASE:
+      renderTubeChase();
+      break;
+    case TUBE_GRADIENT_WAVE:
+      renderTubeGradientWave();
+      break;
+    case TUBE_RAINBOW:
+      renderTubeRainbow();
+      break;
+    case TUBE_SOLID:
+      renderTubeSolid();
+      break;
+  }
+}
+
+void animateTube() {
+  if (tubeEffect == TUBE_OFF) return;
+
+  unsigned long now = millis();
+  uint16_t interval = map(tubeSpeed, 0, 255, 80, 8);
+  if (now - lastAnimMs < interval) return;
+  lastAnimMs = now;
+
+  if (tubeEffect == TUBE_CHASE) {
+    chaseHead = (chaseHead + 1) % NUM_TUBE_LEDS;
+  } else if (tubeEffect == TUBE_GRADIENT_WAVE) {
+    tubeAnimOffset = (tubeAnimOffset + map(tubeSpeed, 0, 255, 1, 12)) & 0xFF;
+  }
+
+  renderTube();
+  showAll();
+}
+
+void blackoutAll() {
   fill_solid(modules, NUM_MODULES, CRGB::Black);
+  tubeEffect = TUBE_OFF;
+  tubeBlackout();
   showAll();
 }
 
@@ -95,7 +210,6 @@ void onNoteOn(byte channel, byte note, byte velocity) {
   int idx = note - MIDI_NOTE_MODULE_1;
   if (idx < 0 || idx >= NUM_MODULES) return;
 
-  // Velocity escala a cor RGB já definida nos CCs
   applyModuleColorScaled(idx, midiToByte(velocity));
   showAll();
 }
@@ -116,10 +230,40 @@ void onControlChange(byte channel, byte cc, byte value) {
   if (cc == 7) {
     masterBrightness = midiToByte(value);
     FastLED.setBrightness(masterBrightness);
-    for (int i = 0; i < NUM_MODULES; i++) {
-      applyModuleColor(i);
-    }
+    for (int i = 0; i < NUM_MODULES; i++) applyModuleColor(i);
+    renderTube();
     showAll();
+    return;
+  }
+
+  if (cc == CC_TUBE_EFFECT) {
+    tubeEffect = (TubeEffect)map(value, 0, 127, 0, TUBE_SOLID);
+    renderTube();
+    showAll();
+    return;
+  }
+  if (cc == CC_TUBE_HUE) {
+    tubeHue = midiToByte(value);
+    renderTube();
+    showAll();
+    return;
+  }
+  if (cc == CC_TUBE_SPEED) {
+    tubeSpeed = midiToByte(value);
+    return;
+  }
+  if (cc == CC_TUBE_DENSITY) {
+    tubeDensity = midiToByte(value);
+    renderTube();
+    showAll();
+    return;
+  }
+  if (cc == CC_TUBE_SOLID_BRI) {
+    tubeSolidBrightness = midiToByte(value);
+    if (tubeEffect == TUBE_SOLID) {
+      renderTube();
+      showAll();
+    }
     return;
   }
 
@@ -140,62 +284,91 @@ void onProgramChange(byte channel, byte program) {
 
   switch (program) {
     case 0:
-      blackout();
+      blackoutAll();
       break;
     case 1:
-      // Warm white
-      for (int i = 0; i < NUM_MODULES; i++) {
-        setModuleRgb(i, 255, 180, 80);
-      }
+      for (int i = 0; i < NUM_MODULES; i++) setModuleRgb(i, 255, 180, 80);
       break;
     case 2:
-      // Vermelho
-      for (int i = 0; i < NUM_MODULES; i++) {
-        setModuleRgb(i, 255, 0, 0);
-      }
+      for (int i = 0; i < NUM_MODULES; i++) setModuleRgb(i, 255, 0, 0);
       break;
     case 3:
-      // Verde
-      for (int i = 0; i < NUM_MODULES; i++) {
-        setModuleRgb(i, 0, 255, 0);
-      }
+      for (int i = 0; i < NUM_MODULES; i++) setModuleRgb(i, 0, 255, 0);
       break;
     case 4:
-      // Azul
-      for (int i = 0; i < NUM_MODULES; i++) {
-        setModuleRgb(i, 0, 0, 255);
-      }
+      for (int i = 0; i < NUM_MODULES; i++) setModuleRgb(i, 0, 0, 255);
       break;
     case 5:
-      // Magenta
-      for (int i = 0; i < NUM_MODULES; i++) {
-        setModuleRgb(i, 255, 0, 255);
-      }
+      for (int i = 0; i < NUM_MODULES; i++) setModuleRgb(i, 255, 0, 255);
       break;
     case 6:
-      // Branco
-      for (int i = 0; i < NUM_MODULES; i++) {
-        setModuleRgb(i, 255, 255, 255);
-      }
+      for (int i = 0; i < NUM_MODULES; i++) setModuleRgb(i, 255, 255, 255);
+      break;
+    // --- Presets tubo ---
+    case 7:
+      tubeEffect = TUBE_GRADIENT_WAVE;
+      tubeHue = 160;
+      tubeSpeed = 120;
+      tubeDensity = 80;
+      renderTube();
+      showAll();
+      break;
+    case 8:
+      tubeEffect = TUBE_CHASE;
+      tubeHue = 0;
+      tubeSpeed = 150;
+      tubeDensity = 100;
+      renderTube();
+      showAll();
+      break;
+    case 9:
+      tubeEffect = TUBE_RAINBOW;
+      renderTube();
+      showAll();
+      break;
+    case 10:
+      tubeEffect = TUBE_OFF;
+      tubeBlackout();
+      showAll();
       break;
     default:
       break;
   }
 }
 
+void bootTestTube() {
+  tubeEffect = TUBE_GRADIENT_WAVE;
+  tubeHue = 96;
+  tubeSpeed = 200;
+  tubeDensity = 70;
+
+  for (int step = 0; step < NUM_TUBE_LEDS + 16; step++) {
+    tubeAnimOffset = (tubeAnimOffset + 14) & 0xFF;
+    renderTubeGradientWave();
+    showAll();
+    delay(35);
+  }
+
+  tubeEffect = TUBE_OFF;
+  tubeBlackout();
+  showAll();
+}
+
 void setup() {
-  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(modules, NUM_MODULES);
+  FastLED.addLeds<LED_TYPE, MODULE_PIN, COLOR_ORDER>(modules, NUM_MODULES);
+  FastLED.addLeds<LED_TYPE, TUBE_PIN, COLOR_ORDER>(tube, NUM_TUBE_LEDS);
   FastLED.setBrightness(masterBrightness);
   FastLED.clear(true);
 
-  // Boot: demonstra RGB em cada módulo
   const CRGB bootColors[] = { CRGB::Red, CRGB::Green, CRGB::Blue, CRGB::White };
   for (int i = 0; i < NUM_MODULES; i++) {
     modules[i] = bootColors[i];
     showAll();
-    delay(200);
+    delay(150);
     modules[i] = CRGB::Black;
   }
+
+  bootTestTube();
 
   if (MIDI_CHANNEL == 0) {
     MIDI.begin(MIDI_CHANNEL_OMNI);
@@ -211,4 +384,5 @@ void setup() {
 
 void loop() {
   MIDI.read();
+  animateTube();
 }
