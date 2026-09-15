@@ -17,13 +17,13 @@
 | 4 módulos apenas | ~300 mA |
 | + tubo 30 LED | ~**2 A** |
 | + tubo 60 LED | ~**3,5 A** |
-| + tubo 4 m (200 LED) | ~**12 A** pico / **4–6 A** típico em efeitos |
+| + tubo 4 m (200 LED) | ~**12 A** pico branco total / **~2,5 A** nominal (manual: 3,1 W/m) |
 
 | Config | Fonte 5V |
 |--------|------------|
 | Só 4 módulos | **1 A** |
 | Módulos + tubo curto (≤1 m) | **3 A** |
-| Módulos + tubo **4 m** | **10 A** + injeção 5V a cada 1–2 m |
+| Módulos + tubo **4 m** (D15) | **5 A** mínimo / **10 A** se branco alto + injeção 5V a cada ~2 m |
 
 ## Como ligar
 
