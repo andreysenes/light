@@ -18,6 +18,8 @@ DAW ──USB MIDI──► [Pro Micro] ──data──► [Mod1]──►[Mod2
 
 Não há RS-485, P4 nem ATtiny nesta fase — tudo num único fio de dados WS2812B.
 
+Cada WS2812B é **RGB completo** — qualquer cor via MIDI (CC 1–14 = R/G/B dos 4 módulos).
+
 ## Módulo físico mínimo
 
 ```
