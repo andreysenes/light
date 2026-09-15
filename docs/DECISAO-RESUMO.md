@@ -23,14 +23,16 @@ DAW ──USB──► [ESP32 Cabeça] ═══ Cabo StageMod ═══ [Mod]�
 
 Especificação: [09-CABO-STAGEMOD.md](09-CABO-STAGEMOD.md).
 
-## Módulo: 2 cores × 10 W
+## Módulo: 2 cores × 10 W + lente 20 mm
 
-| Canal | Padrão | Potência |
-|-------|--------|----------|
-| A | Warm white 3000 K | 10 W |
-| B | Vermelho | 10 W |
+| Canal | Padrão | Potência | Óptica |
+|-------|--------|----------|--------|
+| A | Warm white 3000 K | 10 W | Lente **20 mm 90°** |
+| B | Vermelho | 10 W | Lente **20 mm 90°** |
 
-Mesma placa para todas as combinações futuras — troca o LED e a config na Cabeça.
+- **1 lente por LED** — melhor dispersão e mais lux na mancha útil (mesma potência elétrica).
+- Mesma placa para todas as combinações — troca LED, lente reaproveita.
+- Detalhes: [12-LENTE-20MM.md](12-LENTE-20MM.md).
 
 ## Configuração futura (exemplos)
 

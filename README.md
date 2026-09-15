@@ -26,6 +26,7 @@ Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
 | [**Cabo StageMod**](docs/09-CABO-STAGEMOD.md) | **5 condutores, GX16-5, pinagem** |
 | [**Módulo Dual**](docs/10-MODULO-DUAL.md) | **2× 10 W, hardware universal** |
 | [**Config módulos**](docs/11-CONFIGURACAO-MODULOS.md) | **WW+R, WW×2, R+amber, …** |
+| [**Lente 20 mm**](docs/12-LENTE-20MM.md) | **1 lente por LED, feixe 90°** |
 | [Resumo rápido](docs/DECISAO-RESUMO.md) | Decisões em 2 minutos |
 
 ## Decisões atuais
@@ -34,6 +35,7 @@ Cada módulo é **só luz** (drivers + decoder). Não há ESP nos módulos.
 |--------|---------|
 | Controle | **1× ESP32-S3** na Cabeça (MIDI USB → RS-485) |
 | Módulo | **2 canais × 10 W** — padrão **warm white + vermelho** |
+| Óptica | **Lente PMMA 20 mm** (90°) — **1 por LED** |
 | MCU no módulo | **ATtiny** decoder (não ESP) |
 | Cabo | **StageMod**: V+ 24 V, GND, D+, D−, shield — [especificação](docs/09-CABO-STAGEMOD.md) |
 | Config futura | Mesma PCB; trocar LED + `modules.json` na Cabeça |

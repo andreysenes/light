@@ -58,16 +58,26 @@ Módulo buck CC ajustado para **900 mA** (ou 1050 mA se star suportar).
 
 PWM no pino EN/DIM do driver — ver [03-ELETRONICA.md](03-ELETRONICA.md).
 
-## Óptica e mecânica
+## Óptica — lente 20 mm por LED
+
+Cada star 10 W recebe **1 lente óptica de 20 mm** (PMMA) + holder, para dispersar o feixe de forma controlada e aproveitar melhor os lúmens na área do palco.
 
 | Elemento | Especificação |
 |----------|---------------|
-| Star PCB | 20 mm padrão, furo M3 |
-| Heatsink | Perfil Al ≥ 80 mm ou carcaça inteira em Al |
-| Difusor | Lente 60–90° frosted ou PMMA opal (cuidado com calor) |
-| Beam | 120° típico em star — aceitável para wash |
+| Lente | **Ø 20 mm PMMA**, feixe **90°** (padrão wash) ou 60° (frente estreita) |
+| Holder | Anel 20 mm fixado no heatsink/PCB |
+| Star PCB | 20 mm, furo M3 — compatível com kits lens+holder comuns |
+| Folga LED–lente | 0,5–1,5 mm (PMMA não suporta contato quente) |
+| Heatsink | Perfil Al ≥ 80 mm; lente não substitui dissipação |
+| Centros A–B | 28–32 mm entre eixos das duas lentes |
 
-Dois pontos de luz (A e B) próximos (~15–25 mm) + difusor comum unificam a mancha.
+Especificação completa: [12-LENTE-20MM.md](12-LENTE-20MM.md).
+
+### Efeito prático
+
+- Star nu ≈ 120° — muita luz perdida nas bordas do módulo.
+- Lente 90° ≈ lux **2–4× maior** na mancha útil a 1–2 m (mesma potência elétrica).
+- WW e Red mantêm manchas distintas mas com overlap ajustável pela distância entre lentes.
 
 ## Branco sem segundo canal RGB
 

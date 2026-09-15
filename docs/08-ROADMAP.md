@@ -16,8 +16,9 @@
 | 1.2 | Montar **1 módulo Dual** WW+R | 900 mA/canal medido |
 | 1.3 | Fabricar **1 cabo StageMod** 0,5 m GX16-5 | Continuidade + pinagem |
 | 1.4 | Protocolo SET_LEVELS addr=1 | Fade suave A e B |
-| 1.5 | Teste térmico 30 min 100 % | Heatsink < 65 °C |
-| 1.6 | MIDI do DAW → ambos canais | Reaper ou Ableton |
+| 1.5 | Montar **lentes 20 mm 90°** + holder em A e B | Folga 0,5–1,5 mm; feixe sem obstrução |
+| 1.6 | Teste térmico 30 min 100 % | Heatsink < 65 °C; PMMA sem deformar |
+| 1.7 | MIDI do DAW → ambos canais | Reaper ou Ableton |
 
 ## Fase 2 — Config e segundo módulo
 
@@ -36,7 +37,8 @@
 | 3.1 | KiCad: PCB módulo Dual |
 | 3.2 | KiCad: PCB Cabeça (ou usar DevKit) |
 | 3.3 | KiCad: adaptador T-StageMod |
-| 3.4 | Carcaça alumínio módulo |
+| 3.4 | Carcaça alumínio com aberturas Ø20 mm |
+| 3.5 | Validar lente 60° vs 90° em palco real |
 
 ## Fase 4 — Rig 8+ módulos
 

@@ -45,15 +45,18 @@ Mesma placa para todas as combinações futuras:
 ┌─────────────────────────────────────┐
 │  [IN]              [OUT]            │
 │                                     │
-│   (A) LED star          (B) LED star│
-│    10W slot              10W slot   │
+│  (A) ○ lens 20mm    (B) ○ lens 20mm │
+│      star 10W           star 10W    │
 │                                     │
 │  DIP [ADDR 1-8]                     │
 └─────────────────────────────────────┘
 ```
 
 - Soquetes: padrão **star PCB 20 mm** (furo M3) ou solda direta.
-- Trocar cor = trocar LED + atualizar config na Cabeça (não precisa trocar PCB).
+- **1 lente PMMA Ø 20 mm** por canal (padrão **90°** wash) + holder no heatsink.
+- Centros das ópticas: **~30 mm** um do outro.
+- Trocar cor = trocar LED + atualizar config na Cabeça (lente reutiliza).
+- Detalhes ópticos: [12-LENTE-20MM.md](12-LENTE-20MM.md).
 
 ## Drivers 10 W
 
@@ -76,7 +79,9 @@ Cada driver:
 
 - Perfil alumínio **≥ 80 mm** ou carcaça em alumínio usinado.
 - Pasta térmica em cada star.
-- Em gabinete fechado: furos laterais ou ventilação forçada opcional.
+- Lente com **folga de ar** — não transferir calor para PMMA.
+- Face frontal da carcaça: orifícios Ø20 mm ou moldura aberta por lente.
+- Em gabinete fechado: furos laterais no holder ou ventilação forçada opcional.
 
 Teste de aceite: 30 min a 100 % em ambiente 25 °C → carcaça < 65 °C ao toque.
 
@@ -154,7 +159,9 @@ Módulo só responde se `ADDR` = seu DIP ou broadcast `0xFF`.
 | LED 10 W WW + 10 W R | 1+1 | 2,00 |
 | GX16-5 IN + OUT | 2 | 4,00 |
 | Heatsink / carcaça Al | 1 | 3,00 |
+| Lente PMMA 20 mm 90° | 2 | 0,60 |
+| Holder lente 20 mm | 2 | 0,40 |
 | PCB | 1 | 2,00 |
-| **Total** | | **~15** |
+| **Total** | | **~16** |
 
 Sem ESP, sem USB, sem Wi‑Fi — módulo **~40 % mais barato** que a versão anterior com ESP32-C3.

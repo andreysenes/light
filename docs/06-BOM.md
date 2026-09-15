@@ -21,9 +21,11 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 1 | Cabo 5 condutores 0,5 m | | 3,00 | Cabo StageMod patch |
 | 1 | Fonte 24 V 5 A | | 12 | |
 | 1 | Heatsink Al 80 mm | | 4,00 | Módulo |
+| 2 | Lente LED 20 mm 90° PMMA | | 0,60 | 1 por canal A/B |
+| 2 | Holder lente 20 mm | | 0,40 | Fixar no heatsink |
 | 1 | Caixa ABS Cabeça | | 3,00 | |
 | — | Misc | | 5 | |
-| | **Total protótipo** | | **~47** | |
+| | **Total protótipo** | | **~48** | |
 
 ## Cabeça (Head Unit) — unitário
 
@@ -52,8 +54,10 @@ Preços aproximados USD (AliExpress/LCSC). Brasil: FilipeFlop, Usinainfo.
 | 2 | GX16-5 IN+OUT | 4,00 |
 | 1 | DIP-3 | 0,15 |
 | 1 | Heatsink / carcaça Al | 4,00 |
+| 2 | Lente PMMA 20 mm 90° | 0,60 |
+| 2 | Holder lente 20 mm | 0,40 |
 | 1 | PCB | 2,00 |
-| | **Por módulo** | **~16** |
+| | **Por módulo** | **~17** |
 
 Sem ESP — **~US$ 1–2 mais barato** que versão anterior com ESP32-C3.
 
@@ -73,13 +77,21 @@ Ver [09-CABO-STAGEMOD.md](09-CABO-STAGEMOD.md).
 | Categoria | ~US$ |
 |-----------|------|
 | Cabeça | 14 |
-| 8× Módulo Dual @ 16 | 128 |
+| 8× Módulo Dual @ 17 | 136 |
 | Fonte 24 V 10 A | 28 |
 | Distro + fusíveis | 12 |
 | 9× cabo patch 0,5 m | 36 |
 | 1× cabo tronco 2 m | 8 |
 | Reserva LEDs/drivers 15 % | 25 |
-| **Total** | **~250** |
+| **Total** | **~258** |
+
+## Óptica — estoque lentes (opcional)
+
+| Item | Qty | ~US$ | Uso |
+|------|-----|------|-----|
+| Lente 20 mm **60°** | 8 | 3 | Módulos de frente / feixe mais estreito |
+| Lente 20 mm **90°** | 24 | 8 | Padrão wash (estoque 12 módulos × 2) |
+| Holder 20 mm spare | 4 | 1 | Reposição |
 
 ## Estoque LEDs extras (configurável)
 
