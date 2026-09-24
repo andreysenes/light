@@ -15,8 +15,9 @@ Links de busca (cole no AliExpress se o link não abrir):
 | 7 | Fio silicone | `silicone wire 22AWG red black green` |
 | 8 | XLR fêmea painel ×3 (Medusa MOD/TUBO/INJ) | `XLR female 3 pin panel mount` |
 | 9 | XLR macho painel ×4 (módulos OUT) + fêmea IN | `XLR male 3 pin panel mount` |
-| 10 | Caixa ABS + bornes | `ABS project box` + `terminal block 2 pin` |
-| 11 | JST 3 pin (opcional) | `JST SM 3 pin connector cable` |
+| 10 | ESP-01 + AMS1117-3.3 | `ESP-01 ESP8266` + `AMS1117 3.3V` |
+| 11 | Caixa ABS + bornes | `ABS project box` + `terminal block 2 pin` |
+| 12 | JST 3 pin (opcional) | `JST SM 3 pin connector cable` |
 
 ---
 

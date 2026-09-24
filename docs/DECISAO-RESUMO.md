@@ -2,18 +2,18 @@
 
 ## Em uma frase
 
-**Pro Micro + 4 módulos WS2812B RGB**, controlados por **MIDI USB** da DAW.
+**Medusa** (Pro Micro + ESP-01) + **4 módulos WS2812B RGB**, MIDI da DAW via **Wi‑Fi** (ou USB para teste).
 
 ```
-DAW ──USB──► [Pro Micro] ──D6──► [Mod1]──►[Mod2]──►[Mod3]──►[Mod4]
-                  └── Fonte 5V (≥1A)
+DAW ──UDP/WiFi──► [ESP-01]──► [Pro Micro] ──D6──► [Mod1]──► … ──►[Mod4]
+                        └── Fonte 5V (10A) na Medusa
 ```
 
 ## Decisões v0
 
 | Tópico | Escolha |
 |--------|---------|
-| Cabeça | **1× Pro Micro** |
+| Cabeça | **Pro Micro + ESP-01** na [Medusa](17-CABECA-MEDUSA.md) |
 | Módulos | **4×**, 1 WS2812B cada |
 | Cor | **RGB completo** (CC 1–14) |
 | Alimentação | **5V** / 1A |
@@ -21,7 +21,7 @@ DAW ──USB──► [Pro Micro] ──D6──► [Mod1]──►[Mod2]──
 | Spot | D6 — 5V + GND + DATA (fios ou XLR IN/OUT em cadeia) |
 | Tubo flex | D5 — tubo neon WS2811, XLR único (4×1 m no futuro) |
 | Conectores | [XLR 3 pin](16-XLR-CONECTORES.md): 1=GND, 2=+5V, 3=DATA |
-| Cabeça física | [Medusa](17-CABECA-MEDUSA.md) — Pro Micro + XLR MOD / TUBO / INJ |
+| Cabeça física | Medusa — **só** Pro Micro + ESP-01 + XLR MOD / TUBO / INJ |
 
 ## MIDI rápido
 
