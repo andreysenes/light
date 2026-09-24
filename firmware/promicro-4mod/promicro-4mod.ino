@@ -14,7 +14,7 @@
 
 // 1 = MIDI USB (programação / cabo). 0 = só serial (show sem USB).
 #define ENABLE_USB_MIDI     1
-// 1 = MIDI na UART (ESP-01, ZS-040 com firmware serial). Ligação: RX/TX Serial1.
+// 1 = MIDI na UART (ESP-01 na Medusa). Ligação: RX/TX Serial1.
 #define ENABLE_SERIAL_MIDI  1
 // 115200 = bridge ESP UDP; 31250 = MIDI serial clássico
 #define SERIAL_MIDI_BAUD    115200

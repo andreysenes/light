@@ -1,22 +1,22 @@
-# MIDI sem fio — Medusa + ESP-01 / ZS-040
+# MIDI sem fio — Medusa (ESP-01 + Pro Micro)
 
-Alimentação pela **fonte 5V** na Medusa; **comandos** do computador por **Wi‑Fi ou Bluetooth**, sem cabo USB no palco.
+Na **Medusa** o hardware de rádio é só o **ESP-01**. Alimentação **5 V** (fonte) → **3,3 V** no ESP; **comandos** do PC por **Wi‑Fi UDP**, sem cabo USB no palco.
 
 ## Arquitetura
 
 ```
-DAW ──► [PC: bridge] ── Wi‑Fi ou BT ──► [ESP-01 ou ZS-040] ── UART ──► Pro Micro ──► LEDs
-                                              ▲
-                                         3,3 V da Medusa
+DAW ──► [PC: bridge UDP] ── Wi‑Fi ──► ESP-01 ── UART ──► Pro Micro ──► LEDs
+                                          ▲
+                                     3,3 V (AMS1117)
 ```
 
-O **Pro Micro** continua gerando os pixels (D5/D6). O módulo sem fio só **repassa bytes MIDI** na serial.
+O **Pro Micro** gera os pixels (D5/D6). O **ESP-01** só **repassa bytes MIDI** na serial.
 
 | Camada | Função |
 |--------|--------|
-| PC | Lê MIDI da DAW e envia **UDP** (ESP) ou usa **porta serial Bluetooth** (ZS-040) |
-| ESP-01 / ZS-040 | Rádio + UART |
-| Pro Micro | `MIDI_Serial.read()` + mesmo mapa CC/PC/notas |
+| PC | Lê MIDI da DAW e envia **UDP** para o IP do ESP (porta **5004**) |
+| ESP-01 | Wi‑Fi + repasse UDP → UART @ **115200** |
+| Pro Micro | `MIDI_Serial.read()` — mesmo mapa CC/PC/notas |
 
 Firmware Pro Micro: `ENABLE_SERIAL_MIDI` em `promicro-4mod.ino` — [firmware](../firmware/promicro-4mod/).
 
@@ -25,8 +25,7 @@ Firmware Pro Micro: `ENABLE_SERIAL_MIDI` em `promicro-4mod.ino` — [firmware](.
 | Caminho | Latência típica | Uso no StageMod |
 |---------|-----------------|-----------------|
 | **USB** direto no Pro Micro | ~1–3 ms | Melhor para ensaio / gravação |
-| **ESP-01 + UDP** (Wi‑Fi, rede dedicada) | ~5–15 ms + jitter | **Recomendado** para show sem cabo |
-| **ZS-040 (BLE UART)** | ~15–40 ms | OK para cenas lentas; ruim no beat crítico |
+| **ESP-01 + UDP** (Wi‑Fi, rede dedicada) | ~5–15 ms + jitter | **Medusa v0** — show sem cabo |
 
 Sem fio **nunca** iguala USB; o objetivo é ficar **abaixo de ~20 ms** percebidos e **estável** (sem bursts).
 
@@ -39,22 +38,6 @@ Sem fio **nunca** iguala USB; o objetivo é ficar **abaixo de ~20 ms** percebido
 5. No PC: script/bridge com prioridade alta; fechar apps que saturam Wi‑Fi.
 6. DAW: preferir **CC** para cores; notas com velocity para hits (menos mensagens que automation densa).
 
-### ZS-040 (BLE)
-
-- UART padrão muitas vezes **9600** — subir para **115200** via AT (`AT+BAUD4`) se o módulo permitir.
-- No Windows/macOS: porta **COM Bluetooth** + bridge MIDI→serial (ex. loopMIDI + ferramenta que encaminha).
-- Latência e jitter do BLE costumam ser **piores** que Wi‑Fi UDP bem configurado.
-
-## Escolha do módulo
-
-| | **ESP-01** (recomendado) | **ZS-040** (BLE) |
-|---|---------------------------|------------------|
-| Rádio | Wi‑Fi | Bluetooth 4.0 |
-| Lógica | 3,3 V | 3,3 V (confirmar no seu lote) |
-| Firmware | [esp01-midi-bridge](../firmware/esp01-midi-bridge/) | Transparente UART (AT) |
-| PC | UDP → IP do ESP | COM Bluetooth serial |
-| Latência | Menor (se UDP) | Maior |
-
 ## Ligação na Medusa
 
 ### Alimentação
@@ -62,7 +45,7 @@ Sem fio **nunca** iguala USB; o objetivo é ficar **abaixo de ~20 ms** percebido
 | Módulo | Alimentação |
 |--------|-------------|
 | Pro Micro | **5V** do barramento Medusa (VCC) |
-| ESP-01 / ZS-040 | **3,3 V** via regulador **AMS1117-3.3** (ou similar) a partir do 5V — **não** alimentar ESP em 5V |
+| ESP-01 | **3,3 V** via **AMS1117-3.3** a partir do 5V — **não** 5V no ESP |
 
 Corrente extra: ~80–150 mA (ESP em TX).
 
@@ -70,7 +53,7 @@ Corrente extra: ~80–150 mA (ESP em TX).
 
 **Serial1** no ATmega32U4 (Leonardo / Pro Micro):
 
-| Pro Micro | ESP-01 / ZS-040 |
+| Pro Micro | ESP-01 |
 |-----------|-----------------|
 | **RX (D0)** | TX do módulo (3,3 V) |
 | **TX (D1)** | RX do módulo via **divisor** 5V→3,3 V (ex. 1k / 2k) |
@@ -89,7 +72,7 @@ Pro Micro TX (5V) ──[1k]──┬── RX ESP
 ```
 [USB]  ← só programação / fallback MIDI
 [MOD] [TUBO] [INJ]  ← XLR LEDs
-(Wi‑Fi/BT) antena do ESP/ZS para fora da caixa metálica
+Antena do ESP-01 para fora da caixa metálica
 ```
 
 ## PC → ESP-01 (UDP)
