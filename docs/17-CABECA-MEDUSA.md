@@ -7,7 +7,8 @@ A **Medusa** é a caixa da **cabeça** do StageMod: um **Pro Micro** + distribui
 | Entrada | Saídas (tentáculos) |
 |---------|---------------------|
 | Fonte **5V 10A** (bornes) | **MOD** — DATA D6 + 5V + GND → cadeia dos 4 módulos |
-| USB do Pro Micro (MIDI) | **TUBO** — DATA D5 + 5V + GND → tubo neon |
+| USB do Pro Micro (MIDI / programação) | **TUBO** — DATA D5 + 5V + GND → tubo neon |
+| **ESP-01** ou **ZS-040** (3,3 V) | MIDI sem fio → UART **Serial1** do Pro Micro — [18-WIRELESS-MIDI.md](18-WIRELESS-MIDI.md) |
 | — | **INJ** (opcional) — só **5V + GND** → injeção no meio do tubo 4 m |
 
 Pinagem XLR: [16-XLR-CONECTORES.md](16-XLR-CONECTORES.md) (1=GND, 2=+5V, 3=DATA).
@@ -18,7 +19,7 @@ Pinagem XLR: [16-XLR-CONECTORES.md](16-XLR-CONECTORES.md) (1=GND, 2=+5V, 3=DATA)
                     ┌─────────────────────────────────────┐
    [Fonte 5V 10A]──►│  PWR IN (+ / −)                     │
                     │         ┌──────────┐                │
-   [DAW USB]────────┼────────►│ Pro Micro │               │
+   [DAW USB/WiFi]───┼────────►│ Pro Micro │◄── UART ── ESP-01 / ZS-040
                     │         └─────┬────┘                │
                     │    D6 ──[470Ω]──► XLR MOD  (fêmea)  ├──► cabo → Mod1…
                     │    D5 ──[470Ω]──► XLR TUBO (fêmea)  ├──► cabo → tubo

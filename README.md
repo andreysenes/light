@@ -41,6 +41,7 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | [Cablagem](docs/07-CABLAGEM.md) | Fios por módulo |
 | [XLR](docs/16-XLR-CONECTORES.md) | Pinagem 3 pinos — tubo + módulos |
 | [**Cabeça Medusa**](docs/17-CABECA-MEDUSA.md) | Caixa Pro Micro + saídas XLR |
+| [MIDI sem fio](docs/18-WIRELESS-MIDI.md) | ESP-01 / ZS-040, latência |
 | [**Tubo flex**](docs/14-TUBO-FLEX.md) | Gradiente, chase, MIDI CC 15–19 |
 | [**Compras AliExpress**](docs/15-ALIEXPRESS-BOM.md) | **O que buscar e o que evitar** |
 | [Roadmap](docs/08-ROADMAP.md) | v0 atual → v1 futuro |

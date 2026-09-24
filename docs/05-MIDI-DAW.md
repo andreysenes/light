@@ -8,6 +8,8 @@ Firmware: `firmware/promicro-4mod/promicro-4mod.ino`
 DAW ──USB MIDI──► Pro Micro ──► FastLED ──► 4× WS2812B RGB
 ```
 
+Sem fio (show): DAW → bridge PC → **ESP-01** (UDP) ou **ZS-040** (BT) → Serial1 → Pro Micro — [18-WIRELESS-MIDI.md](18-WIRELESS-MIDI.md).
+
 ## Mapa MIDI — RGB por módulo
 
 Cada módulo: **3 Control Changes** (R, G, B). Valor DAW 0–127 → LED 0–255.
