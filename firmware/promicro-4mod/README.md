@@ -2,7 +2,7 @@
 
 Firmware oficial da **v0**: **1 Pro Micro** e **4 LEDs WS2812B** (um por módulo), **RGB completo** via MIDI.
 
-Documentação: [docs/](../../docs/) · MIDI: [05-MIDI-DAW.md](../../docs/05-MIDI-DAW.md) · Cablagem: [07-CABLAGEM.md](../../docs/07-CABLAGEM.md)
+Documentação: [docs/](../../docs/) · MIDI: [05-MIDI-DAW.md](../../docs/05-MIDI-DAW.md) · Cablagem: [07-CABLAGEM.md](../../docs/07-CABLAGEM.md) · Cabeça: [17-CABECA-MEDUSA.md](../../docs/17-CABECA-MEDUSA.md)
 
 ## O que este firmware faz
 

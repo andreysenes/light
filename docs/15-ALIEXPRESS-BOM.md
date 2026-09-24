@@ -1,6 +1,6 @@
 # Guia de compras — AliExpress (StageMod v0)
 
-Lista para montar o protótipo: **Pro Micro + 4 módulos WS2812B + tubo flexível + fonte 5V**.
+Lista para montar o protótipo: **Pro Micro + 4 módulos WS2812B + tubo flexível + fonte 5V** + caixa [**Medusa**](17-CABECA-MEDUSA.md).
 
 Links de busca (cole no AliExpress se o link não abrir):
 

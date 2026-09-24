@@ -74,7 +74,9 @@ DATA ───── DIN    DOUT ─── DATA
 ```
         [Mod1]──[Mod2]──[Mod3]──[Mod4]
            ▲
-      [Pro Micro + fonte 5V]
+      [Cabeça Medusa: Pro Micro + XLR MOD/TUBO + fonte 5V]
 ```
+
+Detalhes da caixa cabeça: [17-CABECA-MEDUSA.md](17-CABECA-MEDUSA.md).
 
 Splits em T **não** aplicam na v0 — uma única cadeia DATA.

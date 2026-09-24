@@ -21,6 +21,7 @@ DAW ──USB──► [Pro Micro] ──D6──► [Mod1]──►[Mod2]──
 | Spot | D6 — 5V + GND + DATA (fios ou XLR IN/OUT em cadeia) |
 | Tubo flex | D5 — tubo neon WS2811, XLR único (4×1 m no futuro) |
 | Conectores | [XLR 3 pin](16-XLR-CONECTORES.md): 1=GND, 2=+5V, 3=DATA |
+| Cabeça física | [Medusa](17-CABECA-MEDUSA.md) — Pro Micro + XLR MOD / TUBO / INJ |
 
 ## MIDI rápido
 

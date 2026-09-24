@@ -30,6 +30,8 @@ Cabeça ──DATA──► Mod1 ──DATA──► Mod2 ──DATA──► Mo
 
 ## Cabeça (Pro Micro)
 
+Montagem recomendada: caixa **Medusa** com XLR no painel — [17-CABECA-MEDUSA.md](17-CABECA-MEDUSA.md).
+
 Dois ramos de dados no firmware:
 
 | Ramo | Pino MCU | Destino |
