@@ -13,9 +13,10 @@ Links de busca (cole no AliExpress se o link não abrir):
 | 5 | Resistor 470Ω | `470 ohm resistor 1/4W 100pcs` |
 | 6 | Capacitor 1000µF | `1000uf 16V electrolytic capacitor` |
 | 7 | Fio silicone | `silicone wire 22AWG red black green` |
-| 8 | XLR 3 pin fêmea painel (módulos IN) | `XLR female 3 pin panel mount` |
-| 9 | XLR 3 pin macho painel (módulos OUT) | `XLR male 3 pin panel mount` |
-| 10 | JST 3 pin (opcional) | `JST SM 3 pin connector cable` |
+| 8 | XLR fêmea painel ×3 (Medusa MOD/TUBO/INJ) | `XLR female 3 pin panel mount` |
+| 9 | XLR macho painel ×4 (módulos OUT) + fêmea IN | `XLR male 3 pin panel mount` |
+| 10 | Caixa ABS + bornes | `ABS project box` + `terminal block 2 pin` |
+| 11 | JST 3 pin (opcional) | `JST SM 3 pin connector cable` |
 
 ---
 

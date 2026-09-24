@@ -4,10 +4,20 @@
  * - Tubo D15-Woven Magic WS2811 (gradiente / chase, pin 5)
  *
  * Bibliotecas: MIDI Library (FortySevenEffects), FastLED
+ *
+ * MIDI: USB (padrão) + opcional Serial1 (ESP-01 / bridge sem fio) — ver docs/18-WIRELESS-MIDI.md
  */
 
 #include <MIDI.h>
+#include <SerialMIDI.h>
 #include <FastLED.h>
+
+// 1 = MIDI USB (programação / cabo). 0 = só serial (show sem USB).
+#define ENABLE_USB_MIDI     1
+// 1 = MIDI na UART (ESP-01, ZS-040 com firmware serial). Ligação: RX/TX Serial1.
+#define ENABLE_SERIAL_MIDI  1
+// 115200 = bridge ESP UDP; 31250 = MIDI serial clássico
+#define SERIAL_MIDI_BAUD    115200
 
 // --- Módulos spot (4× LED individuais) ---
 #define MODULE_PIN    6
@@ -32,7 +42,13 @@ uint8_t moduleR[NUM_MODULES];
 uint8_t moduleG[NUM_MODULES];
 uint8_t moduleB[NUM_MODULES];
 
+#if ENABLE_USB_MIDI
 MIDI_CREATE_DEFAULT_INSTANCE();
+#endif
+
+#if ENABLE_SERIAL_MIDI
+MIDI_CREATE_INSTANCE(SerialMIDI<Serial1>, MIDI_Serial);
+#endif
 
 uint8_t masterBrightness = 255;
 
@@ -372,19 +388,41 @@ void setup() {
 
   bootTestTube();
 
+#if ENABLE_SERIAL_MIDI
+  Serial1.begin(SERIAL_MIDI_BAUD);
+#endif
+
+#if ENABLE_USB_MIDI
   if (MIDI_CHANNEL == 0) {
     MIDI.begin(MIDI_CHANNEL_OMNI);
   } else {
     MIDI.begin(MIDI_CHANNEL);
   }
-
   MIDI.setHandleNoteOn(onNoteOn);
   MIDI.setHandleNoteOff(onNoteOff);
   MIDI.setHandleControlChange(onControlChange);
   MIDI.setHandleProgramChange(onProgramChange);
+#endif
+
+#if ENABLE_SERIAL_MIDI
+  if (MIDI_CHANNEL == 0) {
+    MIDI_Serial.begin(MIDI_CHANNEL_OMNI);
+  } else {
+    MIDI_Serial.begin(MIDI_CHANNEL);
+  }
+  MIDI_Serial.setHandleNoteOn(onNoteOn);
+  MIDI_Serial.setHandleNoteOff(onNoteOff);
+  MIDI_Serial.setHandleControlChange(onControlChange);
+  MIDI_Serial.setHandleProgramChange(onProgramChange);
+#endif
 }
 
 void loop() {
+#if ENABLE_USB_MIDI
   MIDI.read();
+#endif
+#if ENABLE_SERIAL_MIDI
+  MIDI_Serial.read();
+#endif
   animateTube();
 }
