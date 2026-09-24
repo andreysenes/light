@@ -25,12 +25,16 @@
 | Módulos + tubo curto (≤1 m) | **3 A** |
 | Módulos + tubo **4 m** (D15) | **5 A** mínimo / **10 A** se branco alto + injeção 5V a cada ~2 m |
 
-## Como ligar
+## Medusa — entrada C14
+
+Na cabeça, a rede entra por **conector C14** (cabo **C13**); a fonte **5 V 10 A** fica **dentro** da caixa. Esquema e segurança: [17-CABECA-MEDUSA.md](17-CABECA-MEDUSA.md#entrada-de-rede--conector-c14).
+
+## Como ligar (5 V DC)
 
 ```
-[Fonte 5V] ──┬── (+) Pro Micro VCC
-             ├── (+) Módulo1…4 VCC (em paralelo ou cadeia)
-             └── (−) GND comum a todos
+[SMPS 5V na Medusa] ──┬── (+) Pro Micro VCC
+                      ├── (+) Módulo1…4 VCC (em paralelo ou cadeia)
+                      └── (−) GND comum a todos
 ```
 
 ### USB do PC

@@ -9,7 +9,10 @@ Links de busca (cole no AliExpress se o link não abrir):
 | 1 | Pro Micro | `Pro Micro ATmega32U4 5V 16MHz` |
 | 2 | WS2812B módulo (×4) | `WS2812B breakout board 5V DIN DOUT` |
 | 3 | Tubo neon flex | `WS2812B neon tube 5V silicone` (já é fita addressable dentro do silicone) |
-| 4 | Fonte 5V 10A | `5V 10A power supply SMPS switching` |
+| 4 | Fonte 5V 10A (montar **dentro** da Medusa) | `5V 10A power supply SMPS switching` 100-240V |
+| 4b | Entrada **C14** painel | `IEC320 C14 power inlet connector panel mount` |
+| 4c | Cabo **C13** (se não tiver) | `C13 power cord` |
+| 4d | Fusível 2A + base | `fuse holder 5x20mm 2A slow blow` |
 | 5 | Resistor 470Ω | `470 ohm resistor 1/4W 100pcs` |
 | 6 | Capacitor 1000µF | `1000uf 16V electrolytic capacitor` |
 | 7 | Fio silicone | `silicone wire 22AWG red black green` |

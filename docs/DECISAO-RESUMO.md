@@ -6,7 +6,7 @@
 
 ```
 DAW ──BT──► [ZS-040]──► [Pro Micro] ──D6──► [Mod1]──► … ──►[Mod4]
-     └──USB (opc.)──────►      └── Fonte 5V 10A na Medusa
+     └──USB (opc.)──────►      └── C14 + SMPS 5V 10A na Medusa
 ```
 
 ## Decisões v0
