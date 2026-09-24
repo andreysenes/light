@@ -18,8 +18,9 @@ DAW ──USB──► [Pro Micro] ──D6──► [Mod1]──►[Mod2]──
 | Cor | **RGB completo** (CC 1–14) |
 | Alimentação | **5V** / 1A |
 | Dados | **1 fio** WS2812 (pin D6) |
-| Spot | D6 — 5V + GND + DATA (3 fios) |
-| Tubo flex | D5 — fita WS2812B, efeito gradiente/chase |
+| Spot | D6 — 5V + GND + DATA (fios ou XLR IN/OUT em cadeia) |
+| Tubo flex | D5 — tubo neon WS2811, XLR único (4×1 m no futuro) |
+| Conectores | [XLR 3 pin](16-XLR-CONECTORES.md): 1=GND, 2=+5V, 3=DATA |
 
 ## MIDI rápido
 

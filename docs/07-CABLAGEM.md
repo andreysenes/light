@@ -1,6 +1,8 @@
 # Cablagem — v0
 
-Cada ligação entre módulos usa **3 fios**:
+**Conectores XLR (opcional):** pinagem e cadeia módulos + tubo — [16-XLR-CONECTORES.md](16-XLR-CONECTORES.md).
+
+Cada ligação entre módulos usa **3 fios** (ou **XLR 3 pinos** com a mesma função):
 
 | Fio | Função |
 |-----|--------|
@@ -16,6 +18,7 @@ Cada ligação entre módulos usa **3 fios**:
              └── GND ──┴── GND ───┴── GND ───┴── GND ───┴── GND
 
 Pro Micro D6 ──[470Ω]──► DATA IN Mod1 ──► OUT ──► IN Mod2 ──► ... ──► Mod4
+Pro Micro D5 ──[470Ω]──► DATA tubo neon (cabo XLR separado dos módulos)
 ```
 
 ## Por módulo
