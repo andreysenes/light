@@ -5,18 +5,18 @@
  *
  * Bibliotecas: MIDI Library (FortySevenEffects), FastLED
  *
- * MIDI: USB (padrão) + opcional Serial1 (ESP-01 / bridge sem fio) — ver docs/18-WIRELESS-MIDI.md
+ * MIDI: USB (cabo perto do PC) + Serial1 (ZS-040 na Medusa) — docs/18-WIRELESS-MIDI.md
  */
 
 #include <MIDI.h>
 #include <SerialMIDI.h>
 #include <FastLED.h>
 
-// 1 = MIDI USB (programação / cabo). 0 = só serial (show sem USB).
+// 1 = MIDI USB. Cabeça perto do PC: plugar USB na Medusa.
 #define ENABLE_USB_MIDI     1
-// 1 = MIDI na UART (ESP-01 na Medusa). Ligação: RX/TX Serial1.
+// 1 = MIDI na UART (ZS-040 BLE). Palco sem cabo USB.
 #define ENABLE_SERIAL_MIDI  1
-// 115200 = bridge ESP UDP; 31250 = MIDI serial clássico
+// Igual ao ZS-040: 115200 após AT+BAUD4; ou 9600 padrão de fábrica
 #define SERIAL_MIDI_BAUD    115200
 
 // --- Módulos spot (4× LED individuais) ---

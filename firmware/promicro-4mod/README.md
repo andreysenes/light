@@ -6,7 +6,7 @@ Documentação: [docs/](../../docs/) · MIDI: [05-MIDI-DAW.md](../../docs/05-MID
 
 ## O que este firmware faz
 
-- **MIDI USB** (programação) + **Serial1** ← **ESP-01** na Medusa — [18-WIRELESS-MIDI.md](../../docs/18-WIRELESS-MIDI.md)
+- **MIDI USB** (cabeça perto do PC) + **Serial1** ← **ZS-040** (palco) — [18-WIRELESS-MIDI.md](../../docs/18-WIRELESS-MIDI.md)
 - **4 módulos** = 4 pixels numa cadeia WS2812B (data em série)
 - **RGB completo** em cada módulo — qualquer cor via CC
 - **Tubo flexível** (pin D5) — gradiente, chase, rainbow ([14-TUBO-FLEX.md](../../docs/14-TUBO-FLEX.md))
