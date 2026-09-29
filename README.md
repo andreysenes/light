@@ -26,7 +26,7 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 
 | Passo | Onde |
 |-------|------|
-| 1. Ligar hardware | [docs/07-CABLAGEM.md](docs/07-CABLAGEM.md) |
+| 1. Montar e soldar | [docs/22-MANUAL-MONTAGEM.md](docs/22-MANUAL-MONTAGEM.md) (sem caps/resistores) |
 | 2. Upload firmware | [firmware/promicro-4mod/](firmware/promicro-4mod/) |
 | 3. Mapear MIDI no DAW | [docs/05-MIDI-DAW.md](docs/05-MIDI-DAW.md) |
 
@@ -50,6 +50,7 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | [**Compras AliExpress**](docs/15-ALIEXPRESS-BOM.md) | **O que buscar e o que evitar** |
 | [Inventário hardware](docs/20-INVENTARIO-HARDWARE.md) | **O que já temos** |
 | [**Lista de compras**](docs/21-LISTA-COMPRAS-RESTANTE.md) | **Itens restantes** |
+| [**Manual de montagem**](docs/22-MANUAL-MONTAGEM.md) | Soldagem e ordem de montagem |
 | [Roadmap](docs/08-ROADMAP.md) | v0 atual → v1 futuro |
 | [Resumo rápido](docs/DECISAO-RESUMO.md) | Decisões em 2 minutos |
 
