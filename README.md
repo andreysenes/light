@@ -1,5 +1,7 @@
 # StageMod v0 — Iluminação de palco modular + MIDI
 
+Repositório GitHub: [github.com/andreysenes/light](https://github.com/andreysenes/light) — ver [docs/GITHUB.md](docs/GITHUB.md) para `git push`.
+
 **4 módulos** acopláveis, **1 LED WS2812B RGB** por módulo, controlados por **Pro Micro** via **MIDI USB** a partir de uma DAW.
 
 ## Arquitetura v0
