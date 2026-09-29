@@ -29,17 +29,11 @@ Cada módulo físico: **8 LEDs** em série internos; **DOUT** do módulo → **D
 | Total | **200** addressable |
 | Chip | WS2811 (D15-Woven Magic) |
 
-## Ainda falta (montagem Medusa)
+## Ainda falta
 
-| Item | Qty | Notas |
-|------|-----|--------|
-| Caixa Medusa | 1 | Pro Micro + ZS-040 + SMPS + XLR |
-| **C14** painel | 1 | Entrada rede |
-| XLR fêmea | 2–3 | MOD, TUBO, INJ (opc.) |
-| XLR nos módulos | 4× IN/OUT | Se ainda não instalados |
-| **470 Ω** | 6 | 4 módulos + 2 Medusa (D5/D6) |
-| **Cap** 470µF–1000µF | 5 | 4 módulos + 1 Medusa |
-| Fios / cabos XLR | — | Tentáculos palco |
+Lista de compras completa: **[21-LISTA-COMPRAS-RESTANTE.md](21-LISTA-COMPRAS-RESTANTE.md)**.
+
+Resumo: caixa Medusa + **C14** + fusível + XLR (Medusa e módulos) + **6× 470 Ω** + **5× cap** + cabos + USB painel.
 
 ## Corrente (referência)
 
