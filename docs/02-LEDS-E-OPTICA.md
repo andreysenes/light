@@ -7,8 +7,10 @@
 | Tipo | **WS2812B** (ou WS2812B-B breakout) |
 | Tensão | **5 V** |
 | Cor | **RGB completo** — 8 bits por canal |
-| Por módulo | **1 LED** |
-| Total no rig | **4 LEDs** |
+| Por módulo físico | **8× WS2812B** (mesma cor via MIDI) |
+| Módulos lógicos (MIDI) | **4** |
+| Total cadeia D6 | **32 pixels** |
+| Tubo D5 | **200** LEDs (4 m × 50/m) |
 
 ## Por que WS2812B na v0
 
@@ -36,7 +38,7 @@ Não é necessário LED warm white separado — **R+G parcial** faz amarelo/lara
 |--------|------------------|--------|
 | Apagado | ~1 mA | ~4 mA |
 | Cor média | ~20–40 mA | ~80–160 mA |
-| Branco full | ~60 mA | **~240 mA** |
+| Branco full | ~60 mA | **~2 A** (32 LEDs) + tubo à parte |
 
 Fonte **5V / 1A** é suficiente com margem.
 

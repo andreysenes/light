@@ -7,7 +7,7 @@ Documentação: [docs/](../../docs/) · MIDI: [05-MIDI-DAW.md](../../docs/05-MID
 ## O que este firmware faz
 
 - **MIDI USB** (cabeça perto do PC) + **Serial1** ← **ZS-040** (palco) — [18-WIRELESS-MIDI.md](../../docs/18-WIRELESS-MIDI.md)
-- **4 módulos** = 4 pixels numa cadeia WS2812B (data em série)
+- **4 módulos lógicos** = **32 pixels** (8 WS2812B por módulo físico, mesma cor por CC)
 - **RGB completo** em cada módulo — qualquer cor via CC
 - **Tubo flexível** (pin D5) — gradiente, chase, rainbow ([14-TUBO-FLEX.md](../../docs/14-TUBO-FLEX.md))
 - Notas **C3–F3** acendem o módulo com a cor RGB já definida; **velocity** = brilho

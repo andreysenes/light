@@ -2,7 +2,7 @@
 
 Repositório GitHub: [github.com/andreysenes/light](https://github.com/andreysenes/light) — ver [docs/GITHUB.md](docs/GITHUB.md) para `git push`.
 
-**4 módulos** acopláveis, **1 LED WS2812B RGB** por módulo, controlados pela **Medusa** (**Pro Micro** + **ZS-040** Bluetooth) ou **USB**, a partir de uma DAW.
+**4 módulos** acopláveis (**8× WS2812B** cada, 32 pixels na cadeia) + **tubo 4 m** (200 LEDs), controlados pela **Medusa** (**Pro Micro** + **ZS-040** Bluetooth) ou **USB**, a partir de uma DAW.
 
 ## Arquitetura v0
 
@@ -48,6 +48,7 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | [MIDI sem fio](docs/18-WIRELESS-MIDI.md) | DAW, latência, bridge PC |
 | [**Tubo flex**](docs/14-TUBO-FLEX.md) | Gradiente, chase, MIDI CC 15–19 |
 | [**Compras AliExpress**](docs/15-ALIEXPRESS-BOM.md) | **O que buscar e o que evitar** |
+| [Inventário hardware](docs/20-INVENTARIO-HARDWARE.md) | **O que já temos** vs falta montar |
 | [Roadmap](docs/08-ROADMAP.md) | v0 atual → v1 futuro |
 | [Resumo rápido](docs/DECISAO-RESUMO.md) | Decisões em 2 minutos |
 

@@ -1,6 +1,6 @@
 /*
  * StageMod v0 — Pro Micro
- * - 4× WS2812B (módulos spot, pin 6)
+ * - 4× módulos spot, 8× WS2812B cada (32 pixels, pin 6)
  * - Tubo D15-Woven Magic WS2811 (gradiente / chase, pin 5)
  *
  * Bibliotecas: MIDI Library (FortySevenEffects), FastLED
@@ -19,9 +19,11 @@
 // Igual ao ZS-040: 115200 após AT+BAUD4; ou 9600 padrão de fábrica
 #define SERIAL_MIDI_BAUD    115200
 
-// --- Módulos spot (4× LED individuais) ---
-#define MODULE_PIN    6
-#define NUM_MODULES   4
+// --- Módulos spot: 4 blocos × 8 WS2812B em cadeia (32 pixels) ---
+#define MODULE_PIN        6
+#define NUM_MODULES       4
+#define LEDS_PER_MODULE   8
+#define NUM_MODULE_PIXELS (NUM_MODULES * LEDS_PER_MODULE)
 
 // --- Tubo D15-Woven Magic (manual: IC WS2811, 50 LED/m, corte 20 mm) ---
 #define TUBE_PIN      5
@@ -35,7 +37,7 @@
 #define MIDI_NOTE_MODULE_1  60
 #define MIDI_CHANNEL        1
 
-CRGB modules[NUM_MODULES];
+CRGB modules[NUM_MODULE_PIXELS];
 CRGB tube[NUM_TUBE_LEDS];
 
 uint8_t moduleR[NUM_MODULES];
@@ -93,18 +95,25 @@ void showAll() {
   FastLED.show();
 }
 
-void applyModuleColor(int index) {
+void fillModulePixels(int index, CRGB color) {
   if (index < 0 || index >= NUM_MODULES) return;
-  modules[index] = CRGB(moduleR[index], moduleG[index], moduleB[index]);
+  int base = index * LEDS_PER_MODULE;
+  for (int i = 0; i < LEDS_PER_MODULE; i++) {
+    modules[base + i] = color;
+  }
+}
+
+void applyModuleColor(int index) {
+  fillModulePixels(index, CRGB(moduleR[index], moduleG[index], moduleB[index]));
 }
 
 void applyModuleColorScaled(int index, uint8_t scale) {
   if (index < 0 || index >= NUM_MODULES) return;
-  modules[index] = CRGB(
+  fillModulePixels(index, CRGB(
     (uint8_t)((uint16_t)moduleR[index] * scale / 255),
     (uint8_t)((uint16_t)moduleG[index] * scale / 255),
     (uint8_t)((uint16_t)moduleB[index] * scale / 255)
-  );
+  ));
 }
 
 void tubeBlackout() {
@@ -191,7 +200,7 @@ void animateTube() {
 }
 
 void blackoutAll() {
-  fill_solid(modules, NUM_MODULES, CRGB::Black);
+  fill_solid(modules, NUM_MODULE_PIXELS, CRGB::Black);
   tubeEffect = TUBE_OFF;
   tubeBlackout();
   showAll();
@@ -238,7 +247,7 @@ void onNoteOff(byte channel, byte note, byte velocity) {
   int idx = note - MIDI_NOTE_MODULE_1;
   if (idx < 0 || idx >= NUM_MODULES) return;
 
-  modules[idx] = CRGB::Black;
+  fillModulePixels(idx, CRGB::Black);
   showAll();
 }
 
@@ -373,17 +382,17 @@ void bootTestTube() {
 }
 
 void setup() {
-  FastLED.addLeds<MODULE_LED_TYPE, MODULE_PIN, MODULE_COLOR_ORDER>(modules, NUM_MODULES);
+  FastLED.addLeds<MODULE_LED_TYPE, MODULE_PIN, MODULE_COLOR_ORDER>(modules, NUM_MODULE_PIXELS);
   FastLED.addLeds<TUBE_LED_TYPE, TUBE_PIN, TUBE_COLOR_ORDER>(tube, NUM_TUBE_LEDS);
   FastLED.setBrightness(masterBrightness);
   FastLED.clear(true);
 
   const CRGB bootColors[] = { CRGB::Red, CRGB::Green, CRGB::Blue, CRGB::White };
   for (int i = 0; i < NUM_MODULES; i++) {
-    modules[i] = bootColors[i];
+    fillModulePixels(i, bootColors[i]);
     showAll();
     delay(150);
-    modules[i] = CRGB::Black;
+    fillModulePixels(i, CRGB::Black);
   }
 
   bootTestTube();

@@ -16,7 +16,9 @@ Não há ESP32, RS-485 nem decoder nos módulos na v0.
 
 ```mermaid
 flowchart LR
-    DAW[DAW] -->|USB MIDI| PM[Pro Micro]
+    DAW[DAW] -->|USB ou BT| PM[Pro Micro]
+    DAW -.->|BLE| ZS[ZS-040]
+    ZS -->|Serial1| PM
     PM -->|D6| M1[Módulo 1]
     M1 --> M2 --> M3 --> M4
     PM -->|D5| TUB[Tubo flex WS2812B]
