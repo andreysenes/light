@@ -5,7 +5,7 @@
 | Peça | MCU? | Função |
 |------|------|--------|
 | **Cabeça** | Pro Micro + **ZS-040** | MIDI USB ou BT → pixels WS2812B |
-| **Módulo 1–4** | Nenhum | 1 LED RGB + pass-through cabos |
+| **Módulo 1–4** | Nenhum | **8× WS2812B** (1 cor MIDI) + pass-through cabos |
 | **Tubo flex** | Nenhum | Fita WS2812B em tubo silicone (muitos pixels) |
 | **Fonte 5V** | — | Alimentação (10A com tubo 4m) |
 | **ZS-040** | BLE UART | MIDI sem fio → Serial1 — [19-ZS-040.md](19-ZS-040.md) |
@@ -24,8 +24,8 @@ flowchart LR
     PM -->|D5| TUB[Tubo flex WS2812B]
 ```
 
-- Protocolo WS2812B: **endereço na posição** da cadeia (0, 1, 2, 3)
-- Firmware trata `modules[0]`…`modules[3]` no FastLED
+- Cadeia D6: **32 pixels** (módulos 0–7, 8–15, 16–23, 24–31)
+- MIDI: **4 módulos lógicos** — cada CC RGB pinta **8 LEDs** iguais
 
 ## Cabeça (Pro Micro)
 
