@@ -48,8 +48,8 @@ Cada módulo é só **1 WS2812B** + 3 fios de pass-through (energia) + data sér
 
 ### Boas práticas WS2812B
 
-- Resistor **330–470 Ω** entre Pro Micro e primeiro DIN
-- Capacitor **100–1000 µF** entre 5V e GND **no primeiro módulo**
+- **Cada módulo:** resistor **470 Ω** (DATA IN → DIN) + cap **470–1000 µF** (5V/GND no LED)
+- **Medusa:** **470 Ω** em D5/D6 antes do XLR + **1000 µF** no barramento 5 V
 - Fonte **5V / mín. 1 A** (4 LEDs × ~60 mA ≈ 240 mA no pior caso; use 1–2 A)
 - Cabo de dados curto no protótipo (< 30 cm entre módulos)
 
