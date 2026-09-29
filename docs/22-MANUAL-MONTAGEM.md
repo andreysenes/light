@@ -81,6 +81,8 @@ Etiqueta nos cabos: **`5V PIXEL — NÃO É ÁUDIO`**.
 
 Cada módulo físico tem **8 LEDs WS2812B** em **série**. No MIDI, um módulo = **um** bloco de 8 LEDs com a **mesma cor**.
 
+**Carcaça 3D (opcional):** imprimir e montar conforme [23-MODULO-SPOT-3D.md](23-MODULO-SPOT-3D.md) — STL em [`hardware/spot-module-v0/`](../hardware/spot-module-v0/).
+
 ### 4.1 Conectores
 
 | Lado | Conector painel |

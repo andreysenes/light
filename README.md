@@ -51,6 +51,7 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | [Inventário hardware](docs/20-INVENTARIO-HARDWARE.md) | **O que já temos** |
 | [**Lista de compras**](docs/21-LISTA-COMPRAS-RESTANTE.md) | **Itens restantes** |
 | [**Manual de montagem**](docs/22-MANUAL-MONTAGEM.md) | Soldagem e ordem de montagem |
+| [**Módulo spot 3D**](docs/23-MODULO-SPOT-3D.md) | STL + impressão + montagem mecânica |
 | [Roadmap](docs/08-ROADMAP.md) | v0 atual → v1 futuro |
 | [Resumo rápido](docs/DECISAO-RESUMO.md) | Decisões em 2 minutos |
 
