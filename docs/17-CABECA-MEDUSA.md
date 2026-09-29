@@ -150,8 +150,8 @@ Use fio **AWG 18** (ou 1,0 mm²) para AC; **termoretrátil** e **cannotilho**; n
 | 1 | Cabo C13 1,5 m (ou usar existente) | Tomada → Medusa |
 | 1 | Caixa ABS grande | C14 + SMPS + USB + XLR |
 | 2–3 | XLR fêmea painel | MOD, TUBO, INJ |
-| 2 | 470 Ω | D5, D6 |
-| 1 | 1000 µF 16 V | Barramento 5 V |
+| 2 | 470 Ω | Saídas **D5** e **D6** → XLR (além do 470 Ω **em cada módulo**) |
+| 1 | 1000 µF 16 V | Barramento 5 V na Medusa (além do cap **em cada módulo**) |
 | 1 | USB micro painel | Pro Micro |
 | — | Divisor 1k/2k | TX Pro Micro → RX ZS (se necessário) |
 

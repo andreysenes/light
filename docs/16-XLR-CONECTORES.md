@@ -16,7 +16,7 @@ Conectores **XLR 3 pinos** para ligar o **tubo neon** e os **módulos WS2812B** 
 
 | Conector no módulo | Tipo | Ligação interna |
 |--------------------|------|-----------------|
-| **Entrada** | XLR **fêmea** (painel) | 5V/GND passam; **DATA → DIN** do WS2812B |
+| **Entrada** | XLR **fêmea** (painel) | 5V/GND passam; **DATA → [470Ω] → DIN**; **cap** 5V/GND no LED |
 | **Saída** | XLR **macho** (painel) | 5V/GND passam; **DOUT → DATA** do cabo |
 
 Os módulos ligam em **cadeia na DATA** (série lógica), não em paralelo na linha de dados:
@@ -71,8 +71,9 @@ Futuro (4 segmentos):
 ```
      XLR IN (F)              WS2812B              XLR OUT (M)
   Pin1 GND ──────────────── GND ───────────────── Pin1 GND
-  Pin2 5V  ──────────────── 5V  ───────────────── Pin2 5V
-  Pin3 DATA ───► DIN    DOUT ───► Pin3 DATA
+  Pin2 5V  ────┬─────────── 5V  ───────────────── Pin2 5V
+               │ [470µF–1000µF]
+  Pin3 DATA ──[470Ω]──► DIN    DOUT ───► Pin3 DATA
 ```
 
 Ordem na cadeia: **Mod1** (C3) → **Mod2** (D3) → **Mod3** (E3) → **Mod4** (F3).

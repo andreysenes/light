@@ -33,13 +33,17 @@ Pro Micro D6 ──[470Ω]──► DIN LED1 ── DOUT ──► DIN LED2 ─�
 | DATA IN | DIN do WS2812B |
 | DATA OUT | DOUT do WS2812B → próximo módulo |
 
-## Componentes passivos recomendados
+## Componentes passivos
 
-| Item | Onde | Função |
-|------|------|--------|
-| Resistor **470Ω** | Entre D6 e DIN | Proteção linha data |
-| Capacitor **470µF–1000µF** | 5V/GND no 1º módulo | Estabilizar picos WS2812 |
-| — | — | Sem MOSFET, sem driver CC na v0 |
+| Item | Onde | Qty |
+|------|------|-----|
+| Resistor **470Ω** | **Cada módulo:** DATA IN → DIN do WS2812B | **4** |
+| Resistor **470Ω** | **Medusa:** D5 e D6 antes dos XLR TUBO/MOD | **2** |
+| Capacitor **470µF–1000µF** | **Cada módulo:** 5V/GND no LED | **4** |
+| Capacitor **1000µF** | **Medusa:** barramento 5V na fonte | **1** |
+| — | Tubo: cap opcional no conector de entrada | 0–1 |
+
+Sem MOSFET nem driver CC na v0.
 
 ## Proteção
 

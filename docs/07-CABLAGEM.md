@@ -21,14 +21,28 @@ Pro Micro D6 ──[470Ω]──► DATA IN Mod1 ──► OUT ──► IN Mod2
 Pro Micro D5 ──[470Ω]──► DATA tubo neon (cabo XLR separado dos módulos)
 ```
 
-## Por módulo
+## Por módulo (padrão StageMod)
+
+**Cada um dos 4 módulos** leva **470 Ω** na entrada de DATA e **capacitor** na alimentação do LED.
 
 ```
-        IN                    OUT
-    5V ──┬── VCC LED ──┬── 5V
-   GND ──┴── GND LED ──┴── GND
-  DATA ───── DIN    DOUT ─── DATA
+     XLR IN (ou chicote IN)
+  Pin3 DATA ──[470Ω]──► DIN    DOUT ───► DATA OUT (→ próximo módulo)
+  Pin2 5V  ──┬── VCC LED
+  Pin1 GND ──┴── GND LED
+              │
+         [470µF–1000µF]
+         entre 5V e GND
+              │
+  Pin2/1 pass-through ───────► XLR OUT (5V/GND)
 ```
+
+| Componente | Onde no módulo |
+|------------|----------------|
+| **470 Ω** | Entre **DATA IN** (pino 3 do XLR) e **DIN** do WS2812B |
+| **470 µF–1000 µF** (≥ 6,3 V) | Entre **5 V** e **GND** do LED (o mais perto possível do chip) |
+
+A **Medusa** mantém capacitor no barramento 5 V e **470 Ω** nas saídas **D5** e **D6** antes dos XLR MOD/TUBO — ver [17-CABECA-MEDUSA.md](17-CABECA-MEDUSA.md).
 
 ## Ordem da cadeia
 
@@ -62,7 +76,7 @@ Pro Micro D5 ──[470Ω]──► DATA tubo neon (cabo XLR separado dos módul
 2. Soldar GND comum em todos
 3. Soldar 5V em todos
 4. Ligar DATA: D6 → Mod1 → Mod2 → Mod3 → Mod4
-5. Capacitor 470µF no 1º módulo
+5. Em **cada** módulo: soldar **470 Ω** (DATA IN → DIN) e **cap** (5V/GND no LED)
 6. Ligar fonte; verificar boot RGB
 
 ## Splits / topologia
