@@ -99,7 +99,9 @@ Depois rode `./export-stl.sh` e reimprima só a peça afetada (geralmente corpo 
 
 ## Referência visual
 
-A geometria segue a referência do projeto (coluna estreita, difusor contínuo, pés nas laterais, fixadores visíveis). Fotos de montagem final podem ser adicionadas ao repositório em `hardware/spot-module-v0/photos/` quando existirem.
+![Referência de design](../hardware/spot-module-v0/reference-design.png)
+
+A geometria segue esta coluna (U + difusor recuado + pés). Fotos da sua montagem podem ir em `hardware/spot-module-v0/photos/`.
 
 ---
 
