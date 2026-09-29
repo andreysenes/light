@@ -22,6 +22,51 @@ Links de busca (cole no AliExpress se o link não abrir):
 | 11 | Caixa ABS + bornes | `ABS project box` + `terminal block 2 pin` |
 | 12 | JST 3 pin (opcional) | `JST SM 3 pin connector cable` |
 
+Documentação do módulo BT: **[19-ZS-040.md](19-ZS-040.md)**.
+
+---
+
+## ZS-040 — Bluetooth MIDI (Medusa) — obrigatório na cabeça
+
+### O que buscar
+
+```
+ZS-040 HM-10 bluetooth 4.0 ble serial module
+```
+
+ou
+
+```
+CC2541 bluetooth module UART 5V
+```
+
+### Filtros
+
+| Campo | Valor |
+|-------|--------|
+| Chip | **CC2541** / HM-10 compatível |
+| Interface | **UART** (TX, RX, VCC, GND) |
+| Tensão | **5 V** no breakout (preferido) ou 3,3 V |
+| Firmware | Transparente serial (não precisa programar para v0) |
+
+### Evitar
+
+- Módulo só **SPP clássico** sem BLE (nomes genéricos “Bluetooth 2.0 audio”)
+- Placa **sem** pinos TX/RX expostos
+
+### Preço referência
+
+| Qty | ~US$ |
+|-----|------|
+| 1 | 2–5 |
+| 2 (reserva) | 4–8 |
+
+### Após comprar
+
+1. Configurar `AT+BAUD4` → **115200** (ver [19-ZS-040.md](19-ZS-040.md)).
+2. Soldar na Medusa: TX→RX Pro Micro, RX←TX Pro Micro.
+3. Parear no PC e testar com Hairless / bridge MIDI.
+
 ---
 
 ## 1. Pro Micro (cabeça) — obrigatório
@@ -242,8 +287,9 @@ Na linha 5V da fonte.
 | 1 | Pro Micro 5V 32U4 | 1–2 | 4 |
 | 2 | WS2812B breakout ou 10pcs mini PCB | 4–10 | 2 |
 | 3 | Tubo neon **5V** addressable (ex. 4 m D15) | 1 | — (já tem) |
-| 4 | Fonte 5V **10A** | 1 | 12 |
-| 5 | Resistor 470Ω | 5+ | 1 |
+| 4 | Fonte 5V **10A** + C14 | 1 | 15 |
+| 4b | **ZS-040** (Medusa) | 1 | 3 |
+| 5 | Resistor 470Ω | 6+ | 1 |
 | 6 | Capacitor 1000µF 16V | 2 | 1 |
 | 7 | Fio silicone 22AWG | 1 kit | 3 |
 | | **Total estimado** (sem tubo/Pro Micro/LEDs) | | **~15–20** |
@@ -274,7 +320,13 @@ Envio Brasil: +US$ 0–15 dependendo do vendedor e promo “Choice” / “AliEx
 ### Fonte
 
 - [ ] Multímetro: saída **5,0–5,2 V**
-- [ ] Polaridade P4: **centro = +**
+- [ ] C14 com terra ligado à carcaça SMPS
+
+### ZS-040
+
+- [ ] `AT` responde OK
+- [ ] Baud **115200** (`AT+BAUD4`)
+- [ ] Pareamento Bluetooth no PC
 
 ---
 

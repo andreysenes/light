@@ -1,6 +1,6 @@
-# ESP-01 — bridge MIDI UDP → serial
+# ESP-01 — bridge MIDI UDP → serial (opcional)
 
-Repasse de baixa latência para a **Medusa** (Pro Micro em `Serial1` @ **115200**).
+**Não faz parte da Medusa v0** — a cabeça usa **ZS-040** ([19-ZS-040.md](../../docs/19-ZS-040.md)). Este sketch é alternativa Wi‑Fi para quem não usar Bluetooth.
 
 ## Hardware
 

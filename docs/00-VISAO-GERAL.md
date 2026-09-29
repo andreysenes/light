@@ -4,17 +4,17 @@
 
 Sistema de **4 módulos de luz** para palco/ensaio, controlados por **MIDI** a partir de uma DAW, usando componentes acessíveis:
 
-- **Pro Micro** como cabeça única
+- **Medusa**: **Pro Micro** + **ZS-040** (Bluetooth MIDI) + fonte **5V** na caixa
 - **WS2812B** (RGB completo) em cada módulo
-- **Fonte 5V** simples
+- **USB** opcional quando a cabeça está perto do PC
 
 ## O que é v0
 
 | Inclui | Não inclui (v1) |
 |--------|-----------------|
 | 4 módulos, 1 LED RGB cada | LEDs 10W mono |
-| MIDI USB | RS-485 / P4 / RJ45 |
-| Pro Micro | ESP32 |
+| MIDI USB + **ZS-040** (BT) | RS-485 / P4 / RJ45 |
+| Pro Micro + ZS-040 | ESP32 |
 | Cadeia WS2812B (1 fio data) | ATtiny nos módulos |
 | Fonte 5V | Fonte 24V |
 

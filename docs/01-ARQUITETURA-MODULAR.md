@@ -4,10 +4,11 @@
 
 | Peça | MCU? | Função |
 |------|------|--------|
-| **Cabeça** | Pro Micro | MIDI USB → pixels WS2812B |
+| **Cabeça** | Pro Micro + **ZS-040** | MIDI USB ou BT → pixels WS2812B |
 | **Módulo 1–4** | Nenhum | 1 LED RGB + pass-through cabos |
 | **Tubo flex** | Nenhum | Fita WS2812B em tubo silicone (muitos pixels) |
-| **Fonte 5V** | — | Alimentação (≥3A com tubo) |
+| **Fonte 5V** | — | Alimentação (10A com tubo 4m) |
+| **ZS-040** | BLE UART | MIDI sem fio → Serial1 — [19-ZS-040.md](19-ZS-040.md) |
 
 Não há ESP32, RS-485 nem decoder nos módulos na v0.
 

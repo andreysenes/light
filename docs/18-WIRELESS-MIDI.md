@@ -1,5 +1,7 @@
 # MIDI sem fio — Medusa (ZS-040 + Pro Micro)
 
+Hardware e pinagem do **ZS-040**: **[19-ZS-040.md](19-ZS-040.md)**.
+
 Na **Medusa** o rádio é o **ZS-040** (BLE UART). O **Pro Micro** aceita **dois caminhos ao mesmo tempo**:
 
 | Modo | Quando | Latência típica |

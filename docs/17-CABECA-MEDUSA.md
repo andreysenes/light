@@ -20,7 +20,7 @@ Não há ESP-01 nem segundo MCU — só **Pro Micro + ZS-040**.
 
 Ambos podem ficar **habilitados** no firmware; na DAW use **só um** caminho por vez.
 
-Detalhes e latência: [18-WIRELESS-MIDI.md](18-WIRELESS-MIDI.md).
+Hardware ZS-040: [19-ZS-040.md](19-ZS-040.md) · DAW e latência: [18-WIRELESS-MIDI.md](18-WIRELESS-MIDI.md).
 
 ## Função
 

@@ -2,19 +2,20 @@
 
 Repositório GitHub: [github.com/andreysenes/light](https://github.com/andreysenes/light) — ver [docs/GITHUB.md](docs/GITHUB.md) para `git push`.
 
-**4 módulos** acopláveis, **1 LED WS2812B RGB** por módulo, controlados por **Pro Micro** via **MIDI USB** a partir de uma DAW.
+**4 módulos** acopláveis, **1 LED WS2812B RGB** por módulo, controlados pela **Medusa** (**Pro Micro** + **ZS-040** Bluetooth) ou **USB**, a partir de uma DAW.
 
 ## Arquitetura v0
 
 ```
-DAW ──MIDI USB──► [Pro Micro] ──D6──► Mod1 ──► Mod2 ──► Mod3 ──► Mod4
-                      │
-                   Fonte 5V (≥1A) ── VCC/GND em cadeia nos módulos
+DAW ──BT──► [ZS-040]──► [Pro Micro] ──D6──► Mod1 ──► Mod2 ──► Mod3 ──► Mod4
+     └──USB (opc.)──────►      └── D5 ──► tubo neon 4 m
+                               Fonte 5V 10A (C14 na Medusa)
 ```
 
 | Peça | Função |
 |------|--------|
-| **Pro Micro** | Cabeça única — MIDI → cores RGB |
+| **Medusa** | Pro Micro + **ZS-040** + fonte + XLR |
+| **ZS-040** | MIDI sem fio (Bluetooth → Serial1) — [19-ZS-040.md](docs/19-ZS-040.md) |
 | **Módulo spot** | 1× WS2812B + pass-through 5V/GND/DATA |
 | **Tubo flex** | Fita WS2812B em tubo silicone — gradiente / chase (pin D5) |
 | **Fonte 5V** | Pro Micro + spots + tubo (≥ **3A** com tubo) |
@@ -43,7 +44,8 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | [Cablagem](docs/07-CABLAGEM.md) | Fios por módulo |
 | [XLR](docs/16-XLR-CONECTORES.md) | Pinagem 3 pinos — tubo + módulos |
 | [**Cabeça Medusa**](docs/17-CABECA-MEDUSA.md) | Caixa Pro Micro + saídas XLR |
-| [MIDI sem fio](docs/18-WIRELESS-MIDI.md) | ZS-040 BT + USB opcional |
+| [ZS-040](docs/19-ZS-040.md) | Bluetooth na Medusa |
+| [MIDI sem fio](docs/18-WIRELESS-MIDI.md) | DAW, latência, bridge PC |
 | [**Tubo flex**](docs/14-TUBO-FLEX.md) | Gradiente, chase, MIDI CC 15–19 |
 | [**Compras AliExpress**](docs/15-ALIEXPRESS-BOM.md) | **O que buscar e o que evitar** |
 | [Roadmap](docs/08-ROADMAP.md) | v0 atual → v1 futuro |
