@@ -33,7 +33,8 @@ Cada módulo físico: **8 LEDs** em série internos; **DOUT** do módulo → **D
 
 Lista de compras completa: **[21-LISTA-COMPRAS-RESTANTE.md](21-LISTA-COMPRAS-RESTANTE.md)**.
 
-Resumo: caixa Medusa + **C14** + fusível + XLR (Medusa e módulos) + **6× 470 Ω** + **5× cap** + cabos + USB painel.
+Resumo: caixa Medusa + **C14** + fusível + XLR (Medusa e módulos) + cabos + USB painel.  
+**Montagem/soldagem:** [22-MANUAL-MONTAGEM.md](22-MANUAL-MONTAGEM.md).
 
 ## Corrente (referência)
 
@@ -49,7 +50,7 @@ Injeção **5 V** no **meio** do tubo 4 m continua recomendada.
 ## Checklist primeiro power-on
 
 1. [ ] `LEDS_PER_MODULE 8` e `NUM_TUBE_LEDS 200` no `.ino` (já padrão no repo)
-2. [ ] Resistor + cap em **cada** módulo; Medusa D5/D6 + cap barramento
+2. [ ] Ligação 5V/GND/DATA conforme [22-MANUAL-MONTAGEM.md](22-MANUAL-MONTAGEM.md)
 3. [ ] Ordem cadeia: Mod1 (C3) → Mod2 → Mod3 → Mod4 (F3)
 4. [ ] Boot: cada módulo pisca **8 LEDs** juntos R/G/B/W; depois teste tubo
 5. [ ] ZS-040 @ 115200 ou USB para MIDI
