@@ -119,12 +119,38 @@ Do mesmo **+5 V / GND**, preparar fios para (soldar na Parte 2):
 
 Objetivo: placa e Bluetooth na caixa, **alimentados pelo barramento**, saídas de dados nos XLR. **Ainda não** fazer upload do firmware.
 
-### 2.1 Fixar placa
+> No StageMod v0 a “placa” é o **Pro Micro** (ATmega32U4, 5 V) — não o Raspberry Pi Pico. O firmware do repositório é só para Pro Micro.
+
+### 2.1 Ligar a fonte no Pro Micro
+
+Use a **mesma** fonte **5 V** da Parte 1 (barramento vermelho = +, preto = GND).
+
+```
+Fonte 5 V (+) ────────► pad VCC  (ou pin "VCC" / "5V" na borda)
+Fonte 5 V (−) ────────► pad GND  (qualquer GND na borda)
+```
+
+| Passo | Ação |
+|-------|------|
+| 1 | Fonte **desligada** na tomada (ou SMPS sem AC). |
+| 2 | Multímetro na saída da fonte: **vermelho** no **+V**, **preto** no **−V** → deve marcar **+5 V** (não invertido). |
+| 3 | Soldar ou parafusar fio **AWG 22–18** do **+ barramento** no **VCC** do Pro Micro. |
+| 4 | Fio do **GND barramento** no **GND** do Pro Micro (mesmo plano de terra da fonte). |
+| 5 | **Não** alimentar o Pro Micro pelo pino **RAW** com 5 V — **RAW** é entrada para o regulador interno (7–12 V em muitas clones). Com SMPS 5 V use só **VCC**. |
+| 6 | Ligar a fonte: a placa não acende LEDs sozinha ainda; opcional: LED de power da clone aceso. Medir **5 V** entre VCC e GND nos pads. |
+| 7 | **USB:** pode ficar desconectado nesta etapa. Depois, para programar, USB + fonte 5 V no **VCC** é o uso normal na Medusa (clone com diodo entre USB e VCC). |
+
+**O que não fazer**
+
+- Não passar a **corrente dos LEDs** pelo Pro Micro — só **sinal** em D5/D6; **5 V dos módulos/tubo** vão direto do barramento aos XLR (pino 2).
+- Não ligar **+5 V** em **GND** (confira cores antes de energizar).
+
+### 2.2 Fixar placa na caixa
 
 1. Fixar **Pro Micro** com espaçadores (USB acessível pelo painel).
-2. Ligar **VCC** e **GND** ao barramento da Parte 1.
+2. Repetir o par **VCC / GND** ao barramento se ainda não soldou na etapa 2.1.
 
-### 2.2 ZS-040
+### 2.3 ZS-040
 
 | De | Para |
 |----|------|
@@ -135,7 +161,7 @@ Objetivo: placa e Bluetooth na caixa, **alimentados pelo barramento**, saídas d
 
 A configuração **AT+BAUD4** (115200) fica na **Parte 5 — Firmware**.
 
-### 2.3 Pro Micro → XLR (DATA)
+### 2.4 Pro Micro → XLR (DATA)
 
 | Pro Micro | XLR painel | Pino |
 |-----------|------------|------|
