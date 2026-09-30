@@ -249,40 +249,87 @@ Com fonte ligada e **sem** sketch no Pro Micro:
 
 Objetivo: módulos spot prontos e cabos de palco até a Medusa.
 
-### 3.1 Módulo spot (repetir ×4, etiquetar MOD 1…4)
+### 3.1 Módulo spot WS2812B (repetir ×4, etiquetar MOD 1…4)
 
-Cada módulo tem **8 LEDs WS2812B** em **série**. No MIDI, um módulo = **um** bloco de 8 LEDs com a **mesma cor**.
+Cada módulo tem **8 LEDs WS2812B em série** (uma única linha de dados). No MIDI, **um módulo** = **8 pixels** com a **mesma cor** (CC RGB do módulo).
 
-**Carcaça 3D (opcional):** [23-MODULO-SPOT-3D.md](23-MODULO-SPOT-3D.md) — [`hardware/spot-module-v0/`](../hardware/spot-module-v0/).
+**Carcaça 3D (opcional):** montar LEDs primeiro, depois fechar com [23-MODULO-SPOT-3D.md](23-MODULO-SPOT-3D.md).
 
-| Lado | Conector |
+#### Conectores no corpo do módulo
+
+| Lado | Conector | Cabo que encaixa |
+|------|----------|------------------|
+| **IN** (entrada da cadeia) | XLR **fêmea** painel | Plug **macho** vindo da Medusa ou do módulo anterior |
+| **OUT** (saída) | XLR **macho** painel | Próximo cabo segue para o **IN** do próximo módulo |
+
+#### Formas físicas comuns
+
+| Tipo | Montagem |
 |------|----------|
-| **IN** | XLR **fêmea** |
-| **OUT** | XLR **macho** |
+| **Placa/fita já com 8 LEDs** | Respeitar setas **DIN → DOUT** na PCB; soldar só os 3 fios nos XLR |
+| **8× breakout** (estrela) | Trilha **5 V** e **GND**; encadear **DOUT → DIN** na ordem 1→8 |
+| **Recorte de fita 60/100 LED/m** | Contar **8 pixels**; não cortar no meio de um LED; **DIN** no primeiro pixel do recorte |
+
+Polaridade nos breakouts: **5V**, **GND**, **DIN** (entrada), **DOUT** (saída). **Nunca** trocar DIN com DOUT.
+
+#### Esquema elétrico (um módulo)
 
 ```
   XLR IN (F)                         8× WS2812B em cadeia          XLR OUT (M)
-  Pin 1 GND ────────┬── GND dos LEDs ─────────────────────────── Pin 1 GND
-  Pin 2 5V  ────────┬── 5V dos LEDs ─────────────────────────── Pin 2 5V
-  Pin 3 DATA ───────┼──► DIN (LED 1) … LED 8 DOUT ────────────── Pin 3 DATA
+  Pin 1 GND ────────┬── GND de todos os LEDs ─────────────────── Pin 1 GND
+  Pin 2 5V  ────────┬── 5V de todos os LEDs ─────────────────── Pin 2 5V
+  Pin 3 DATA ───────┼──► DIN (LED 1) … DOUT→DIN … LED 8 DOUT ─── Pin 3 DATA
 ```
 
-1. Trilhas **5 V** e **GND** no módulo.
-2. **5V** e **GND** de cada LED nas trilhas.
-3. **DIN** do 1º LED no **pino 3** do XLR **IN**.
-4. **DOUT → DIN** entre os 8 LEDs.
-5. **DOUT** do 8º LED no **pino 3** do XLR **OUT**.
-6. Pass-through pinos **1** e **2** do IN para o OUT.
-7. **Shell** dos XLR no **GND**.
+**5 V e GND** passam **em paralelo** (IN → OUT). **DATA** entra no LED 1 e sai do LED 8.
 
-| Etiqueta | Pixels | Nota MIDI |
-|----------|--------|-----------|
+#### Passo a passo — soldagem (×4 módulos)
+
+| # | Ação |
+|---|------|
+| 1 | Fixar **XLR IN (fêmea)** e **XLR OUT (macho)** no painel do módulo (ou na tampa 3D). |
+| 2 | **Shell** de cada XLR → fio **GND** comum no módulo. |
+| 3 | **Pino 1** (IN e OUT) → mesma trilha **GND**; ligar **GND** de **todos** os LEDs. |
+| 4 | **Pino 2** (IN e OUT) → mesma trilha **+5 V**; ligar **5V** de **todos** os LEDs. |
+| 5 | **Pino 3 IN** → **DIN** do **1º** LED da cadeia (pixel que recebe dados da Medusa). |
+| 6 | Ligar **DOUT** do LED *n* ao **DIN** do LED *n+1* até o **8º**. |
+| 7 | **DOUT** do **8º** LED → **pino 3 OUT**. |
+| 8 | Curto entre **pino 1↔1** e **pino 2↔2** do IN e OUT (pass-through), se não for um único fio contínuo. |
+| 9 | Etiqueta **MOD 1** … **MOD 4** na parte de trás; foto dos pinos 1/2/3 para referência. |
+
+Ordem dos 8 LEDs na coluna: use a **seta da fita** ou o silk **DIN** no primeiro — o firmware assume MOD 1 = pixels 0–7 na ordem em que a data percorre os LEDs.
+
+#### Cadeia no palco (4 módulos)
+
+```
+Medusa XLR MOD ──► MOD 1 IN ──OUT► MOD 2 IN ──OUT► MOD 3 IN ──OUT► MOD 4 IN
+     (D6)              (8 LED)         (8 LED)         (8 LED)         (8 LED)
+```
+
+| Etiqueta | Pixels no firmware | Nota MIDI |
+|----------|-------------------|-----------|
 | **MOD 1** | 0–7 | C3 |
 | **MOD 2** | 8–15 | D3 |
 | **MOD 3** | 16–23 | E3 |
 | **MOD 4** | 24–31 | F3 |
 
-**DATA** em série: **IN → OUT → IN** entre módulos (nunca em paralelo na linha de dados).
+- **DATA:** só **OUT → IN** entre módulos (série).  
+- **5 V / GND:** a fonte na Medusa alimenta todos em **paralelo** pelos cabos XLR (pinos 1 e 2).
+
+#### Teste de **um** módulo (após firmware na Medusa)
+
+1. Só o cabo **Medusa MOD → MOD 1 IN** (MOD 2–4 desconectados).  
+2. Boot: os **8 LEDs** do MOD 1 devem piscar **R → G → B → W** juntos.  
+3. Acrescentar MOD 2, depois 3, depois 4; a sequência de boot percorre cada bloco de 8.
+
+#### Erros comuns
+
+| Problema | Causa usual |
+|----------|-------------|
+| Módulo inteiro apagado | Sem 5 V no pino 2; GND aberto; IN/OUT trocados na cadeia |
+| Só o 1º LED acende | Quebra na cadeia **DOUT→DIN** entre LED 2…8 |
+| Cores trocadas | Ordem GRB no firmware — ver [02-LEDS-E-OPTICA.md](02-LEDS-E-OPTICA.md) |
+| MOD 3 não responde | Cabo DATA saltou módulo; conferir **OUT** do MOD 2 → **IN** do MOD 3 |
 
 ### 3.2 Cabos XLR (tentáculos)
 
