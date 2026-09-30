@@ -46,7 +46,7 @@ Hardware de montagem (por módulo, típico):
 7. Etiqueta MOD 1…4 na parte de trás
 ```
 
-Ordem elétrica e testes: [22-MANUAL-MONTAGEM.md](22-MANUAL-MONTAGEM.md) §4 e §9.
+Ordem elétrica e testes: [22-MANUAL-MONTAGEM.md](22-MANUAL-MONTAGEM.md) — Parte 3 (cabos) e Parte 5 (firmware).
 
 ---
 
