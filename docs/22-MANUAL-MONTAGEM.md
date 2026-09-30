@@ -161,15 +161,87 @@ Fonte 5 V (−) ────────► pad GND  (qualquer GND na borda)
 
 A configuração **AT+BAUD4** (115200) fica na **Parte 5 — Firmware**.
 
-### 2.4 Pro Micro → XLR (DATA)
+### 2.4 XLR na Medusa (ligados ao Pro Micro)
 
-| Pro Micro | XLR painel | Pino |
-|-----------|------------|------|
-| **D6** | **MOD** | **3** (DATA) |
-| **D5** | **TUBO** | **3** (DATA) |
-| **GND** | MOD, TUBO | **1** |
+Na caixa da Medusa você monta **2× XLR fêmea painel** (receptáculo): um etiquetado **MOD**, outro **TUBO**. O cabo de palco usa **plug macho** na ponta que encaixa na Medusa.
 
-Fios **curtos** AWG 22 entre pads do Pro Micro e terminais dos XLR. **+5 V** nos pinos 2 já vem do barramento (Parte 1).
+**Não é áudio** — pinagem de pixel (5 V / GND / DATA). Detalhes: [16-XLR-CONECTORES.md](16-XLR-CONECTORES.md).
+
+#### O que vai em cada pino (os dois XLR iguais na alimentação)
+
+| Pino XLR | Sinal | De onde vem na Medusa |
+|----------|--------|------------------------|
+| **1** | **GND** | Barramento **GND** (preto AWG 18) + **shell** do conector |
+| **2** | **+5 V** | Barramento **+5 V** (vermelho AWG 18) — **direto da fonte**, não pelo Pro Micro |
+| **3** | **DATA** | Só **um** fio AWG 22 por XLR — ver tabela abaixo |
+
+| XLR painel | Pino 3 (DATA) no Pro Micro |
+|------------|----------------------------|
+| **MOD** | **D6** |
+| **TUBO** | **D5** |
+
+Ligação **direta** D5/D6 → pino 3 (sem resistor no manual v0).
+
+#### Vista do conector (lado solda, padrão Neutrik / clone)
+
+Olhando a **parte traseira** do XLR fêmea painel (onde solda), pinos em triângulo:
+
+```
+        pino 1 (GND)
+           ●
+    pino 2 ●   ● pino 3 (DATA)
+      (+5V)
+```
+
+Confirme no **seu** conector com o datasheet — alguns clones marcam 1/2/3 no plástico.
+
+#### Passo a passo — um XLR (repetir para MOD e TUBO)
+
+| # | Ação |
+|---|------|
+| 1 | Furo no painel conforme o conector (geralmente **~24 mm** + 2 furos M3 ou presilha). Parafusar o XLR **antes** de soldar os fios longos. |
+| 2 | **Shell / corpo metálico** → fio preto ao **GND** do barramento (ou aba de terra do conector). |
+| 3 | **Pino 1** → mesmo **GND** (pode juntar shell + pino 1 num único ponto na caixa). |
+| 4 | **Pino 2** → **+5 V** do barramento (fio vermelho AWG 18). |
+| 5 | **Pino 3** → fio verde/branco AWG 22 até o pad **D6** (MOD) ou **D5** (TUBO) do Pro Micro. |
+| 6 | **GND comum:** um fio preto AWG 22 do **GND** do Pro Micro ao mesmo ponto GND dos XLR (terra único na caixa). |
+| 7 | Etiqueta no painel: `MOD D6` e `TUBO D5` + `5V PIXEL`. |
+
+#### Esquema interno da Medusa
+
+```
+Barramento +5V ─────┬──── pino 2  XLR MOD
+                    ├──── pino 2  XLR TUBO
+                    ├──── VCC Pro Micro
+                    └──── VCC ZS-040 (se 5 V)
+
+Barramento GND ─────┬──── pino 1 + shell  XLR MOD
+                    ├──── pino 1 + shell  XLR TUBO
+                    ├──── GND Pro Micro
+                    └──── GND ZS-040
+
+Pro Micro D6 ────────────── pino 3  XLR MOD   ──cabo──► Mod1 IN
+Pro Micro D5 ────────────── pino 3  XLR TUBO  ──cabo──► tubo
+```
+
+#### Cabo que sai da Medusa (primeiro tentáculo)
+
+Não confundir com o XLR **dentro** da caixa: o **cabo** é montado à parte (Parte 3.2).
+
+| Condutor no cabo | Cor sugerida | XLR macho na ponta da Medusa |
+|------------------|--------------|------------------------------|
+| GND | preto + malha | **pino 1** |
+| +5 V | vermelho | **pino 2** |
+| DATA | verde/branco | **pino 3** |
+
+O plug **macho** do cabo entra no XLR **fêmea** do painel; na outra ponta, outro XLR (geralmente **fêmea** no cabo indo ao MOD 1 **IN** fêmea — use cabo **macho–macho** ou **macho–fêmea** conforme o que fechar a cadeia; o importante é **1=GND, 2=5V, 3=DATA** em todo o sistema).
+
+#### Teste antes do firmware
+
+Com fonte ligada e **sem** sketch no Pro Micro:
+
+- Entre **pino 2 e 1** de cada XLR: **~5 V**
+- Entre **pino 3 e 1**: não deve ser curto com +5 V; tensão flutuante é normal
 
 ---
 
