@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StageMod — áudio do sistema</title>
+  <style>
+    :root {
+      --bg: #0c0d10;
+      --panel: #16181d;
+      --line: #2a2e36;
+      --text: #e8e4da;
+      --muted: #8b8478;
+      --accent: #ffb020;
+      --hot: #ff4d2e;
+      --ok: #3dcca8;
+      --swatch: #3d7cff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    body { padding: 28px 20px 48px; }
+    main { max-width: 920px; margin: 0 auto; }
+    h1 { font-size: 1.35rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 6px; }
+    .sub { color: var(--muted); font-size: 0.92rem; line-height: 1.45; margin: 0 0 22px; }
+    .row { display: grid; gap: 14px; }
+    @media (min-width: 640px) { .split { grid-template-columns: 1fr 1fr; } }
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+    select, button, input[type="range"] { width: 100%; }
+    select {
+      background: #0e1014;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+    .actions { display: flex; gap: 10px; margin: 16px 0; }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    #start { background: var(--accent); color: #1a1206; flex: 2; }
+    #start.live { background: var(--hot); color: #fff; }
+    #stop { background: #2a2e36; color: var(--text); flex: 1; }
+    .modes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    @media (min-width: 640px) { .modes { grid-template-columns: repeat(5, 1fr); } }
+    .modes button {
+      background: #0e1014;
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 10px 8px;
+      font-size: 0.85rem;
+    }
+    .modes button.active {
+      border-color: var(--swatch);
+      background: color-mix(in srgb, var(--swatch) 22%, #0e1014);
+    }
+    .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+    .swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      padding: 0;
+    }
+    .swatch.active { border-color: #fff; }
+    .band .swatches { margin-top: 8px; gap: 6px; }
+    .band .swatch { width: 22px; height: 22px; }
+    .device-row { display: grid; gap: 10px; }
+    @media (min-width: 640px) { .device-row { grid-template-columns: 1fr auto; align-items: center; } }
+    #refreshAudio {
+      background: #2a2e36;
+      color: var(--text);
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      width: 100%;
+    }
+    .stereo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .meter-wrap { height: 14px; background: #0e1014; border-radius: 99px; overflow: hidden; border: 1px solid var(--line); }
+    .meter-bar { height: 100%; width: 0; background: var(--swatch); }
+    .meter-l { background: #3d7cff; }
+    .meter-r { background: #ff7a18; }
+    canvas { width: 100%; height: 88px; display: block; background: #0e1014; border-radius: 8px; border: 1px solid var(--line); }
+    .stats { display: flex; justify-content: space-between; gap: 12px; font-variant-numeric: tabular-nums; font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+    .field { margin-top: 12px; }
+    .bands { display: grid; gap: 10px; margin-top: 14px; }
+    @media (min-width: 720px) { .bands { grid-template-columns: repeat(4, 1fr); } }
+    .band {
+      background: #0e1014;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .band h3 { margin: 0 0 8px; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .band .range { font-size: 0.72rem; color: var(--muted); margin: -4px 0 10px; }
+    .band-meter { height: 10px; background: #16181d; border-radius: 99px; overflow: hidden; border: 1px solid var(--line); }
+    .band-bar { height: 100%; width: 0; }
+    .band select { padding: 8px 10px; font-size: 0.82rem; }
+    .band .field { margin-top: 8px; }
+    .band label { font-size: 0.68rem; margin-bottom: 4px; }
+    input[type="range"] { accent-color: var(--swatch); }
+    #status { margin-top: 14px; font-size: 0.88rem; color: var(--muted); }
+    #status.ok { color: var(--ok); }
+    #status.err { color: var(--hot); }
+    .hint { font-size: 0.8rem; color: var(--muted); margin-top: 10px; line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>StageMod — áudio do sistema</h1>
+    <p class="sub">Tudo o que toca no PC entra em estéreo, parte-se em 4 bandas e anima o tubo. Chrome ou Edge em HTTPS ou <code>localhost</code>.</p>
+
+    <section>
+      <label for="midiOut">Saída — tubo (Pro Micro)</label>
+      <select id="midiOut"></select>
+      <p class="hint">Arduino Leonardo. Canal 1.</p>
+    </section>
+
+    <section style="margin-top:14px">
+      <label>Cor</label>
+      <div class="swatches" id="swatches"></div>
+    </section>
+
+    <section style="margin-top:14px">
+      <label>Modo</label>
+      <div class="modes" id="modes"></div>
+    </section>
+
+    <section style="margin-top:14px">
+      <div class="field" style="margin-top:0">
+        <label for="briMin">Brilho mínimo <span id="briMinVal">8</span>%</label>
+        <input id="briMin" type="range" min="0" max="100" step="1" value="8" />
+      </div>
+      <div class="field">
+        <label for="briMax">Brilho máximo <span id="briMaxVal">90</span>%</label>
+        <input id="briMax" type="range" min="0" max="100" step="1" value="90" />
+      </div>
+      <p class="hint">Sem áudio usa o máximo. Com captura, a banda ligada a Brilho interpola entre mínimo e máximo.</p>
+    </section>
+
+    <section style="margin-top:14px">
+      <label for="audioDevice">Dispositivo de entrada</label>
+      <div class="device-row">
+        <select id="audioDevice"></select>
+        <button id="refreshAudio" type="button">Atualizar lista</button>
+      </div>
+      <p class="hint" id="sourceHint">Escolhe a entrada estéreo. Soundflower, BlackHole ou Loopback apanham o que toca no PC. «Áudio do sistema» pede partilhar um separador com áudio.</p>
+    </section>
+
+    <div class="actions">
+      <button id="start" type="button">Capturar áudio</button>
+      <button id="stop" type="button" disabled>Parar</button>
+    </div>
+
+    <section>
+      <label>Estéreo e espectro</label>
+      <div class="stereo">
+        <div>
+          <label>L</label>
+          <div class="meter-wrap"><div id="meterL" class="meter-bar meter-l"></div></div>
+        </div>
+        <div>
+          <label>R</label>
+          <div class="meter-wrap"><div id="meterR" class="meter-bar meter-r"></div></div>
+        </div>
+      </div>
+      <canvas id="spectrum" width="720" height="88"></canvas>
+      <div class="stats">
+        <span id="rmsLabel">L 0 · R 0</span>
+        <span id="midiLabel">MIDI —</span>
+      </div>
+      <div class="field">
+        <label for="drive">Resposta geral <span id="driveVal">2.4</span></label>
+        <input id="drive" type="range" min="0.6" max="5" step="0.1" value="2.4" />
+      </div>
+      <p class="hint">Se o tubo quase não mexe, sobe a resposta. Soundflower costuma chegar baixo — 2.5 a 4 costuma acertar.</p>
+      <div class="bands" id="bands"></div>
+    </section>
+
+    <p id="status">Pronto. Escolhe cor, modo e o destino de cada banda.</p>
+  </main>
+
+  <script>
+    const CC = { DIMMER: 7, EFFECT: 15, HUE: 16, SPEED: 17, DENSITY: 18, SOLID: 19, HIT_HUE: 20 };
+    const CH = 0;
+    const EFFECTS = [
+      { id: "off", label: "Off" },
+      { id: "chase", label: "Chase" },
+      { id: "wave", label: "Wave" },
+      { id: "rainbow", label: "Rainbow" },
+      { id: "solid", label: "Sólido" },
+      { id: "pulse", label: "Pulse" },
+      { id: "sparkle", label: "Sparkle" },
+      { id: "scanner", label: "Scanner" },
+      { id: "theater", label: "Theater" },
+      { id: "meteor", label: "Meteor" },
+      { id: "twinkle", label: "Twinkle" },
+      { id: "center", label: "Centro" },
+      { id: "dual", label: "Dual" },
+      { id: "noise", label: "Noise" },
+      { id: "radial", label: "Batida" }
+    ];
+    function effectCc(id) {
+      const i = EFFECTS.findIndex((e) => e.id === id);
+      return Math.round(Math.max(0, i) * 127 / (EFFECTS.length - 1));
+    }
+    const HIT_NOTE = 72;
+    const COLORS = [
+      { name: "Vermelho", hue: 0, hex: "#ff2a2a" },
+      { name: "Laranja", hue: 16, hex: "#ff7a18" },
+      { name: "Âmbar", hue: 24, hex: "#ffb020" },
+      { name: "Verde", hue: 48, hex: "#22c55e" },
+      { name: "Ciano", hue: 64, hex: "#22d3ee" },
+      { name: "Azul", hue: 80, hex: "#3d7cff" },
+      { name: "Violeta", hue: 96, hex: "#a855f7" },
+      { name: "Magenta", hue: 112, hex: "#f43f9d" }
+    ];
+    const TARGETS = [
+      { id: "bri", label: "Brilho" },
+      { id: "speed", label: "Velocidade" },
+      { id: "dens", label: "Densidade" },
+      { id: "hit", label: "Hits no centro" },
+      { id: "off", label: "Ignorar" }
+    ];
+    const BANDS = [
+      { id: "grave", label: "Grave", range: "20–150 Hz", lo: 20, hi: 150, color: "#ff4d2e", target: "bri", gain: 2.8, floor: 2, hit: 0, hue: 0, pickColor: true },
+      { id: "midlow", label: "Médio-grave", range: "150–500 Hz", lo: 150, hi: 500, color: "#ffb020", target: "dens", gain: 2.6, floor: 2, hit: 4, hue: 16, pickColor: true },
+      { id: "mid", label: "Médio", range: "500–2 kHz", lo: 500, hi: 2000, color: "#22d3ee", target: "speed", gain: 2.5, floor: 2, hit: 1, hue: 64, pickColor: true },
+      { id: "high", label: "Agudo", range: "2–12 kHz", lo: 2000, hi: 12000, color: "#3d7cff", target: "hit", gain: 3.0, floor: 1, hit: 2, hue: 80, pickColor: true }
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    const ui = {
+      midiOut: $("midiOut"),
+      swatches: $("swatches"),
+      modes: $("modes"),
+      bands: $("bands"),
+      briMin: $("briMin"),
+      briMinVal: $("briMinVal"),
+      briMax: $("briMax"),
+      briMaxVal: $("briMaxVal"),
+      start: $("start"),
+      stop: $("stop"),
+      meterL: $("meterL"),
+      meterR: $("meterR"),
+      spectrum: $("spectrum"),
+      rmsLabel: $("rmsLabel"),
+      midiLabel: $("midiLabel"),
+      status: $("status"),
+      audioDevice: $("audioDevice"),
+      refreshAudio: $("refreshAudio"),
+      sourceHint: $("sourceHint"),
+      drive: $("drive"),
+      driveVal: $("driveVal"),
+    };
+
+    const ctx2d = ui.spectrum.getContext("2d");
+    let midiAccess = null;
+    let audioCtx = null;
+    let analyserL = null;
+    let analyserR = null;
+    let audioStream = null;
+    let raf = 0;
+    let running = false;
+    let mode = "radial";
+    let hue = 80;
+    let lastSent = { hue: -1, bri: -1, speed: -1, dens: -1, dim: -1, effect: -1, hitHue: -1 };
+    let lastSendMs = 0;
+    let lastHitMs = 0;
+    const lastBandHit = { grave: 0, midlow: 0, mid: 0, high: 0 };
+    const bandFollow = { grave: 0, midlow: 0, mid: 0, high: 0 };
+    const bandPrev = { grave: 0, midlow: 0, mid: 0, high: 0 };
+    const bandPeak = { grave: 0.18, midlow: 0.18, mid: 0.18, high: 0.18 };
+
+    function setStatus(text, kind) {
+      ui.status.textContent = text;
+      ui.status.className = kind || "";
+    }
+
+    const SYSTEM_INPUT = "__system__";
+
+    function audioSource() {
+      return ui.audioDevice.value === SYSTEM_INPUT ? "system" : "device";
+    }
+
+    function selectedOutput() {
+      if (!midiAccess) return null;
+      return midiAccess.outputs.get(ui.midiOut.value) || null;
+    }
+
+    function send(bytes) {
+      const out = selectedOutput();
+      if (!out) return false;
+      try { out.send(bytes); return true; } catch (err) { return false; }
+    }
+
+    function cc(n, v) {
+      const value = Math.max(0, Math.min(127, v | 0));
+      return send([0xB0 | CH, n, value]);
+    }
+
+    function briLimits() {
+      let min = Number(ui.briMin.value);
+      let max = Number(ui.briMax.value);
+      if (min > max) {
+        const t = min;
+        min = max;
+        max = t;
+      }
+      return { min, max };
+    }
+
+    function midiFromPercent(pct) {
+      return Math.round((Math.max(0, Math.min(100, pct)) / 100) * 127);
+    }
+
+    function applyColorTheme() {
+      const c = COLORS.find((x) => x.hue === hue) || COLORS[5];
+      document.documentElement.style.setProperty("--swatch", c.hex);
+      document.documentElement.style.setProperty("--accent", c.hex);
+    }
+
+    function renderSwatches() {
+      ui.swatches.innerHTML = "";
+      COLORS.forEach((c) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "swatch" + (c.hue === hue ? " active" : "");
+        b.style.background = c.hex;
+        b.title = c.name;
+        b.setAttribute("aria-label", c.name);
+        b.addEventListener("click", () => {
+          hue = c.hue;
+          renderSwatches();
+          applyColorTheme();
+          pushLook();
+        });
+        ui.swatches.appendChild(b);
+      });
+    }
+
+    function renderModes() {
+      ui.modes.innerHTML = "";
+      EFFECTS.forEach((e) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.dataset.mode = e.id;
+        b.textContent = e.label;
+        if (e.id === mode) b.classList.add("active");
+        ui.modes.appendChild(b);
+      });
+    }
+
+    function setMode(next) {
+      mode = next;
+      renderModes();
+      lastSent.effect = -1;
+      pushLook();
+    }
+
+    function renderBands() {
+      ui.bands.innerHTML = "";
+      BANDS.forEach((band) => {
+        const card = document.createElement("div");
+        card.className = "band";
+        card.innerHTML =
+          "<h3 style=\"color:" + band.color + "\">" + band.label + "</h3>" +
+          "<p class=\"range\">" + band.range + "</p>" +
+          "<div class=\"band-meter\"><div class=\"band-bar\" id=\"meter-" + band.id + "\" style=\"background:" + band.color + "\"></div></div>" +
+          "<p class=\"range\" id=\"lvl-" + band.id + "\">0%</p>" +
+          "<div class=\"field\"><label for=\"tgt-" + band.id + "\">Destino</label>" +
+          "<select id=\"tgt-" + band.id + "\"></select></div>" +
+          "<div class=\"field\"><label for=\"gain-" + band.id + "\">Sensibilidade <span id=\"gainVal-" + band.id + "\">" + band.gain.toFixed(1) + "</span></label>" +
+          "<input id=\"gain-" + band.id + "\" type=\"range\" min=\"0.4\" max=\"6\" step=\"0.1\" value=\"" + band.gain + "\" /></div>" +
+          "<div class=\"field\"><label for=\"floor-" + band.id + "\">Piso <span id=\"floorVal-" + band.id + "\">" + band.floor + "</span></label>" +
+          "<input id=\"floor-" + band.id + "\" type=\"range\" min=\"0\" max=\"40\" step=\"1\" value=\"" + band.floor + "\" /></div>";
+        if (band.pickColor) {
+          card.innerHTML += "<div class=\"field\"><label>Cor do hit</label><div class=\"swatches\" id=\"sw-" + band.id + "\"></div></div>";
+        }
+        ui.bands.appendChild(card);
+        if (band.pickColor) {
+          const wrap = card.querySelector("#sw-" + band.id);
+          COLORS.forEach((c) => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "swatch" + (c.hue === band.hue ? " active" : "");
+            b.style.background = c.hex;
+            b.title = c.name;
+            b.setAttribute("aria-label", band.label + " " + c.name);
+            b.addEventListener("click", () => {
+              band.hue = c.hue;
+              band.color = c.hex;
+              const title = card.querySelector("h3");
+              if (title) title.style.color = c.hex;
+              const bar = $("meter-" + band.id);
+              if (bar) bar.style.background = c.hex;
+              wrap.querySelectorAll(".swatch").forEach((el) => el.classList.remove("active"));
+              b.classList.add("active");
+            });
+            wrap.appendChild(b);
+          });
+        }
+        const sel = card.querySelector("#tgt-" + band.id);
+        TARGETS.forEach((t) => {
+          const opt = document.createElement("option");
+          opt.value = t.id;
+          opt.textContent = t.label;
+          if (t.id === band.target) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        sel.addEventListener("change", () => { band.target = sel.value; });
+        const gain = card.querySelector("#gain-" + band.id);
+        const floor = card.querySelector("#floor-" + band.id);
+        gain.addEventListener("input", () => {
+          band.gain = Number(gain.value);
+          $("gainVal-" + band.id).textContent = band.gain.toFixed(1);
+        });
+        floor.addEventListener("input", () => {
+          band.floor = Number(floor.value);
+          $("floorVal-" + band.id).textContent = String(band.floor);
+        });
+      });
+    }
+
+    function fillSelect(el, ports, prev, prefer) {
+      el.innerHTML = "";
+      if (!ports.length) {
+        el.innerHTML = "<option value=\"\">Nenhum dispositivo</option>";
+        return;
+      }
+      let pick = prev;
+      ports.forEach((p) => {
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = p.name;
+        el.appendChild(opt);
+        if (!pick && prefer.test(p.name)) pick = p.id;
+      });
+      if (pick) el.value = pick;
+    }
+
+    function fillMidiSelect() {
+      if (!midiAccess) {
+        ui.midiOut.innerHTML = "<option>Web MIDI indisponível</option>";
+        return;
+      }
+      fillSelect(ui.midiOut, [...midiAccess.outputs.values()], ui.midiOut.value, /leonardo|arduino|stagemod/i);
+    }
+
+    function fireHit(type, vel, hueMidi) {
+      const t = ((type % 8) + 8) % 8;
+      const v = Math.max(1, Math.min(127, vel | 0));
+      if (hueMidi != null && hueMidi !== lastSent.hitHue) {
+        cc(CC.HIT_HUE, hueMidi);
+        lastSent.hitHue = hueMidi;
+      }
+      send([0x90 | CH, HIT_NOTE + t, v]);
+    }
+
+    async function initMidi() {
+      if (!navigator.requestMIDIAccess) {
+        setStatus("Este navegador não tem Web MIDI. Usa Chrome ou Edge.", "err");
+        return false;
+      }
+      try {
+        midiAccess = await navigator.requestMIDIAccess({ sysex: false });
+        midiAccess.onstatechange = fillMidiSelect;
+        fillMidiSelect();
+        return true;
+      } catch (err) {
+        setStatus("MIDI bloqueado: " + err.message, "err");
+        return false;
+      }
+    }
+
+    async function unlockAudioLabels() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+      try {
+        const tmp = await navigator.mediaDevices.getUserMedia({ audio: true });
+        tmp.getTracks().forEach((t) => t.stop());
+      } catch (err) { /* nomes ficam genéricos até autorizar */ }
+    }
+
+    async function fillAudioDevices(unlock) {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        ui.audioDevice.innerHTML = "<option value=\"" + SYSTEM_INPUT + "\">Áudio do sistema (partilhar ecrã)</option>";
+        return;
+      }
+      if (unlock) await unlockAudioLabels();
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const inputs = devices.filter((d) => d.kind === "audioinput");
+      const prev = ui.audioDevice.value;
+      ui.audioDevice.innerHTML = "";
+      const sys = document.createElement("option");
+      sys.value = SYSTEM_INPUT;
+      sys.textContent = "Áudio do sistema (partilhar ecrã)";
+      ui.audioDevice.appendChild(sys);
+      let pick = prev;
+      inputs.forEach((d, i) => {
+        const opt = document.createElement("option");
+        opt.value = d.deviceId || ("input-" + i);
+        opt.textContent = d.label || ("Entrada " + (i + 1));
+        ui.audioDevice.appendChild(opt);
+        if (!pick && /blackhole|loopback|soundflower|vb-audio|stereo mix|aggregate|multi-output/i.test(d.label)) {
+          pick = opt.value;
+        }
+      });
+      if (pick && [...ui.audioDevice.options].some((o) => o.value === pick)) {
+        ui.audioDevice.value = pick;
+      }
+      syncSourceUi();
+    }
+
+    function syncSourceUi() {
+      ui.sourceHint.textContent = audioSource() === "system"
+        ? "Chrome: partilha um separador (YouTube, Spotify) e marca «Partilhar áudio»."
+        : "Esta entrada deve receber o som do PC (Soundflower, BlackHole, Loopback). No macOS usa Multi-Output para continuares a ouvir.";
+    }
+
+    async function captureSystemAudio() {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: {
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+          channelCount: 2,
+          suppressLocalAudioPlayback: false
+        },
+        systemAudio: "include",
+      });
+      stream.getVideoTracks().forEach((t) => {
+        t.stop();
+        stream.removeTrack(t);
+      });
+      if (!stream.getAudioTracks().length) {
+        stream.getTracks().forEach((t) => t.stop());
+        throw new Error("Sem faixa de áudio. Marca «Partilhar áudio» no diálogo do Chrome.");
+      }
+      return stream;
+    }
+
+    async function captureDeviceAudio() {
+      const id = ui.audioDevice.value;
+      const audio = {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+        channelCount: 2,
+      };
+      if (id && id !== SYSTEM_INPUT && !id.startsWith("input-")) audio.deviceId = { exact: id };
+      return navigator.mediaDevices.getUserMedia({ audio });
+    }
+
+    function hookStreamEnd(stream) {
+      stream.getAudioTracks().forEach((t) => {
+        t.addEventListener("ended", () => {
+          if (!running || audioStream !== stream) return;
+          stop();
+        });
+      });
+    }
+
+    function connectAnalysers(stream) {
+      audioCtx = new AudioContext();
+      const src = audioCtx.createMediaStreamSource(stream);
+      const preGain = audioCtx.createGain();
+      preGain.gain.value = 3.2;
+      const splitter = audioCtx.createChannelSplitter(2);
+      analyserL = audioCtx.createAnalyser();
+      analyserR = audioCtx.createAnalyser();
+      [analyserL, analyserR].forEach((a) => {
+        a.fftSize = 2048;
+        a.smoothingTimeConstant = 0.38;
+        a.minDecibels = -82;
+        a.maxDecibels = -18;
+      });
+      src.connect(preGain);
+      preGain.connect(splitter);
+      splitter.connect(analyserL, 0);
+      splitter.connect(analyserR, 1);
+    }
+
+    function bandEnergy(binsL, binsR, loHz, hiHz, sampleRate, fftSize) {
+      const binHz = sampleRate / fftSize;
+      const i0 = Math.max(1, Math.floor(loHz / binHz));
+      const i1 = Math.min(binsL.length - 1, Math.ceil(hiHz / binHz));
+      let peak = 0;
+      let sum = 0;
+      let n = 0;
+      for (let i = i0; i <= i1; i++) {
+        const v = Math.max(binsL[i], binsR[i]) / 255;
+        if (v > peak) peak = v;
+        sum += v;
+        n++;
+      }
+      const avg = n ? sum / n : 0;
+      return Math.max(peak, avg * 1.8);
+    }
+
+    function follow(prev, next) {
+      const coeff = next > prev ? 0.72 : 0.22;
+      return prev + (next - prev) * coeff;
+    }
+
+    function shapeBand(band, raw) {
+      const floor = band.floor / 100;
+      const lifted = Math.max(0, raw - floor);
+      bandPeak[band.id] = Math.max(bandPeak[band.id] * 0.996, lifted, 0.1);
+      const norm = lifted / bandPeak[band.id];
+      const drive = Number(ui.drive.value);
+      return Math.min(1, Math.pow(norm, 0.62) * band.gain * drive * 0.42);
+    }
+
+    function channelRms(analyser) {
+      const wave = new Uint8Array(analyser.fftSize);
+      analyser.getByteTimeDomainData(wave);
+      let sum = 0;
+      for (let i = 0; i < wave.length; i++) {
+        const c = (wave[i] - 128) / 128;
+        sum += c * c;
+      }
+      return Math.sqrt(sum / wave.length);
+    }
+
+    function pushLook(levels) {
+      const live = !!(levels && typeof levels.grave === "number");
+      const used = { bri: false, speed: false, dens: false };
+      const pulse = { bri: 0, speed: 0, dens: 0 };
+      const now = performance.now();
+
+      if (live) {
+        BANDS.forEach((band) => {
+          const v = levels[band.id] || 0;
+          const prev = bandPrev[band.id];
+          const onset = v - prev;
+          if (band.target === "bri") { used.bri = true; pulse.bri = Math.max(pulse.bri, v); }
+          if (band.target === "speed") {
+            used.speed = true;
+            pulse.speed = Math.max(pulse.speed, v);
+            if (mode === "solid") { used.bri = true; pulse.bri = Math.max(pulse.bri, v * 0.9); }
+          }
+          if (band.target === "dens") {
+            used.dens = true;
+            pulse.dens = Math.max(pulse.dens, v);
+            if (mode === "solid") { used.bri = true; pulse.bri = Math.max(pulse.bri, v * 0.9); }
+          }
+          const colorBand = band.pickColor && band.target !== "off";
+          if (mode !== "off" && colorBand && v > 0.16 && onset > 0.03 && now - lastBandHit[band.id] > 140) {
+            lastBandHit[band.id] = now;
+            lastHitMs = now;
+            fireHit(band.hit, Math.round(48 + v * 79), band.hue);
+          }
+          bandPrev[band.id] = v;
+        });
+        if (!used.bri) {
+          used.bri = true;
+          pulse.bri = Math.max(levels.grave || 0, levels.midlow || 0, levels.mid || 0, levels.high || 0);
+        }
+      }
+
+      const { min, max } = briLimits();
+      const briPulse = live && used.bri ? pulse.bri : 1;
+      const speedPulse = live && used.speed ? Math.max(0.18, pulse.speed) : 1;
+      const densPulse = live && used.dens ? Math.max(0.18, pulse.dens) : 1;
+      const pct = min + (max - min) * briPulse;
+      const effect = effectCc(mode);
+      const dim = midiFromPercent(pct);
+      const solidBri = midiFromPercent(pct);
+
+      if (effect !== lastSent.effect) {
+        cc(CC.EFFECT, effect);
+        lastSent.effect = effect;
+      }
+      if (hue !== lastSent.hue) {
+        cc(CC.HUE, hue);
+        lastSent.hue = hue;
+      }
+
+      if (mode === "off") {
+        cc(CC.DIMMER, 0);
+        lastSent.dim = 0;
+        ui.midiLabel.textContent = "MIDI off";
+        return;
+      }
+
+      if (Math.abs(dim - lastSent.dim) >= 3) {
+        cc(CC.DIMMER, dim);
+        lastSent.dim = dim;
+      }
+      if (mode === "solid" && Math.abs(solidBri - lastSent.bri) >= 3) {
+        cc(CC.SOLID, solidBri);
+        lastSent.bri = solidBri;
+      }
+      if (mode !== "solid" && mode !== "off") {
+        const speed = Math.round(24 + speedPulse * 100);
+        const dens = Math.round(28 + densPulse * 90);
+        if (Math.abs(speed - lastSent.speed) >= 4) { cc(CC.SPEED, speed); lastSent.speed = speed; }
+        if (Math.abs(dens - lastSent.dens) >= 4) { cc(CC.DENSITY, dens); lastSent.dens = dens; }
+      }
+      const fx = EFFECTS.find((e) => e.id === mode);
+      ui.midiLabel.textContent = COLORS.find((c) => c.hue === hue).name + " · " + (fx ? fx.label : mode) + " · " + Math.round(pct) + "%";
+    }
+
+    function tick() {
+      if (!running || !analyserL || !analyserR || !audioCtx) return;
+      const binsL = new Uint8Array(analyserL.frequencyBinCount);
+      const binsR = new Uint8Array(analyserR.frequencyBinCount);
+      analyserL.getByteFrequencyData(binsL);
+      analyserR.getByteFrequencyData(binsR);
+
+      const rmsL = channelRms(analyserL);
+      const rmsR = channelRms(analyserR);
+      ui.meterL.style.width = Math.min(100, rmsL * 280).toFixed(1) + "%";
+      ui.meterR.style.width = Math.min(100, rmsR * 280).toFixed(1) + "%";
+      ui.rmsLabel.textContent = "L " + rmsL.toFixed(3) + " · R " + rmsR.toFixed(3);
+
+      const levels = {};
+      BANDS.forEach((band) => {
+        const raw = bandEnergy(binsL, binsR, band.lo, band.hi, audioCtx.sampleRate, analyserL.fftSize);
+        const shaped = shapeBand(band, raw);
+        bandFollow[band.id] = follow(bandFollow[band.id], shaped);
+        levels[band.id] = bandFollow[band.id];
+        const el = $("meter-" + band.id);
+        if (el) el.style.width = (levels[band.id] * 100).toFixed(1) + "%";
+        const lbl = $("lvl-" + band.id);
+        if (lbl) lbl.textContent = Math.round(levels[band.id] * 100) + "%";
+      });
+
+      ctx2d.clearRect(0, 0, ui.spectrum.width, ui.spectrum.height);
+      const step = Math.max(1, Math.floor(binsL.length / 72));
+      const barW = ui.spectrum.width / (binsL.length / step);
+      const binHz = audioCtx.sampleRate / analyserL.fftSize;
+      for (let i = 0, x = 0; i < binsL.length; i += step, x += barW) {
+        const hz = i * binHz;
+        const band = BANDS.find((b) => hz >= b.lo && hz < b.hi) || BANDS[3];
+        const v = Math.max(binsL[i], binsR[i]) / 255;
+        const h = v * ui.spectrum.height;
+        ctx2d.fillStyle = band.color;
+        ctx2d.globalAlpha = 0.3 + v * 0.7;
+        ctx2d.fillRect(x + 1, ui.spectrum.height - h, barW - 2, h);
+      }
+      ctx2d.globalAlpha = 1;
+
+      const now = performance.now();
+      if (now - lastSendMs >= 70) {
+        lastSendMs = now;
+        pushLook(levels);
+      }
+      raf = requestAnimationFrame(tick);
+    }
+
+    async function openInput() {
+      return audioSource() === "system"
+        ? captureSystemAudio()
+        : captureDeviceAudio();
+    }
+
+    async function switchInput() {
+      syncSourceUi();
+      if (!running) return;
+      const prev = audioStream;
+      audioStream = null;
+      if (prev) prev.getTracks().forEach((t) => t.stop());
+      if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
+      }
+      analyserL = null;
+      analyserR = null;
+      cancelAnimationFrame(raf);
+      try {
+        audioStream = await openInput();
+        hookStreamEnd(audioStream);
+        connectAnalysers(audioStream);
+        if (audioCtx.state === "suspended") await audioCtx.resume();
+        setStatus("Entrada: " + ui.audioDevice.selectedOptions[0].textContent, "ok");
+        tick();
+      } catch (err) {
+        stop();
+        setStatus("Áudio bloqueado: " + err.message, "err");
+      }
+    }
+
+    async function start() {
+      setStatus("A pedir áudio do sistema e MIDI…");
+      const midiOk = await initMidi();
+      if (!midiOk) return;
+      if (!selectedOutput()) {
+        setStatus("Nenhuma saída MIDI. Confirma o Pro Micro na USB.", "err");
+        return;
+      }
+      try {
+        audioStream = await openInput();
+        hookStreamEnd(audioStream);
+        connectAnalysers(audioStream);
+        if (audioCtx.state === "suspended") await audioCtx.resume();
+        await fillAudioDevices();
+      } catch (err) {
+        setStatus("Áudio bloqueado: " + err.message, "err");
+        return;
+      }
+
+      running = true;
+      lastSent = { hue: -1, bri: -1, speed: -1, dens: -1, dim: -1, effect: -1, hitHue: -1 };
+      BANDS.forEach((b) => { bandFollow[b.id] = 0; bandPrev[b.id] = 0; bandPeak[b.id] = 0.14; lastBandHit[b.id] = 0; });
+      pushLook({ grave: 0, midlow: 0, mid: 0, high: 0 });
+      ui.start.classList.add("live");
+      ui.start.textContent = "Áudio ligado";
+      ui.stop.disabled = false;
+      setStatus("Estéreo em 4 bandas. Cada uma anima o destino que escolheres.", "ok");
+      tick();
+    }
+
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+      if (audioStream) audioStream.getTracks().forEach((t) => t.stop());
+      audioStream = null;
+      if (audioCtx) audioCtx.close();
+      audioCtx = null;
+      analyserL = null;
+      analyserR = null;
+      ui.meterL.style.width = "0";
+      ui.meterR.style.width = "0";
+      BANDS.forEach((b) => {
+        const el = $("meter-" + b.id);
+        if (el) el.style.width = "0";
+      });
+      ui.start.classList.remove("live");
+      ui.start.textContent = "Capturar áudio";
+      ui.stop.disabled = true;
+      lastSent = { hue: -1, bri: -1, speed: -1, dens: -1, dim: -1, effect: -1, hitHue: -1 };
+      pushLook();
+      setStatus("Áudio parado. Cor, brilho e modo continuam no tubo.");
+    }
+
+    ui.modes.addEventListener("click", (ev) => {
+      const btn = ev.target.closest("button[data-mode]");
+      if (btn) setMode(btn.dataset.mode);
+    });
+    function onBriChange() {
+      if (Number(ui.briMin.value) > Number(ui.briMax.value)) {
+        ui.briMin.value = ui.briMax.value;
+      }
+      ui.briMinVal.textContent = ui.briMin.value;
+      ui.briMaxVal.textContent = ui.briMax.value;
+      if (!running) pushLook();
+    }
+    ui.briMin.addEventListener("input", onBriChange);
+    ui.briMax.addEventListener("input", onBriChange);
+    ui.drive.addEventListener("input", () => { ui.driveVal.textContent = Number(ui.drive.value).toFixed(1); });
+    ui.start.addEventListener("click", start);
+    ui.stop.addEventListener("click", stop);
+    ui.midiOut.addEventListener("change", () => {
+      lastSent = { hue: -1, bri: -1, speed: -1, dens: -1, dim: -1, effect: -1, hitHue: -1 };
+      pushLook();
+    });
+    ui.audioDevice.addEventListener("change", () => { switchInput(); });
+    ui.refreshAudio.addEventListener("click", () => { fillAudioDevices(true); });
+    if (navigator.mediaDevices) {
+      navigator.mediaDevices.addEventListener("devicechange", () => { fillAudioDevices(); });
+    }
+
+    renderSwatches();
+    renderModes();
+    renderBands();
+    applyColorTheme();
+    syncSourceUi();
+    fillAudioDevices();
+    initMidi().then((ok) => { if (ok) pushLook(); });
+  </script>
+</body>
+</html>

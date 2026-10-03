@@ -29,6 +29,7 @@ Cada WS2812B = **RGB completo** (milhões de cores via MIDI).
 | 1. Montar e soldar | [docs/22-MANUAL-MONTAGEM.md](docs/22-MANUAL-MONTAGEM.md) (sem caps/resistores) |
 | 2. Upload firmware | [firmware/promicro-4mod/](firmware/promicro-4mod/) |
 | 3. Mapear MIDI no DAW | [docs/05-MIDI-DAW.md](docs/05-MIDI-DAW.md) |
+| 4. Controlar pelo browser | [andreysenes.github.io/light](https://andreysenes.github.io/light/) |
 
 ## Documentação v0
 
